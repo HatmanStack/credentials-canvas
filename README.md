@@ -1,4 +1,4 @@
-# Gemenie Labs Site
+# Credentials Canvas
 
 A site written in React to showcase work from recent projects in 3D design with relevant links and art.  You can see the project [here](https://cg-portfolio.site/).
 
