@@ -1,0 +1,156 @@
+/** Credit to Taluska https://codepen.io/Taluska/pen/yLRZRoY */
+
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap");
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  --fill-color: #9b9dad;
+  --hover-color: #b68672;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Below 1200px, checkboxes take half the width (2 per row) */
+@media (max-width: 1200px) {
+  .checkbox-container > div {
+    width: 50%;
+  }
+}
+
+/* Below 800px, checkboxes take full width (1 per row) */
+@media (max-width: 800px) {
+  .checkbox-container {
+    flex-direction: column;
+  }
+  .checkbox-container > div {
+    width: 100%;
+  }
+}
+
+body {
+  gap: 1rem;
+  font-family: "Lato", sans-serif;
+  background-color: #efefef;
+}
+
+.text-container {
+  display: flex;
+  justify-content: center;
+  block-size: min(10rem, 23vw);
+  min-inline-size: 22.5rem;
+}
+
+.text-stroke-rural,
+.text-stroke-urban,
+.text-stroke-classy,
+.text-stroke-chill,
+.text-stroke-graphics,
+.title-stroke {
+  font-size: 4.7rem;
+  letter-spacing: 4px;
+  fill: none;
+  stroke: #000;
+  stroke-width: 2;
+  stroke-dasharray: 100%;
+  stroke-dashoffset: 100%;
+  animation: textStrokeAnim 4000ms linear both;
+  animation-iteration-count: 1;
+}
+.text-stroke-urban {
+  stroke: #e96929;
+}
+.text-stroke-rural {
+  stroke: #80c080;
+}
+.text-stroke-classy {
+  stroke: #ef5555;
+}
+.text-stroke-chill {
+  stroke: #9fa8da;
+}
+.text-stroke-graphics {
+  stroke: #000000;
+}
+
+.title-stroke {
+  font-size: 7rem;
+}
+
+.reset {
+  width: max-content;
+  margin-inline: auto;
+  padding: 0.5em 3em;
+  font-size: 1.5rem;
+  border-radius: 1rem;
+  border: 0;
+  margin: 0.5em;
+  position: relative;
+  background-color: #b68672;
+  color: #efefef;
+}
+
+.reset:hover {
+  background-color: var(--hover-color);
+}
+
+.reset::after,
+.reset::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: all 66ms ease;
+}
+
+.reset::after {
+  box-shadow: 0 0.25rem 0.5rem #0003, -0.124rem 0.5rem 0.45rem #0002;
+  opacity: 1;
+}
+
+.reset::before {
+  box-shadow: inset 0 1px 0.5px 0px #777, inset 0 -2px 0.5px 0px #fff9,
+    inset 0 4px 10px 0px #0007, inset 0 -4px 16px 0px #fff7;
+  opacity: 0;
+}
+
+.reset:focus-visible {
+  outline: 2px solid #0ebeff;
+  outline-offset: 1px;
+}
+
+.reset:active {
+  scale: 0.98;
+}
+
+.reset:is(:active, :focus-visible)::after {
+  opacity: 0;
+}
+
+.reset:active::before {
+  opacity: 1;
+}
+
+@keyframes textStrokeAnim {
+  0% {
+    stroke-dasharray: 100%;
+    stroke-dashoffset: 100%;
+    fill: #0000;
+  }
+  95% {
+    stroke-dasharray: 0%;
+    stroke-dashoffset: 90%;
+    fill: #0000;
+  }
+  100% {
+    stroke-dasharray: 0%;
+    stroke-dashoffset: 0%;
+    fill: var(--fill-color);
+    filter: drop-shadow(2px 2px 10px #0007);
+  }
+}
