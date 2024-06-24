@@ -202,7 +202,7 @@ export function LaunchScreen({ setVibe, graphics, setGraphics }) {
               GRAPHICS
             </text>
           </svg>
-          <Checkbox color="graphics" onClick={() => setGraphics(!graphics)} />
+          <Checkbox color="graphics" active={graphics} onClick={() => setGraphics(!graphics)} />
           <a
             href="https://gemenielabs.com"
             style={{

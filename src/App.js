@@ -33,7 +33,7 @@ export default function App() {
   const [mobileScroll, setMobileScroll] = useState(null);
   const [player, setPlayer] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [graphics, setGraphics] = useState(false);
+  const [graphics, setGraphics] = useState(true);
   const navigateButtonRef = useRef(null);
   const muteButtonRef = useRef(null);
 
@@ -82,6 +82,7 @@ export default function App() {
   function Loader() {
     return (
       <>
+      <link rel="manifest" href="/manifest.json"></link>
         <div
           style={{
             display: "flex",
@@ -118,6 +119,7 @@ export default function App() {
 
   return (
     <>
+    <link rel="manifest" href="/manifest.json"></link>
       {vibe != null ? (
         <Suspense fallback={<Loader />}>
           <div className="button-container">
