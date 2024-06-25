@@ -90,6 +90,7 @@ export function CameraControls({
   const [cameraClone, setCameraClone] = useState(true);
   const [patchCamera, setPatchCamera] = useState(true);
   const [holderprogress, setProgress] = useState(0);
+  const [scrollScale, setScrollScale] = useState(0.001);
   const positions = [
     cameraClone ? [1, 1, 13] : [10, 1, 13],
     [4, 1, 2],
@@ -143,6 +144,13 @@ export function CameraControls({
   });
 
   useEffect(() => {
+  const appVersion = navigator.appVersion;
+  if (appVersion.indexOf("Linux") !== -1) {
+    setScrollScale(0.01);
+  }
+  }, []);
+
+  useEffect(() => {
     if (isDragging) {
       controls.current.update();
       controls.enabled = !isDragging;
@@ -174,7 +182,7 @@ export function CameraControls({
     }
     setCloseUp(false);
 
-    const scrollAmount = Math.abs(event.deltaY) * 0.001;
+    const scrollAmount = Math.abs(event.deltaY) * scrollScale;
     const newProgress = holderprogress + scrollAmount;
     currentPos.current.set(...positions[currentPosIndex]);
     nextPos.current.set(...positions[(currentPosIndex + 1) % positions.length]);
@@ -201,7 +209,7 @@ export function CameraControls({
       setScrollStarted(true);
       setCloseUp(false);
       setCloseUpPosIndex(8);
-      const scrollAmount = Math.abs(event.deltaY) * 0.001;
+      const scrollAmount = Math.abs(event.deltaY) * scrollScale;
       progress += scrollAmount;
       const currentPos = new Vector3(...positions[currentPosIndex]);
 
