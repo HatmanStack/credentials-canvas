@@ -90,7 +90,7 @@ export function CameraControls({
   const [cameraClone, setCameraClone] = useState(true);
   const [patchCamera, setPatchCamera] = useState(true);
   const [holderprogress, setProgress] = useState(0);
-  const [scrollScale, setScrollScale] = useState(0.001);
+  
   const positions = [
     cameraClone ? [1, 1, 13] : [10, 1, 13],
     [4, 1, 2],
@@ -98,6 +98,8 @@ export function CameraControls({
     [0, 1, 6.5],
     [-12, 6, 0],
   ];
+  const scrollConstant = 0.3;
+  const scrollConstantMobile = 0.8;
   const currentPos = useRef(new Vector3());
   const nextPos = useRef(new Vector3());
   const newPos = useRef(new Vector3());
@@ -143,12 +145,6 @@ export function CameraControls({
     }
   });
 
-  useEffect(() => {
-  const appVersion = navigator.appVersion;
-  if (appVersion.indexOf("Linux") !== -1) {
-    setScrollScale(0.01);
-  }
-  }, []);
 
   useEffect(() => {
     if (isDragging) {
@@ -181,12 +177,12 @@ export function CameraControls({
       setCloseUpPosIndex(8);
     }
     setCloseUp(false);
-
-    const scrollAmount = Math.abs(event.deltaY) * scrollScale;
+    const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
+    const scrollAmount = scrollConstantMobile / 2;
     const newProgress = holderprogress + scrollAmount;
     currentPos.current.set(...positions[currentPosIndex]);
     nextPos.current.set(...positions[(currentPosIndex + 1) % positions.length]);
-    const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
+    
     newPos.current.lerpVectors(
       currentPos.current,
       nextPos.current,
@@ -209,14 +205,14 @@ export function CameraControls({
       setScrollStarted(true);
       setCloseUp(false);
       setCloseUpPosIndex(8);
-      const scrollAmount = Math.abs(event.deltaY) * scrollScale;
-      progress += scrollAmount;
+      const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
+      
+      progress += scrollConstant / 2;
       const currentPos = new Vector3(...positions[currentPosIndex]);
 
       const nextPos = new Vector3(
         ...positions[(currentPosIndex + 1) % positions.length]
       );
-      const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
       const newPos = new Vector3().lerpVectors(
         currentPos,
         nextPos,
