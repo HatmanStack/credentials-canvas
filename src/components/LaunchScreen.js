@@ -196,10 +196,10 @@ export function LaunchScreen({ setVibe, graphics, setGraphics }) {
           <svg
             className="text-stroke-graphics"
             ref={textAnimationRef}
-            style={{ width: 420 }}
+            style={{ width: 620 }}
           >
             <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
-              GRAPHICS
+              LOW GRAPHICS
             </text>
           </svg>
           <Checkbox color="graphics" active={graphics} onClick={() => setGraphics(!graphics)} />

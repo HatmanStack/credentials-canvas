@@ -33,7 +33,7 @@ export default function App() {
   const [mobileScroll, setMobileScroll] = useState(null);
   const [player, setPlayer] = useState(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [graphics, setGraphics] = useState(true);
+  const [graphics, setGraphics] = useState(false);
   const navigateButtonRef = useRef(null);
   const muteButtonRef = useRef(null);
 

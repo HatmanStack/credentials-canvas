@@ -32,6 +32,7 @@ export default function Model({
 
   //const filePath = 'https://www.cg-portfolio.site/compressed.glb';
   const filePath = process.env.PUBLIC_URL + "compressed.glb";
+  
   //google data analytics tag
   const gltf = useGLTFLoaderWithDRACO(filePath);
 
@@ -42,7 +43,7 @@ export default function Model({
 
   useEffect(() => {
     if (gltf) {
-      if (graphics) {
+      if (!graphics) {
         gltf.scene.traverse((node) => {
           if (node) {
             for (let i = 0; i < meshNames.length; i++) {
@@ -132,8 +133,8 @@ const urlMap = {
   Sign_Privacy: "https://www.gemenielabs.com/app-privacy-policy/",
   Sign_Old: "https://www.gemenielabs.com/",
   logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
-  logo_nba: "https://huggingface.co/spaces/Hatman/NBA-Fantasy-Game",
-  logo_hf: "https://huggingface.co/spaces/Hatman/pixel-prompt",
+  logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
+  logo_hf: "https://hatman-pixel-prompt.hf.space",
   logo_google_forms:
     "https://docs.google.com/forms/d/e/1FAIpQLSce94QihTjunjBvYzFdalz0mYGhVS6Ngy17uRrXkqLI_Da7nA/viewform",
 };

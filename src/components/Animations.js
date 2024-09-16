@@ -70,7 +70,7 @@ export function Animations({
   useEffect(() => {
     if (true) {
       if (nodes) {
-        if (graphics) {
+        if (!graphics) {
           if (iframe1) {
             iframe1Ref.current.style.display = "block";
           } else {
@@ -190,7 +190,7 @@ export function Animations({
               </div>
             </Html>
           </primitive>
-          {graphics && (
+          {!graphics && (
             <primitive key="zelda_screen" object={nodes["zelda_screen"]}>
               <Html
                 className={className}
