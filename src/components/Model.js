@@ -131,7 +131,7 @@ const urlMap = {
   Sign_Github: "https://github.com/HatmanStack",
   Sign_HuggingFace: "https://huggingface.co/Hatman",
   Sign_Privacy: "https://www.gemenielabs.com/app-privacy-policy/",
-  Sign_Old: "https://www.gemenielabs.com/",
+  Sign_Old: "https://www.gemenielabs.com/projects",
   logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
   logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
   logo_hf: "https://hatman-pixel-prompt.hf.space",

@@ -95,7 +95,7 @@ export default function App() {
           }}
         >
           <a
-            href="https://gemenielabs.com"
+            href="https://gemenielabs.com/projects"
             style={{
               color: "white",
               textDecoration: "none",
