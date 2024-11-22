@@ -94,18 +94,6 @@ export default function App() {
             margin: "10rem",
           }}
         >
-          <a
-            href="https://gemenielabs.com/projects"
-            style={{
-              color: "white",
-              textDecoration: "none",
-              transition: "transform 0.3s ease-in-out",
-            }}
-            onMouseEnter={(e) => (e.target.style.transform = "scale(2)")}
-            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
-          >
-            Gemenie Labs
-          </a>
           <img src={handGif} width="250" />
           {Math.round(progress)} % loaded
         </div>

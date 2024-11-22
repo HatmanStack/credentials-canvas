@@ -215,7 +215,7 @@ export function LaunchScreen({ setVibe, graphics, setGraphics }) {
             onMouseEnter={(e) => (e.target.style.transform = "scale(2)")}
             onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
           >
-            Gemenie Labs
+            Traditional Portfolio
           </a>
         </div>
       </div>
