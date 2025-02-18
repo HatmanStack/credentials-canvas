@@ -67,6 +67,7 @@ export default function App() {
   }, []);
 
   const handleMute = () => {
+    console.log("muted");
     if (player && player.isMuted() === false) {
       player.mute();
       setIsMuted(true);
@@ -176,12 +177,15 @@ export default function App() {
               ref={muteButtonRef}
               style={{
                 opacity: progress < 100 ? 0 : 1,
+                cursor: 'pointer', 
+                width: '40px', 
+                height: '40px',
                 backgroundImage: `url(${isMuted ? mute : volumeUp})`,
-                backgroundColor: `var(${
-                  isMuted ? "--rest-color" : "--active-color"
-                })`,
+                backgroundColor: isMuted ? 'var(--rest-color)' : 'var(--active-color)',
                 marginTop: 20,
                 marginRight: 20,
+                border: 'none', 
+                padding: 0
               }}
               onClick={handleMute}
             />

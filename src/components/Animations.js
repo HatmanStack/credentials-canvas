@@ -274,10 +274,10 @@ const phoneList = [
 ];
 
 const sliderRotation = [7.36, 0, 0];
-const sliderScale = [0.5, 0.5, 0.5];
+const sliderScale = [0.3, 0.3, 0.3];
 
 const sliderPosition = [
-  [0.925, 0.538, 3.986],
+  [0.9305, 0.538, 3.986],
 ];
 
 const textPosition = [

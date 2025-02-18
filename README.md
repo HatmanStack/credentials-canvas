@@ -33,6 +33,12 @@ yarn
 npm start
 ```
 
+    - ReEncode with Draco
+
+```
+gltf-pipeline -i updated.glb -o compressed_model.glb --draco.compressionLevel=7 --keepUnusedElements --keepDefaultScene
+```
+
 ## License
 
 This project is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).

@@ -127,9 +127,9 @@ export function CameraControls({
       controls.current.update();
 
       if (
-        camera.position.x > 2 &&
+        camera.position.x > 1.78 &&
         camera.position.y > 0 &&
-        camera.position.z > .25 
+        camera.position.z > 0.25
       ) {
         setIframe1(true);
       } else {
@@ -139,7 +139,7 @@ export function CameraControls({
       if (
        
         camera.position.y > 0 &&
-        camera.position.z > 4.5
+        camera.position.z > 4.3
       ) {
         
           setIframe2(true);
