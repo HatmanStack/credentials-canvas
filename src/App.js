@@ -22,7 +22,7 @@ export default function App() {
   const [gltf, setGLTF] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [lightIntensity, setLightIntensity] = useState({
-    sliderName: "Slider_7",
+    sliderName: "Slider_4",
     intensity: 10,
   });
   const [iframe1, setIframe1] = useState(true);

@@ -22,6 +22,7 @@ const closeUpPositions = [
   [4.53, 0.2, 2.7],
   [1.8, 0.9, 3.62],
   [0.93, 0.68, 4.55],
+  [.6, 0.3, 4.2],
 ];
 const closeUpPositionsSmallScreen = [
   [0, 0.5, 4.07],
@@ -32,6 +33,7 @@ const closeUpPositionsSmallScreen = [
   [4.53, 0.5, 2.7],
   [1.8, 0.9, 3.62],
   [0.93, 0.68, 4.55],
+  [.6, 0.3, 4.2],
 ];
 const closeUpRotations = [
   [-0.2, 0.3, 3.4],
@@ -42,6 +44,7 @@ const closeUpRotations = [
   [4.53, -0.1, 2.7],
   [1.5, 0.6, 3.62],
   [0.93, 0.53, 3.95],
+  [.6, -1, 4.2],
   [0, 0, 0],
 ];
 const positionMap = {
@@ -59,6 +62,8 @@ const positionMap = {
   Cube009_2: 6,
   Light_Control_Box: 7,
   Music_Control_Box: 7,
+  Phone_Stocks_5: 8,
+  Phone_Stocks_Text: 8,
 };
 
 class OrbitControls extends ThreeOrbitControls {
@@ -122,23 +127,23 @@ export function CameraControls({
       controls.current.update();
 
       if (
-        camera.position.x > 1.78 &&
+        camera.position.x > 2 &&
         camera.position.y > 0 &&
-        camera.position.z > 0.25
+        camera.position.z > .25 
       ) {
         setIframe1(true);
       } else {
         setIframe1(false);
       }
-
+      
       if (
-        camera.position.y > -0.5 &&
-        camera.position.y < 1.5 &&
-        camera.position.z > 3.9
+       
+        camera.position.y > 0 &&
+        camera.position.z > 4.5
       ) {
-        if (!cameraClone) {
+        
           setIframe2(true);
-        }
+        
       } else {
         setIframe2(false);
       }
@@ -174,7 +179,7 @@ export function CameraControls({
   const handleMobileScroll = (event) => {
     setScrollStarted(true);
     if (closeUp) {
-      setCloseUpPosIndex(8);
+      setCloseUpPosIndex(9);
     }
     setCloseUp(false);
     const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
@@ -204,7 +209,7 @@ export function CameraControls({
     const handleScroll = (event) => {
       setScrollStarted(true);
       setCloseUp(false);
-      setCloseUpPosIndex(8);
+      setCloseUpPosIndex(9);
       const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
       
       progress += scrollConstant / 2;
@@ -234,6 +239,7 @@ export function CameraControls({
 
   useEffect(() => {
     if (clickPoint) {
+      
       setCloseUp(true);
       const positionIndex = positionMap[clickPoint] || 0;
       setCloseUpPosIndex(positionIndex);
@@ -250,7 +256,7 @@ export function CameraControls({
   }, [isDragging]);
 
   useEffect(() => {
-    if (closeUpPosIndex !== 8) {
+    if (closeUpPosIndex !== 9) {
       const position =
         windowWidth > 800
           ? closeUpPositions[closeUpPosIndex]

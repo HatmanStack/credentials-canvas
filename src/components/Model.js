@@ -8,15 +8,32 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useGLTF } from "@react-three/drei";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderConfig({ type: "js" });
+dracoLoader.setDecoderPath(process.env.PUBLIC_URL + "/draco/javascript/");
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
 function useGLTFLoaderWithDRACO(path) {
-  useThree();
-  const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderConfig({ type: "js" });
-  dracoLoader.setDecoderPath(process.env.PUBLIC_URL + "/draco/javascript/");
-  const loader = new GLTFLoader();
-  loader.setDRACOLoader(dracoLoader);
-  const gltf = useGLTF(path, loader);
-  dracoLoader.dispose();
+  const { scene } = useThree();
+  
+  // Use the pre-configured loader
+  const gltf = useGLTF(path, gltfLoader);
+  
+  // Clean up when component unmounts
+  useEffect(() => {
+    return () => {
+      // Only dispose of the specific model's resources
+      if (gltf) {
+        gltf.scenes?.forEach(scene => scene.traverse(object => {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) object.material.dispose();
+        }));
+      }
+    };
+  }, [gltf]);
+
   return gltf;
 }
 
@@ -29,11 +46,9 @@ export default function Model({
   closeUp,
 }) {
   const [count, setCount] = useState(true);
-
-  //const filePath = 'https://www.cg-portfolio.site/compressed.glb';
-  const filePath = process.env.PUBLIC_URL + "compressed.glb";
   
-  //google data analytics tag
+  const filePath = process.env.PUBLIC_URL + "compressed_model.glb";
+  
   const gltf = useGLTFLoaderWithDRACO(filePath);
 
   const videoRefs = meshNames.reduce((acc, name) => {
@@ -42,8 +57,10 @@ export default function Model({
   }, {});
 
   useEffect(() => {
+    
     if (gltf) {
       if (!graphics) {
+        
         gltf.scene.traverse((node) => {
           if (node) {
             for (let i = 0; i < meshNames.length; i++) {
@@ -83,7 +100,7 @@ export default function Model({
 
   const handleClick = (event) => {
     const signName = event.object.name;
-
+    
     if (urlMap[signName]) {
       setClickCount((prevCount) => prevCount + 1);
       window.open(urlMap[signName], "_blank");
@@ -134,14 +151,14 @@ const urlMap = {
   Sign_Old: "https://www.gemenielabs.com/projects",
   logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
   logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
-  logo_hf: "https://hatman-pixel-prompt.hf.space",
+  logo_hf: "https://production.d2iujulgl0aoba.amplifyapp.com/",
   logo_google_forms:
     "https://docs.google.com/forms/d/e/1FAIpQLSce94QihTjunjBvYzFdalz0mYGhVS6Ngy17uRrXkqLI_Da7nA/viewform",
 };
 
 const phoneUrls = [
   {
-    signName: ["Phone_Stocks", "Phone_Stocks_Text"],
+    signName: ["Phone_Stocks_5", "Phone_Stocks_Text"],
     url: "https://www.gemenielabs.com/#stocks",
   },
   {
@@ -197,7 +214,7 @@ const meshNames = [
   "Phone_Looper_5",
   "Phone_Trachtenberg_5",
   "Phone_Italian_5",
-  "Phone_Stocks",
+  "Phone_Stocks_5",
 ];
 
 const videoPaths = [

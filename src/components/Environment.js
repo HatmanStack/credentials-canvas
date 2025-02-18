@@ -155,7 +155,7 @@ export function Environment({ vibe, clickLight, lightIntensity, clickCount }) {
       ((intensity - 0.503) / oldRange) * lightIntensityStarter;
     setLightIntensities((prevIntensities) => {
       const newIntensities = { ...prevIntensities };
-      if (sliderName === "Slider_7") {
+      if (sliderName === "Slider_4") {
         Object.keys(newIntensities).forEach((name) => {
           newIntensities[name] = normalizedIntensity;
         });
@@ -169,7 +169,7 @@ export function Environment({ vibe, clickLight, lightIntensity, clickCount }) {
   useEffect(() => {
     setLightColors((prevColors) => {
       const newColors = { ...prevColors };
-      if (clickLight === "Button_Light_7") {
+      if (clickLight === "Button_Light_4") {
         const newColor =
           lightColorWheel[Math.floor(Math.random() * lightColorWheel.length)];
         Object.keys(newColors).forEach((name) => {

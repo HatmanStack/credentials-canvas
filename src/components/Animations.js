@@ -172,12 +172,12 @@ export function Animations({
           >
             <CustomGeometryParticles count={3000} />
           </primitive>
-          <primitive key="music_screen" object={nodes["music_screen"]}>
+          <primitive key="music_screen" object={nodes["music_screen"]} rotation-y={.3}>
             <Html
               className="musicwrapper"
-              position={[-0.073, -0.145, -0.01]}
+              position={[-.9, -0.145, -0.65]}
               transform
-              distanceFactor={1.16}
+              distanceFactor={1.5}
             >
               <div className="music">
                 <iframe
@@ -215,13 +215,9 @@ export function Animations({
 }
 
 const slidersList = [
-  "Slider_1",
-  "Slider_2",
-  "Slider_3",
+  
   "Slider_4",
-  "Slider_5",
-  "Slider_6",
-  "Slider_7",
+  
 ];
 
 const instructionsList = [
@@ -265,6 +261,7 @@ const nodesList = [
   "Phone_Italian_Text",
   "Phone_Trachtenberg_Text",
   "Phone_Movies_Text",
+  "Phone_Stocks_Text",
 ];
 
 const phoneList = [
@@ -273,20 +270,14 @@ const phoneList = [
   "Phone_Italian_5",
   "Phone_Trachtenberg_5",
   "Phone_Movies_5",
+  "Phone_Stocks_5",
 ];
 
 const sliderRotation = [7.36, 0, 0];
 const sliderScale = [0.5, 0.5, 0.5];
 
 const sliderPosition = [
-  [0.837, 0.538, 3.986],
-  [0.867, 0.538, 3.986],
-  [0.897, 0.538, 3.986],
   [0.925, 0.538, 3.986],
-  [0.954, 0.538, 3.986],
-  [0.9841, 0.538, 3.986],
-  [1.031, 0.538, 3.986],
-  [0.893, 0.375, 3.986],
 ];
 
 const textPosition = [
@@ -295,6 +286,7 @@ const textPosition = [
   [4.66377, -0.1, 2.61365],
   [0.71, 0.03, 3.79],
   [4.73, -0.1, 1.83],
+  [0.77, 0.015, 4.1],
 ];
 
 const rotation = [
@@ -303,4 +295,5 @@ const rotation = [
   [0, 44.145, 0],
   [0, -9.97, 0],
   [0, 35.17, 0],
+  [0, 12.38, 0],
 ];

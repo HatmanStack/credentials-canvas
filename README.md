@@ -23,7 +23,7 @@ A site written in React to showcase work from recent projects in 3D design with 
 
     - Working Node install
 
-Download the custom .glb from [here](https://www.cg-portfolio.site/compressed.glb) and include it's absolute path in Model.js in filePath
+Download the custom .glb from [here](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb) and include it's absolute path in Model.js in filePath
     
 ```
 git clone https://github.com/hatmanstack/credentials-camvas.git

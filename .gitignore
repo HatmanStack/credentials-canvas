@@ -3,4 +3,5 @@ yarn.lock
 package-lock.json
 build/
 public/compressed.glb
+public/compressed_model.glb
 .vscode/
