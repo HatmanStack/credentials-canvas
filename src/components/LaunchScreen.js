@@ -204,7 +204,7 @@ export function LaunchScreen({ setVibe, graphics, setGraphics }) {
           </svg>
           <Checkbox color="graphics" active={graphics} onClick={() => setGraphics(!graphics)} />
           <a
-            href="https://gemenielabs.com/projects"
+            href="https://www.cg-portfolio.com"
             style={{
               color: "white",
               textDecoration: "none",

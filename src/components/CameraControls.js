@@ -135,9 +135,7 @@ export function CameraControls({
       } else {
         setIframe1(false);
       }
-      
       if (
-       
         camera.position.y > 0 &&
         camera.position.z > 4.3
       ) {

@@ -15,132 +15,6 @@ dracoLoader.setDecoderPath(process.env.PUBLIC_URL + "/draco/javascript/");
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-function useGLTFLoaderWithDRACO(path) {
-  const { scene } = useThree();
-  
-  // Use the pre-configured loader
-  const gltf = useGLTF(path, gltfLoader);
-  
-  // Clean up when component unmounts
-  useEffect(() => {
-    return () => {
-      // Only dispose of the specific model's resources
-      if (gltf) {
-        gltf.scenes?.forEach(scene => scene.traverse(object => {
-          if (object.geometry) object.geometry.dispose();
-          if (object.material) object.material.dispose();
-        }));
-      }
-    };
-  }, [gltf]);
-
-  return gltf;
-}
-
-export default function Model({
-  graphics,
-  setClickPoint,
-  setClickLight,
-  setClickCount,
-  setGLTF,
-  closeUp,
-}) {
-  const [count, setCount] = useState(true);
-  
-  const filePath = process.env.PUBLIC_URL + "compressed_model.glb";
-  
-  const gltf = useGLTFLoaderWithDRACO(filePath);
-
-  const videoRefs = meshNames.reduce((acc, name) => {
-    acc[name] = React.useRef();
-    return acc;
-  }, {});
-
-  useEffect(() => {
-    
-    if (gltf) {
-      if (!graphics) {
-        
-        gltf.scene.traverse((node) => {
-          if (node) {
-            for (let i = 0; i < meshNames.length; i++) {
-              if (node.isMesh && node.name === meshNames[i]) {
-                const video = (videoRefs[meshNames[i]].current =
-                  document.createElement("video"));
-                video.src = videoPaths[i];
-                video.loop = true;
-                video.muted = true;
-                video.stop = true;
-                video.play();
-
-                const videoTexture = new THREE.VideoTexture(video);
-                videoTexture.wrapS = THREE.RepeatWrapping;
-                videoTexture.repeat.x = -1;
-                node.material.map = videoTexture;
-                node.material.needsUpdate = true;
-              }
-              if (node.name == "Base") {
-                const circle = node.children.find(
-                  (child) => child.name === "Circle_1"
-                );
-                if (circle) {
-                  const material = circle.material;
-                  if (material && material.name === "Glass1.002") {
-                    material.transparent = true;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-      setGLTF(gltf);
-    }
-  }, [gltf]);
-
-  const handleClick = (event) => {
-    const signName = event.object.name;
-    
-    if (urlMap[signName]) {
-      setClickCount((prevCount) => prevCount + 1);
-      window.open(urlMap[signName], "_blank");
-    } else if (lightNames.includes(signName)) {
-      setClickLight(signName);
-      setClickCount((prevCount) => prevCount + 1);
-    } else {
-      for (const phoneUrl of phoneUrls) {
-        if (phoneUrl.signName.includes(signName)) {
-          setClickPoint(signName);
-          if (closeUp) {
-            setCount((prevCount) => prevCount + 1);
-            if (
-              count >= closeUpClickThrough &&
-              !phoneUrl.signName.includes("Music_Control_Box") &&
-              !phoneUrl.signName.includes("Cube009_4")
-            ) {
-              window.open(phoneUrl.url, "_blank");
-              setCount(0);
-            }
-          }
-          break;
-        }
-      }
-    }
-  };
-
-  return (
-    <>
-      <primitive
-        onClick={handleClick}
-        // eslint-disable-next-line react/no-unknown-property
-        object={gltf.scene}
-      />
-    </>
-  );
-}
-
-const closeUpClickThrough = 2; // How many times to click before opening the link
-
 const urlMap = {
   text_name: "https://www.gemenielabs.com/contact/",
   Sign_About: "https://www.gemenielabs.com/contact/",
@@ -225,3 +99,133 @@ const videoPaths = [
   require("../assets/Italian.mp4"),
   require("../assets/Stocks.mp4"),
 ];
+
+function useGLTFLoaderWithDRACO(path) {
+  const { scene } = useThree();
+  
+  // Use the pre-configured loader
+  const gltf = useGLTF(path, gltfLoader);
+  
+  // Clean up when component unmounts
+  useEffect(() => {
+    return () => {
+      // Only dispose of the specific model's resources
+      if (gltf) {
+        gltf.scenes?.forEach(scene => scene.traverse(object => {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) object.material.dispose();
+        }));
+      }
+    };
+  }, [gltf]);
+
+  return gltf;
+}
+
+export default function Model({
+  graphics,
+  setClickPoint,
+  setClickLight,
+  setClickCount,
+  setGLTF,
+  closeUp,
+}) {
+  const [count, setCount] = useState(true);
+  
+  const filePath = process.env.PUBLIC_URL + "compressed_model.glb";
+  
+  const gltf = useGLTFLoaderWithDRACO(filePath);
+
+  const videoRefs = meshNames.reduce((acc, name) => {
+    acc[name] = React.useRef();
+    return acc;
+  }, {});
+
+  useEffect(() => {
+    
+    if (gltf) {
+      if (!graphics) {
+        
+        gltf.scene.traverse((node) => {
+          const interactiveNodes = [];
+          if (node) {
+            for (let i = 0; i < meshNames.length; i++) {
+              if (node.isMesh && node.name === meshNames[i]) {
+                const video = (videoRefs[meshNames[i]].current =
+                  document.createElement("video"));
+                video.src = videoPaths[i];
+                video.loop = true;
+                video.muted = true;
+                video.stop = true;
+                video.play();
+
+                const videoTexture = new THREE.VideoTexture(video);
+                videoTexture.wrapS = THREE.RepeatWrapping;
+                videoTexture.repeat.x = -1;
+                node.material.map = videoTexture;
+                node.material.needsUpdate = true;
+              }
+              if (node.name == "Base") {
+                const circle = node.children.find(
+                  (child) => child.name === "Circle_1"
+                );
+                if (circle) {
+                  const material = circle.material;
+                  if (material && material.name === "Glass1.002") {
+                    material.transparent = true;
+                  }
+                }
+              }
+            }
+          }
+        
+        });
+      }
+      setGLTF(gltf);
+    }
+  }, [gltf]);
+
+  const handleClick = (event) => {
+    const signName = event.object.name;
+    
+    if (urlMap[signName]) {
+      setClickCount((prevCount) => prevCount + 1);
+      window.open(urlMap[signName], "_blank");
+    } else if (lightNames.includes(signName)) {
+      setClickLight(signName);
+      setClickCount((prevCount) => prevCount + 1);
+    } else {
+      for (const phoneUrl of phoneUrls) {
+        if (phoneUrl.signName.includes(signName)) {
+          setClickPoint(signName);
+          if (closeUp) {
+            setCount((prevCount) => prevCount + 1);
+            if (
+              count >= closeUpClickThrough &&
+              !phoneUrl.signName.includes("Music_Control_Box") &&
+              !phoneUrl.signName.includes("Cube009_4")
+            ) {
+              window.open(phoneUrl.url, "_blank");
+              setCount(0);
+            }
+          }
+          break;
+        }
+      }
+    }
+  };
+
+  return (
+    <>
+      <primitive
+        onClick={handleClick}
+        // eslint-disable-next-line react/no-unknown-property
+        object={gltf.scene}
+      />
+    </>
+  );
+}
+
+const closeUpClickThrough = 2; // How many times to click before opening the link
+
+
