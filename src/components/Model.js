@@ -25,9 +25,14 @@ const urlMap = {
   Sign_Old: "https://www.gemenielabs.com/projects",
   logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
   logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
-  logo_hf: "https://production.d2iujulgl0aoba.amplifyapp.com/",
+  logo_hf: "https://huggingface.co/spaces/Hatman/InstantStyle",
   logo_google_forms:
     "https://docs.google.com/forms/d/e/1FAIpQLSce94QihTjunjBvYzFdalz0mYGhVS6Ngy17uRrXkqLI_Da7nA/viewform",
+  logo_float: "https://float-app.fun/",
+  logo_pixel_prompt: "https://production.d2iujulgl0aoba.amplifyapp.com/",
+  logo_nova_canvas: "https://huggingface.co/spaces/Hatman/AWS-Nova-Canvas",
+  logo_savor_swipe:"https://savorswipe.fun/",
+  Sign_Portfolio: "https://www.cg-portfolio.com",
 };
 
 const phoneUrls = [

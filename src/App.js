@@ -96,7 +96,13 @@ export default function App() {
           }}
         >
           <img src={handGif} width="250" />
-          {Math.round(progress)} % loaded
+          {Math.round(progress)} % loaded<br></br>
+          <br></br>
+          <p style={{ textAlign: 'center', fontSize: '1rem' }}>
+          Click to engage with dynamic 3D objects:<br></br>
+          lights, joystick, phone displays, signposts,<br></br>
+          control panels, text and antenna surfaces.
+          </p>
         </div>
       </>
     );

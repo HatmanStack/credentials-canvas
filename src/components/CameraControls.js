@@ -125,6 +125,7 @@ export function CameraControls({
       controls.current.update();
       controls.current.target.copy(rotationPoint);
       controls.current.update();
+      console.log(`Camera Position: x=${camera.position.x}, y=${camera.position.y}, z=${camera.position.z}`);
 
       if (
         camera.position.x > 1.78 &&
@@ -135,6 +136,7 @@ export function CameraControls({
       } else {
         setIframe1(false);
       }
+     
       if (
         camera.position.y > 0 &&
         camera.position.z > 4.3
@@ -143,6 +145,18 @@ export function CameraControls({
           setIframe2(true);
         
       } else {
+        setIframe2(false);
+      }
+      if (
+        camera.position.y > 3
+      ){
+        setIframe2(false);
+      }
+      if (
+        camera.position.y > 1.2 &&
+        camera.position.x > -1.5 &&
+        camera.position.z < 5.2
+      ){
         setIframe2(false);
       }
     }
