@@ -14,11 +14,38 @@ import handGif from "./assets/hand.gif";
 import volumeUp from "./assets/volume_up.svg";
 import mute from "./assets/volume_mute.svg";
 
+function TitleEffect({ text, startColorHue}) {
+  const totalLetters = text.length;
+  console.log(startColorHue);
+  const title = (
+    <h1 className="main__title"
+    style={{ 
+      "--total-letters": totalLetters,
+      "--start-color-hue": startColorHue, 
+      "--end-color-hue": startColorHue < 100 ? startColorHue + 30 : startColorHue + 50
+    }}>
+      {text.split("").map((char, index) => (
+        <span
+          key={index}
+          className="main__title-letter"
+          style={{ "--main__title-letter": index + 1  }}
+        >
+          {char}
+        </span>
+      ))}
+    </h1>
+
+  );
+  console.log(title);
+  return title;
+}
+
 export default function App() {
   const [clickPoint, setClickPoint] = useState(null);
   const [clickLight, setClickLight] = useState(null);
   const [clickCount, setClickCount] = useState(0);
   const [closeUp, setCloseUp] = useState(false);
+  const [titleColor, setTitleColor] = useState(null);
   const [gltf, setGLTF] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [lightIntensity, setLightIntensity] = useState({
@@ -40,14 +67,15 @@ export default function App() {
   useEffect(() => {
     if (vibe !== null && navigateButtonRef.current && muteButtonRef.current) {
       const colorMap = {
-        0: { active: "#E96929", rest: "#B68672" },
-        1: { active: "#80C080", rest: "#869582" },
-        2: { active: "#EF5555", rest: "#f38484" },
-        3: { active: "#9FA8DA", rest: "#8F909D" },
+        0: { active: "#E96929", rest: "#B68672", title: 20},
+        1: { active: "#80C080", rest: "#869582", title: 120 },
+        2: { active: "#EF5555", rest: "#f38484", title: 0 },
+        3: { active: "#9FA8DA", rest: "#8F909D", title: 235 },
         default: { active: "#B68672", rest: "#E96929" },
       };
 
       const colors = colorMap[vibe] || colorMap["default"];
+      setTitleColor(colors.title);
 
       [navigateButtonRef.current, muteButtonRef.current].forEach((button) => {
         button.style.setProperty("--active-color", colors.active);
@@ -98,8 +126,9 @@ export default function App() {
           <img src={handGif} width="250" />
           {Math.round(progress)} % loaded<br></br>
           <br></br>
-          <p style={{ textAlign: 'center', fontSize: '1rem' }}>
-          Click to engage with dynamic 3D objects:<br></br>
+          <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleColor} />
+          <p style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.1rem', lineHeight: '1.5' }}>
+          <br></br>
           lights, joystick, phone displays, signposts,<br></br>
           control panels, text and antenna surfaces.
           </p>
@@ -117,6 +146,7 @@ export default function App() {
     <link rel="manifest" href="/manifest.json"></link>
       {vibe != null ? (
         <Suspense fallback={<Loader />}>
+          
           <div className="button-container">
             <Canvas>
               <Sounds
