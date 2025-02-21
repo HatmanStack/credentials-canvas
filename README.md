@@ -18,7 +18,7 @@
   </h4>
 </div>
 
-  <p><b>3D Design Portfolio <br> <a href="https://cg-portfolio.com"> Credentials Canvas » </a> </b> </p>
+  <p><b>3D Design Portfolio <br> <a href="https://production.dld9ll6ojjns2.amplifyapp.com/"> Credentials Canvas » </a> </b> </p>
   <h1 >
  <p align="center">
     <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Image 1"></td></p>
