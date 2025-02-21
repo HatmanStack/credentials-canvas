@@ -1,11 +1,6 @@
 <div align="center" style="display: block;margin-left: auto;margin-right: auto;width: 50%;">
 <h1>Credentials Canvas</h1>
-<h1 >
- <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Image 1"></td></p>
-     <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="Image 1"></td></p>
-</h1>
+
 <div style="display: flex; justify-content: center; align-items: center;">
   <h4 style="margin: 0; display: flex;">
     <a href="https://www.apache.org/licenses/LICENSE-2.0.html">
@@ -24,6 +19,12 @@
 </div>
 
   <p><b>3D Design Portfolio <br> <a href="https://cg-portfolio.com"> Credentials Canvas » </a> </b> </p>
+  <h1 >
+ <p align="center">
+    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Image 1"></td></p>
+     <p align="center">
+    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="Image 1"></td></p>
+</h1>
 </div>
 
 ## Features

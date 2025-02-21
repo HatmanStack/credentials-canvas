@@ -197,12 +197,13 @@ export function LaunchScreen({ setVibe, graphics, setGraphics }) {
             className="text-stroke-graphics"
             ref={textAnimationRef}
             style={{ width: 620 }}
+            display="None"
           >
             <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
               LOW GRAPHICS
             </text>
           </svg>
-          <Checkbox color="graphics" active={graphics} onClick={() => setGraphics(!graphics)} />
+         {/* <Checkbox color="graphics" display="None" active={graphics} onClick={() => setGraphics(!graphics)} />*/}
           <a
             href="https://www.cg-portfolio.com"
             style={{
