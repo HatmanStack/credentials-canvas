@@ -10,10 +10,10 @@
       <img src="https://img.shields.io/badge/React%20Fiber-violet" alt="Expo Version" />
     </a>
     <a href="https://threejs.org/">
-      <img src="https://img.shields.io/badge/Three.js-yellow" alt="Google Text-To-Speech" />
+      <img src="https://img.shields.io/badge/Three.js-yellow" alt="Threejs" />
     </a>
-    <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/Blender%204.3-green">
+    <a href="https://www.blender.org/">
+    <img src="https://img.shields.io/badge/Blender%204.3-F69455" alt="Blender Version">
     </a>
   </h4>
 </div>
