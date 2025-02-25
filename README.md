@@ -4,10 +4,10 @@
 <div style="display: flex; justify-content: center; align-items: center;">
   <h4 style="margin: 0; display: flex;">
     <a href="https://www.apache.org/licenses/LICENSE-2.0.html">
-      <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="float is under the Apache 2.0 liscense" />
+      <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0 liscense" />
     </a>
     <a href="https://r3f.docs.pmnd.rs/getting-started/introduction">
-      <img src="https://img.shields.io/badge/React%20Fiber-violet" alt="Expo Version" />
+      <img src="https://img.shields.io/badge/React%20Fiber-violet" alt="React Fiber" />
     </a>
     <a href="https://threejs.org/">
       <img src="https://img.shields.io/badge/Three.js-yellow" alt="Threejs" />
