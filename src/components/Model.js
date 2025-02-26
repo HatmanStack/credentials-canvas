@@ -25,7 +25,7 @@ const urlMap = {
   Sign_Old: "https://www.gemenielabs.com/projects",
   logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
   logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
-  logo_hf: "https://huggingface.co/spaces/Hatman/InstantStyle",
+  logo_hf: "https://hatman-instantstyle-flux-sdxl.hf.space/",
   logo_google_forms:
     "https://docs.google.com/forms/d/e/1FAIpQLSce94QihTjunjBvYzFdalz0mYGhVS6Ngy17uRrXkqLI_Da7nA/viewform",
   logo_float: "https://float-app.fun/",
