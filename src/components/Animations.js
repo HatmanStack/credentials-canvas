@@ -3,11 +3,13 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable require-jsdoc */
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useSpring, animated, useSprings } from "@react-spring/three";
 import { Html } from "@react-three/drei";
 import { useDrag } from "@use-gesture/react";
+import { useInteraction, useUI } from "../contexts";
 import { CustomGeometryParticles } from "./Lamp";
+import { vibeURLs, nodesList, phoneList, sliderPosition, textPosition, rotation } from '../data/animations';
 
 function useSliderSpring(
   slider,
@@ -45,38 +47,38 @@ function useSliderSpring(
   return { y, bind };
 }
 
-export function Animations({
-  graphics,
-  setPlayer,
-  windowWidth,
-  scrollStarted,
-  vibe,
-  gltf,
-  setIsDragging,
-  setLightIntensity,
-  clickPoint,
-  iframe1,
-  iframe2,
-  closeUp,
-}) {
+export const Animations = React.memo(() => {
+  const { 
+    scrollStarted, clickPoint, closeUp, setIsDragging
+  } = useInteraction();
+  const { 
+    graphics, windowWidth, vibe, gltf, iframe1, iframe2, 
+    setPlayer, setLightIntensity 
+  } = useUI();
   const [nodes, setNodes] = useState();
   const [phoneClicked, setPhoneClicked] = useState();
-  const position =
-    windowWidth < 800 ? [-4.055, -2.7, -1.6] : [-4.055, -2.7, -1.6];
-  const className = windowWidth < 800 ? "arcadewrapper-small" : "arcadewrapper";
+  
+  // Memoized values to prevent unnecessary recalculations
+  const position = useMemo(() => 
+    windowWidth < 800 ? [-4.055, -2.7, -1.6] : [-4.055, -2.7, -1.6], [windowWidth]
+  );
+  const className = useMemo(() => 
+    windowWidth < 800 ? "arcadewrapper-small" : "arcadewrapper", [windowWidth]
+  );
+  
   const iframe1Ref = useRef(null);
   const iframe2Ref = useRef(null);
 
   useEffect(() => {
-    if (true) {
-      if (nodes) {
-        if (!graphics) {
-          if (iframe1) {
-            iframe1Ref.current.style.display = "block";
-          } else {
-            iframe1Ref.current.style.display = "none";
-          }
+    if (nodes) {
+      if (!graphics && iframe1Ref.current) {
+        if (iframe1) {
+          iframe1Ref.current.style.display = "block";
+        } else {
+          iframe1Ref.current.style.display = "none";
         }
+      }
+      if (iframe2Ref.current) {
         if (iframe2) {
           iframe2Ref.current.style.display = "block";
         } else {
@@ -84,7 +86,7 @@ export function Animations({
         }
       }
     }
-  }, [iframe1, iframe2]);
+  }, [iframe1, iframe2, nodes, graphics]);
 
   const textSpring = useSprings(
     nodesList.length,
@@ -170,7 +172,7 @@ export function Animations({
             object={nodes["Tball"]}
             position={[5.11, 0.33, 2.145]}
           >
-            <CustomGeometryParticles count={3000} />
+            <CustomGeometryParticles count={1500} />
           </primitive>
           <primitive key="music_screen" object={nodes["music_screen"]} rotation-y={.3}>
             <Html
@@ -212,7 +214,7 @@ export function Animations({
       )}
     </>
   );
-}
+});
 
 const slidersList = [
   
@@ -228,72 +230,5 @@ const instructionsList = [
   "text_click",
 ];
 
-const vibeURLs = [
-  {
-    iframe1: "https://freepacman.org/",
-    iframe2:
-      "https://www.youtube.com/embed/pCx5Std7mCo?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "pCx5Std7mCo",
-  },
-  {
-    iframe1: "https://freepacman.org/",
-    iframe2:
-      "https://www.youtube.com/embed/A3svABDnmio?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "A3svABDnmio",
-  },
-  {
-    iframe1: "https://freepacman.org/",
-    iframe2:
-      "https://www.youtube.com/embed/JvNQLJ1_HQ0?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "JvNQLJ1_HQ0",
-  },
-  {
-    iframe1: "https://freepacman.org/",
-    iframe2:
-      "https://www.youtube.com/embed/6HbrymTIbyg?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "6HbrymTIbyg",
-  },
-];
-
-const nodesList = [
-  "Phone_Looper_Text",
-  "Phone_Vocabulary_Text",
-  "Phone_Italian_Text",
-  "Phone_Trachtenberg_Text",
-  "Phone_Movies_Text",
-  "Phone_Stocks_Text",
-];
-
-const phoneList = [
-  "Phone_Looper_5",
-  "Phone_Vocabulary_5",
-  "Phone_Italian_5",
-  "Phone_Trachtenberg_5",
-  "Phone_Movies_5",
-  "Phone_Stocks_5",
-];
-
 const sliderRotation = [7.36, 0, 0];
 const sliderScale = [0.4, 0.4, 0.4];
-
-const sliderPosition = [
-  [0.9305, 0.538, 3.986],
-];
-
-const textPosition = [
-  [-0.668423, 0.008689, 4.06791],
-  [5.53658, -0.1, 2.3211],
-  [4.66377, -0.1, 2.61365],
-  [0.71, 0.03, 3.79],
-  [4.73, -0.1, 1.83],
-  [0.77, 0.015, 4.1],
-];
-
-const rotation = [
-  [0, 44.7, 0],
-  [0, 44.612, 0],
-  [0, 44.145, 0],
-  [0, -9.97, 0],
-  [0, 35.17, 0],
-  [0, 12.38, 0],
-];

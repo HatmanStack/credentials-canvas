@@ -18,19 +18,45 @@
   </h4>
 </div>
 
-  <p><b>3D Design Portfolio <br> <a href="https://production.dld9ll6ojjns2.amplifyapp.com/"> Credentials Canvas » </a> </b> </p>
+  <p><b>Interactive 3D Portfolio Experience<br> <a href="https://production.dld9ll6ojjns2.amplifyapp.com/"> Experience Credentials Canvas » </a> </b> </p>
   <h1 >
  <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Image 1"></td></p>
+    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Interactive 3D Environment"></td></p>
      <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="Image 1"></td></p>
+    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="3D Scene Navigation"></td></p>
 </h1>
 </div>
 
-## Features
-- Interactive 3D scenes and animations
-- Custom artistic elements and immersive layout
-- Portfolio display of professional and experimental projects
+## What is Credentials Canvas?
+
+**Credentials Canvas** is an immersive 3D portfolio experience that showcases personal projects in an interactive virtual environment. Instead of a traditional portfolio website, visitors explore a fully realized 3D scene where each element tells a story and provides access to different projects and achievements.
+
+### 🎮 Interactive Experience
+- **Navigate** through a detailed 3D environment with smooth camera controls
+- **Click** on various objects to discover projects, skills, and accomplishments  
+- **Explore** different themed "vibes" that transform the lighting and atmosphere
+- **Engage** with interactive elements like control panels, phones, and signposts
+
+### 🏗️ 3D Environment Features
+- **Dynamic Lighting System** - Interactive lights that respond to user clicks
+- **Video Displays** - Phone screens showing project demos and presentations
+- **Atmospheric Controls** - Multiple environment themes (Urban, Rural, Classy, Chill)
+- **Particle Effects** - Visual enhancements that bring the scene to life
+- **Sound Design** - Audio feedback for interactions and ambiance
+
+### 📱 Project Showcase
+The 3D environment serves as a unique portfolio platform featuring:
+- **Web Applications** - Interactive demos accessible through in-scene displays
+- **Technical Projects** - Links to GitHub repositories and live deployments
+- **Professional Links** - Direct access to LinkedIn, articles, and contact information
+- **Skills Demonstration** - 3D modeling, web development, and interactive design capabilities
+
+### 🎨 Creative Approach
+Rather than listing projects in a traditional format, Credentials Canvas presents them as part of a cohesive 3D narrative where:
+- Each interactive element has purpose and meaning
+- Projects are contextualized within a virtual space
+- The portfolio itself demonstrates technical and artistic skills
+- Visitors have a memorable, engaging experience
 
 ## Tech Stack
 - Three.js for 3D rendering
@@ -39,11 +65,9 @@
 
 ## Setup
 
-1. Download the custom model:
-- Get `.glb` file from [here](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb)
-- Update `filePath` in `Model.js` with absolute path
 
-2. Installation:
+
+1. Installation:
 ```bash
 git clone https://github.com/hatmanstack/credentials-camvas.git
 cd credentials-camvas
@@ -52,12 +76,15 @@ yarn
 npm start
 ```
 
-3. Model Optimization:
+2. Download the custom model:
+- Get `.glb` file from [here](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb)
+- Place in public folder
+
+
+## Model Optimization (if altering in Blender):
 ```bash
 gltf-pipeline -i updated.glb -o compressed_model.glb --draco.compressionLevel=7 --keepUnusedElements --keepDefaultScene
 ```
-
-**Prerequisites**: Node.js installation required
 
 ## License
 

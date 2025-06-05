@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable require-jsdoc */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import "../css/checkbox.css";
 
-export function Checkbox({ color, active, onClick }) {
+export const Checkbox = React.memo(({ color, active, onClick }) => {
   const checkboxRef = useRef(null);
 
   useEffect(() => {
@@ -13,26 +13,32 @@ export function Checkbox({ color, active, onClick }) {
     };
 
     const checkbox = checkboxRef.current;
-    checkbox.addEventListener("click", detectToggleOnce, { once: true });
+    if (checkbox) {
+      checkbox.addEventListener("click", detectToggleOnce, { once: true });
 
-    return () => {
-      checkbox.removeEventListener("click", detectToggleOnce);
-    };
+      return () => {
+        checkbox.removeEventListener("click", detectToggleOnce);
+      };
+    }
   }, []);
 
+  const handleClick = useCallback(() => {
+    onClick();
+  }, [onClick]);
+
   return (
-    <div className={`toggle-container ${color}`} onClick={onClick}>
+    <div className={`toggle-container ${color}`} onClick={handleClick}>
       <input
         ref={checkboxRef}
-        id={color}
+        id={`${color}-checkbox`}
         className="toggle-checkbox"
         type="checkbox"
         checked={active}
-        readOnly
+        onChange={() => {}} // Controlled component
       />
       <div className="toggle-track">
         <div className="toggle-thumb"></div>
       </div>
     </div>
   );
-}
+});

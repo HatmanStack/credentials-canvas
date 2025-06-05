@@ -1,70 +1,13 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable require-jsdoc */
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { extend, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { Vector3 } from "three";
-
-const rotationPoints = [
-  [5.1, 0.1, 2],
-  [1.3, 0.4, 3.9],
-  [0.1, 0.6, 3.36],
-  [-12.1, 5.8, -6.1],
-  [0, 0, 0],
-];
-const closeUpPositions = [
-  [0, 0.5, 4.07],
-  [-0.6, 0.3, 4.1],
-  [5.4, 0.2, 2.34],
-  [4.76, 0.2, 1.72],
-  [0.5, 0.3, 3.6],
-  [4.53, 0.2, 2.7],
-  [1.8, 0.9, 3.62],
-  [0.93, 0.68, 4.55],
-  [.6, 0.3, 4.2],
-];
-const closeUpPositionsSmallScreen = [
-  [0, 0.5, 4.07],
-  [-0.6, 0.6, 4.1],
-  [5.4, 0.5, 2.34],
-  [4.76, 0.5, 1.72],
-  [0.5, 0.6, 3.6],
-  [4.53, 0.5, 2.7],
-  [1.8, 0.9, 3.62],
-  [0.93, 0.68, 4.55],
-  [.6, 0.3, 4.2],
-];
-const closeUpRotations = [
-  [-0.2, 0.3, 3.4],
-  [-0.6, -1, 4.1],
-  [5.4, -1, 2.34],
-  [4.76, -1, 1.72],
-  [0.5, -1, 3.6],
-  [4.53, -0.1, 2.7],
-  [1.5, 0.6, 3.62],
-  [0.93, 0.53, 3.95],
-  [.6, -1, 4.2],
-  [0, 0, 0],
-];
-const positionMap = {
-  Phone_Stocks: 0,
-  Phone_Looper_5: 1,
-  Phone_Looper_Text: 1,
-  Phone_Vocabulary_5: 2,
-  Phone_Vocabulary_Text: 2,
-  Phone_Movies_5: 3,
-  Phone_Movies_Text: 3,
-  Phone_Trachtenberg_5: 4,
-  Phone_Trachtenberg_Text: 4,
-  Phone_Italian_5: 5,
-  Phone_Italian_Text: 5,
-  Cube009_2: 6,
-  Light_Control_Box: 7,
-  Music_Control_Box: 7,
-  Phone_Stocks_5: 8,
-  Phone_Stocks_Text: 8,
-};
+import { useInteraction, useUI } from "../contexts";
+import { useCameraScroll } from '../hooks/useCameraScroll';
+import { useCameraAnimation } from '../hooks/useCameraAnimation';
 
 class OrbitControls extends ThreeOrbitControls {
   constructor(...args) {
@@ -78,43 +21,61 @@ class OrbitControls extends ThreeOrbitControls {
 
 extend({ OrbitControls });
 
-export function CameraControls({
-  mobileScroll,
-  windowWidth,
-  setScrollStarted,
-  clickPoint,
-  setClickPoint,
-  setCloseUp,
-  isDragging,
-  setIframe1,
-  setIframe2,
-  closeUp,
-}) {
+export const CameraControls = React.memo(() => {
+  const { 
+    mobileScroll, clickPoint, setClickPoint, setCloseUp, isDragging, closeUp,
+    setScrollStarted
+  } = useInteraction();
+  const { windowWidth, setIframe1, setIframe2 } = useUI();
   const [closeUpPosIndex, setCloseUpPosIndex] = useState(0);
-  const [rotationPoint, setRotationPoint] = useState(new Vector3());
   const [cameraClone, setCameraClone] = useState(true);
   const [patchCamera, setPatchCamera] = useState(true);
   const [holderprogress, setProgress] = useState(0);
+  const [currentPosIndex, setCurrentPosIndex] = useState(0);
   
-  const positions = [
+  // Memoized positions to prevent recreation
+  const positions = useMemo(() => [
     cameraClone ? [1, 1, 13] : [10, 1, 13],
     [4, 1, 2],
     [3, 1, 3.75],
     [0, 1, 6.5],
     [-12, 6, 0],
-  ];
-  const scrollConstant = 0.3;
-  const scrollConstantMobile = 0.8;
-  const currentPos = useRef(new Vector3());
-  const nextPos = useRef(new Vector3());
-  const newPos = useRef(new Vector3());
+  ], [cameraClone]);
 
   const {
     camera,
     gl: { domElement },
   } = useThree();
-  const [currentPosIndex, setCurrentPosIndex] = useState(0);
   const controls = useRef();
+
+  // Custom hooks for scroll and animation logic
+  const { handleMobileScroll } = useCameraScroll({
+    currentPosIndex,
+    setCurrentPosIndex,
+    positions,
+    camera,
+    domElement,
+    setScrollStarted,
+    setCloseUp,
+    setCloseUpPosIndex,
+    setCameraClone,
+    holderprogress,
+    setProgress,
+    mobileScroll
+  });
+
+  const { rotationPoint } = useCameraAnimation({
+    camera,
+    windowWidth,
+    closeUp,
+    closeUpPosIndex,
+    setCloseUpPosIndex,
+    currentPosIndex,
+    clickPoint,
+    setClickPoint,
+    setCloseUp,
+    setCameraClone
+  });
 
   useFrame(() => {
     if (controls.current) {
@@ -125,7 +86,7 @@ export function CameraControls({
       controls.current.update();
       controls.current.target.copy(rotationPoint);
       controls.current.update();
-      console.log(`Camera Position: x=${camera.position.x}, y=${camera.position.y}, z=${camera.position.z}`);
+      
 
       if (
         camera.position.x > 1.78 &&
@@ -171,93 +132,17 @@ export function CameraControls({
     }
   }, [isDragging]);
 
-  useEffect(() => {
-    let newRotationPoint;
-    if (closeUp) {
-      newRotationPoint = new Vector3(...closeUpRotations[closeUpPosIndex]);
-    } else {
-      newRotationPoint = new Vector3(...rotationPoints[currentPosIndex]);
-    }
-    setRotationPoint(newRotationPoint);
-  }, [closeUp, closeUpPosIndex, currentPosIndex]);
 
-  useEffect(() => {
-    if (mobileScroll) {
-      const event = { deltaY: 400 };
-      handleMobileScroll(event);
-    }
-  }, [mobileScroll]);
-
-  const handleMobileScroll = (event) => {
-    setScrollStarted(true);
-    if (closeUp) {
-      setCloseUpPosIndex(9);
-    }
-    setCloseUp(false);
-    const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
-    const scrollAmount = scrollConstantMobile / 2;
-    const newProgress = holderprogress + scrollAmount;
-    currentPos.current.set(...positions[currentPosIndex]);
-    nextPos.current.set(...positions[(currentPosIndex + 1) % positions.length]);
-    
-    newPos.current.lerpVectors(
-      currentPos.current,
-      nextPos.current,
-      Math.max(0, Math.min(1, newProgress / steps))
-    );
-    camera.position.copy(newPos.current);
-    if (newProgress >= steps) {
-      setCameraClone(false);
-      setProgress(0);
-      setCurrentPosIndex((currentPosIndex + 1) % positions.length);
-    } else {
-      setProgress(newProgress);
-    }
-  };
 
   useEffect(() => {
     controls.current = new OrbitControls(camera, domElement);
-    let progress = 0;
-    const handleScroll = (event) => {
-      setScrollStarted(true);
-      setCloseUp(false);
-      setCloseUpPosIndex(9);
-      const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
-      
-      progress += scrollConstant / 2;
-      const currentPos = new Vector3(...positions[currentPosIndex]);
-
-      const nextPos = new Vector3(
-        ...positions[(currentPosIndex + 1) % positions.length]
-      );
-      const newPos = new Vector3().lerpVectors(
-        currentPos,
-        nextPos,
-        Math.max(0, Math.min(1, progress / steps))
-      );
-      camera.position.copy(newPos);
-      if (progress >= steps) {
-        progress = 0;
-        setCameraClone(false);
-        setCurrentPosIndex((currentPosIndex + 1) % positions.length);
+    return () => {
+      if (controls.current) {
+        controls.current.dispose();
       }
     };
-    domElement.addEventListener("wheel", handleScroll);
-    return () => {
-      controls.current.dispose();
-      domElement.removeEventListener("wheel", handleScroll);
-    };
-  }, [camera, domElement, currentPosIndex]);
+  }, [camera, domElement]);
 
-  useEffect(() => {
-    if (clickPoint) {
-      
-      setCloseUp(true);
-      const positionIndex = positionMap[clickPoint] || 0;
-      setCloseUpPosIndex(positionIndex);
-      setClickPoint(null);
-    }
-  }, [clickPoint]);
 
   useEffect(() => {
     if (isDragging) {
@@ -267,65 +152,6 @@ export function CameraControls({
     }
   }, [isDragging]);
 
-  useEffect(() => {
-    if (closeUpPosIndex !== 9) {
-      const position =
-        windowWidth > 800
-          ? closeUpPositions[closeUpPosIndex]
-          : closeUpPositionsSmallScreen[closeUpPosIndex];
-      camera.position.copy(new Vector3(...position));
-    }
-  }, [closeUpPosIndex]);
 
-  const animateCameraPosition = (
-    camera,
-    targetPoint,
-    arcCenter,
-    radius,
-    startAngle,
-    endAngle,
-    duration
-  ) => {
-    let startTime = null;
-    const animate = (time) => {
-      if (!startTime) startTime = time;
-      const elapsedTime = time - startTime;
-      const fraction = elapsedTime / duration;
-      setCameraClone(camera.position.clone());
-      if (fraction < 1) {
-        const angle = startAngle + (endAngle - startAngle) * fraction;
-        const x = arcCenter.y + radius * Math.cos(angle);
-        const z = arcCenter.z + radius * Math.sin(angle);
-        camera.position.z = x;
-        camera.position.y = z;
-        camera.lookAt(targetPoint);
-
-        requestAnimationFrame(animate);
-      }
-    };
-
-    requestAnimationFrame(animate);
-  };
-
-  useEffect(() => {
-    const targetPoint = new Vector3(...rotationPoints[0]);
-    const arcCenter = new Vector3(10, 15, 15);
-    const radius = 15;
-    const startAngle = Math.PI / 2;
-    const endAngle = (Math.PI * 3) / 2;
-    const duration = 3500;
-
-    if (camera) {
-      animateCameraPosition(
-        camera,
-        targetPoint,
-        arcCenter,
-        radius,
-        startAngle,
-        endAngle,
-        duration
-      );
-    }
-  }, []);
   return null;
-}
+});

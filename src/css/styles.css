@@ -1,4 +1,5 @@
 @import "https://unpkg.com/open-props";
+@import "./theme-variables.css";
 
 html,
 body,
@@ -7,7 +8,7 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #171519;
+  background-color: var(--background-primary);
   --rest-color: #9b9dad;
   --active-color: #b68672;
 }

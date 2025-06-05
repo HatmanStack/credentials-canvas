@@ -7,6 +7,9 @@ import { useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useGLTF } from "@react-three/drei";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { useInteraction, useUI } from "../contexts";
+import { urlMap, phoneUrls } from '../data/urls';
+import { lightNames, meshNames, videoPaths, closeUpClickThrough, MODEL_PATH } from '../data/meshes';
 
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderConfig({ type: "js" });
@@ -14,96 +17,6 @@ dracoLoader.setDecoderPath(process.env.PUBLIC_URL + "/draco/javascript/");
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
-
-const urlMap = {
-  text_name: "https://www.gemenielabs.com/contact/",
-  Sign_About: "https://www.gemenielabs.com/contact/",
-  Sign_Articles: "https://medium.com/@HatmanStack",
-  Sign_Github: "https://github.com/HatmanStack",
-  Sign_HuggingFace: "https://huggingface.co/Hatman",
-  Sign_Privacy: "https://www.gemenielabs.com/app-privacy-policy/",
-  Sign_Old: "https://www.gemenielabs.com/projects",
-  logo_writersalmanac: "https://d6d8ny9p8jhyg.cloudfront.net/",
-  logo_nba: "https://hatmanstack-streamlit-nba-app-dz3nxx.streamlit.app",
-  logo_hf: "https://hatman-instantstyle-flux-sdxl.hf.space/",
-  logo_google_forms:
-    "https://docs.google.com/forms/d/e/1FAIpQLSce94QihTjunjBvYzFdalz0mYGhVS6Ngy17uRrXkqLI_Da7nA/viewform",
-  logo_float: "https://float-app.fun/",
-  logo_pixel_prompt: "https://production.d2iujulgl0aoba.amplifyapp.com/",
-  logo_nova_canvas: "https://huggingface.co/spaces/Hatman/AWS-Nova-Canvas",
-  logo_savor_swipe:"https://savorswipe.fun/",
-  Sign_Portfolio: "https://www.cg-portfolio.com",
-};
-
-const phoneUrls = [
-  {
-    signName: ["Phone_Stocks_5", "Phone_Stocks_Text"],
-    url: "https://www.gemenielabs.com/#stocks",
-  },
-  {
-    signName: ["Phone_Vocabulary_5", "Phone_Vocabulary_Text"],
-    url: "https://www.gemenielabs.com/#vocabulary",
-  },
-  {
-    signName: ["Phone_Movies_5", "Phone_Movies_Text"],
-    url: "https://www.gemenielabs.com/#movies",
-  },
-  {
-    signName: ["Phone_Trachtenberg_5", "Phone_Trachtenberg_Text"],
-    url: "https://www.gemenielabs.com/#trachtenberg",
-  },
-  {
-    signName: ["Phone_Italian_5", "Phone_Italian_Text"],
-    url: "https://www.gemenielabs.com/#italian",
-  },
-  {
-    signName: ["Phone_Looper_5", "Phone_Looper_Text"],
-    url: "https://www.gemenielabs.com/#looper",
-  },
-  { signName: ["Cube009_2"], url: "" },
-  {
-    signName: ["Music_Control_Box", "Light_Control_Box"],
-    url: "https://www.google.com",
-  },
-];
-
-const lightNames = [
-  "small_middle_left",
-  "small_middle_right",
-  "lamppost",
-  "lamp_back",
-  "lamp_front",
-  "small_right",
-  "small_left",
-  "Button_Light_1",
-  "Button_Light_2",
-  "Button_Light_3",
-  "Button_Light_4",
-  "Button_Light_5",
-  "Button_Light_6",
-  "Button_Light_7",
-  "Button_Music_Back",
-  "Button_Music_Forward",
-  "Button_Music_Pause",
-];
-
-const meshNames = [
-  "Phone_Vocabulary_5",
-  "Phone_Movies_5",
-  "Phone_Looper_5",
-  "Phone_Trachtenberg_5",
-  "Phone_Italian_5",
-  "Phone_Stocks_5",
-];
-
-const videoPaths = [
-  require("../assets/Vocabulary.mp4"),
-  require("../assets/Movies.mp4"),
-  require("../assets/Looper.mp4"),
-  require("../assets/Trachtenberg.mp4"),
-  require("../assets/Italian.mp4"),
-  require("../assets/Stocks.mp4"),
-];
 
 function useGLTFLoaderWithDRACO(path) {
   const { scene } = useThree();
@@ -118,7 +31,14 @@ function useGLTFLoaderWithDRACO(path) {
       if (gltf) {
         gltf.scenes?.forEach(scene => scene.traverse(object => {
           if (object.geometry) object.geometry.dispose();
-          if (object.material) object.material.dispose();
+          if (object.material) {
+            // Dispose of material textures
+            if (object.material.map) object.material.map.dispose();
+            if (object.material.normalMap) object.material.normalMap.dispose();
+            if (object.material.roughnessMap) object.material.roughnessMap.dispose();
+            if (object.material.metalnessMap) object.material.metalnessMap.dispose();
+            object.material.dispose();
+          }
         }));
       }
     };
@@ -127,24 +47,22 @@ function useGLTFLoaderWithDRACO(path) {
   return gltf;
 }
 
-export default function Model({
-  graphics,
-  setClickPoint,
-  setClickLight,
-  setClickCount,
-  setGLTF,
-  closeUp,
-}) {
+const Model = React.memo(() => {
+  const { closeUp, setClickPoint, setClickLight, setClickCount, setIsDragging } = useInteraction();
+  const { graphics, setGLTF } = useUI();
   const [count, setCount] = useState(true);
+ 
   
-  const filePath = process.env.PUBLIC_URL + "compressed_model.glb";
+  const filePath = MODEL_PATH;
   
   const gltf = useGLTFLoaderWithDRACO(filePath);
+
 
   const videoRefs = meshNames.reduce((acc, name) => {
     acc[name] = React.useRef();
     return acc;
   }, {});
+
 
   useEffect(() => {
     
@@ -161,8 +79,12 @@ export default function Model({
                 video.src = videoPaths[i];
                 video.loop = true;
                 video.muted = true;
-                video.stop = true;
-                video.play();
+                video.playsInline = true;
+                video.preload = "auto";
+                
+                video.play().catch(() => {
+                  video.autoplay = false;
+                });
 
                 const videoTexture = new THREE.VideoTexture(video);
                 videoTexture.wrapS = THREE.RepeatWrapping;
@@ -229,8 +151,8 @@ export default function Model({
       />
     </>
   );
-}
+});
 
-const closeUpClickThrough = 2; // How many times to click before opening the link
+export default Model;
 
 

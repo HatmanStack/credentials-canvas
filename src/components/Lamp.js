@@ -3,6 +3,7 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 /* eslint-disable require-jsdoc */
+import React from "react";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 
@@ -11,13 +12,13 @@ import * as THREE from "three";
 import vertexShader from "!!raw-loader!../shaders/vertex.glsl";
 import fragmentShader from "!!raw-loader!../shaders/fragment.glsl";
 
-export function CustomGeometryParticles({ count }) {
+export const CustomGeometryParticles = React.memo(({ count = 1500 }) => {
   const radius = 2;
 
   // This reference gives us direct access to our points
   const points = useRef();
 
-  // Generate our positions attributes array
+  // Generate our positions attributes array - reduced from 3000 to 1500 for better performance
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);
 
@@ -45,14 +46,23 @@ export function CustomGeometryParticles({ count }) {
         value: radius,
       },
     }),
-    []
+    [radius]
   );
 
   useFrame((state) => {
     const { clock } = state;
-
-    points.current.material.uniforms.uTime.value = clock.elapsedTime;
+    if (points.current?.material?.uniforms?.uTime) {
+      points.current.material.uniforms.uTime.value = clock.elapsedTime;
+    }
   });
+
+  const shaderMaterial = useMemo(() => ({
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    fragmentShader,
+    vertexShader,
+    uniforms,
+  }), [uniforms]);
 
   return (
     <points ref={points}>
@@ -64,15 +74,9 @@ export function CustomGeometryParticles({ count }) {
           itemSize={3}
         />
       </bufferGeometry>
-      <shaderMaterial
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        fragmentShader={fragmentShader}
-        vertexShader={vertexShader}
-        uniforms={uniforms}
-      />
+      <shaderMaterial {...shaderMaterial} />
     </points>
   );
-}
+});
 
 export default CustomGeometryParticles;
