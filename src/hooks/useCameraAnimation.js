@@ -4,52 +4,54 @@ import { rotationPoints, closeUpPositions, closeUpPositionsSmallScreen, closeUpR
 
 export const useCameraAnimation = ({
   camera,
-  windowWidth,
-  closeUp,
-  closeUpPosIndex,
-  setCloseUpPosIndex,
-  currentPosIndex,
+  windowWidth: screenWidth,
+  closeUp: isCloseUpView,
+  closeUpPosIndex: closeUpCameraIndex,
+  setCloseUpPosIndex: setCloseUpCameraIndex,
+  currentPosIndex: currentCameraIndex,
   clickPoint,
   setClickPoint,
   setCloseUp,
-  setCameraClone
+  setCameraClone: setUsePrimaryCameraPosition
 }) => {
-  const [rotationPoint, setRotationPoint] = useState(new Vector3());
+  const [cameraRotationTarget, setCameraRotationTarget] = useState(new Vector3());
 
-  // Update rotation point based on camera state
+  // Update rotation target based on camera state
   useEffect(() => {
-    let newRotationPoint;
-    if (closeUp) {
-      newRotationPoint = new Vector3(...closeUpRotations[closeUpPosIndex]);
+    let newRotationTarget;
+    if (isCloseUpView) {
+      const safeCloseUpIndex = Math.min(closeUpCameraIndex, closeUpRotations.length - 1);
+      newRotationTarget = new Vector3(...closeUpRotations[safeCloseUpIndex]);
     } else {
-      newRotationPoint = new Vector3(...rotationPoints[currentPosIndex]);
+      const safeCameraIndex = Math.min(currentCameraIndex, rotationPoints.length - 1);
+      newRotationTarget = new Vector3(...rotationPoints[safeCameraIndex]);
     }
-    setRotationPoint(newRotationPoint);
-  }, [closeUp, closeUpPosIndex, currentPosIndex]);
+    setCameraRotationTarget(newRotationTarget);
+  }, [isCloseUpView, closeUpCameraIndex, currentCameraIndex]);
 
   // Handle click point navigation
   useEffect(() => {
     if (clickPoint) {
       setCloseUp(true);
-      const positionIndex = positionMap[clickPoint] || 0;
-      setCloseUpPosIndex(positionIndex);
+      const targetCameraIndex = positionMap[clickPoint] || 0;
+      setCloseUpCameraIndex(targetCameraIndex);
       setClickPoint(null);
     }
-  }, [clickPoint, setCloseUp, setCloseUpPosIndex, setClickPoint]);
+  }, [clickPoint, setCloseUp, setCloseUpCameraIndex, setClickPoint]);
 
   // Handle close-up camera positioning
   useEffect(() => {
-    if (closeUpPosIndex !== 9) {
-      const position =
-        windowWidth > 800
-          ? closeUpPositions[closeUpPosIndex]
-          : closeUpPositionsSmallScreen[closeUpPosIndex];
-      camera.position.copy(new Vector3(...position));
+    if (closeUpCameraIndex !== 9) {
+      const targetPosition =
+        screenWidth > 800
+          ? closeUpPositions[closeUpCameraIndex]
+          : closeUpPositionsSmallScreen[closeUpCameraIndex];
+      camera.position.copy(new Vector3(...targetPosition));
     }
-  }, [closeUpPosIndex, windowWidth, camera]);
+  }, [closeUpCameraIndex, screenWidth, camera]);
 
   // Initial camera animation on mount
-  const animateCameraPosition = useCallback((
+  const animateInitialCameraMovement = useCallback((
     camera,
     targetPoint,
     arcCenter,
@@ -58,25 +60,25 @@ export const useCameraAnimation = ({
     endAngle,
     duration
   ) => {
-    let startTime = null;
-    const animate = (time) => {
-      if (!startTime) startTime = time;
-      const elapsedTime = time - startTime;
-      const fraction = elapsedTime / duration;
-      setCameraClone(camera.position.clone());
+    let animationStartTime = null;
+    const animateFrame = (currentTime) => {
+      if (!animationStartTime) animationStartTime = currentTime;
+      const elapsedTime = currentTime - animationStartTime;
+      const animationProgress = elapsedTime / duration;
+      setUsePrimaryCameraPosition(camera.position.clone());
       
-      if (fraction < 1) {
-        const angle = startAngle + (endAngle - startAngle) * fraction;
-        const x = arcCenter.y + radius * Math.cos(angle);
-        const z = arcCenter.z + radius * Math.sin(angle);
-        camera.position.z = x;
-        camera.position.y = z;
+      if (animationProgress < 1) {
+        const currentAngle = startAngle + (endAngle - startAngle) * animationProgress;
+        const xPosition = arcCenter.y + radius * Math.cos(currentAngle);
+        const zPosition = arcCenter.z + radius * Math.sin(currentAngle);
+        camera.position.z = xPosition;
+        camera.position.y = zPosition;
         camera.lookAt(targetPoint);
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateFrame);
       }
     };
-    requestAnimationFrame(animate);
-  }, [setCameraClone]);
+    requestAnimationFrame(animateFrame);
+  }, [setUsePrimaryCameraPosition]);
 
   // Initial animation setup
   useEffect(() => {
@@ -88,7 +90,7 @@ export const useCameraAnimation = ({
     const duration = 3500;
 
     if (camera) {
-      animateCameraPosition(
+      animateInitialCameraMovement(
         camera,
         targetPoint,
         arcCenter,
@@ -98,7 +100,7 @@ export const useCameraAnimation = ({
         duration
       );
     }
-  }, [camera, animateCameraPosition]);
+  }, [camera, animateInitialCameraMovement]);
 
-  return { rotationPoint };
+  return { rotationPoint: cameraRotationTarget };
 };

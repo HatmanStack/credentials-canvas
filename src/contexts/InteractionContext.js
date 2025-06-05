@@ -15,10 +15,12 @@ export const InteractionProvider = ({ children }) => {
     clickPoint: null,
     clickLight: null,
     clickCount: 0,
-    closeUp: false,
+    isCloseUpView: false,
     isDragging: false,
-    scrollStarted: false,
-    mobileScroll: null
+    hasScrollStarted: false,
+    mobileScrollCount: null,
+    currentCameraIndex: 0,
+    cameraProgress: 0
   });
 
   // Memoized setters to prevent unnecessary re-renders
@@ -35,7 +37,7 @@ export const InteractionProvider = ({ children }) => {
   }, []);
 
   const setCloseUp = useCallback((value) => {
-    setInteractionState(prev => ({ ...prev, closeUp: value }));
+    setInteractionState(prev => ({ ...prev, isCloseUpView: value }));
   }, []);
 
   const setIsDragging = useCallback((value) => {
@@ -43,11 +45,19 @@ export const InteractionProvider = ({ children }) => {
   }, []);
 
   const setScrollStarted = useCallback((value) => {
-    setInteractionState(prev => ({ ...prev, scrollStarted: value }));
+    setInteractionState(prev => ({ ...prev, hasScrollStarted: value }));
   }, []);
 
   const setMobileScroll = useCallback((value) => {
-    setInteractionState(prev => ({ ...prev, mobileScroll: value }));
+    setInteractionState(prev => ({ ...prev, mobileScrollCount: value }));
+  }, []);
+
+  const setCurrentPosIndex = useCallback((value) => {
+    setInteractionState(prev => ({ ...prev, currentCameraIndex: value }));
+  }, []);
+
+  const setCameraProgress = useCallback((value) => {
+    setInteractionState(prev => ({ ...prev, cameraProgress: value }));
   }, []);
 
   const value = {
@@ -62,6 +72,8 @@ export const InteractionProvider = ({ children }) => {
     setIsDragging,
     setScrollStarted,
     setMobileScroll,
+    setCurrentPosIndex,
+    setCameraProgress,
   };
 
   return (

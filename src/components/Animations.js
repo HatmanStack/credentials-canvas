@@ -11,6 +11,9 @@ import { useInteraction, useUI } from "../contexts";
 import { CustomGeometryParticles } from "./Lamp";
 import { vibeURLs, nodesList, phoneList, sliderPosition, textPosition, rotation } from '../data/animations';
 
+const sliderRotation = [7.36, 0, 0];
+const sliderScale = [0.4, 0.4, 0.4];
+
 function useSliderSpring(
   slider,
   index,
@@ -49,79 +52,112 @@ function useSliderSpring(
 
 export const Animations = React.memo(() => {
   const { 
-    scrollStarted, clickPoint, closeUp, setIsDragging
+    hasScrollStarted, clickPoint, isCloseUpView, setIsDragging
   } = useInteraction();
   const { 
-    graphics, windowWidth, vibe, gltf, iframe1, iframe2, 
+    showHighQualityGraphics, screenWidth, selectedVibe, gltfModel, showArcadeIframe, showMusicIframe, 
     setPlayer, setLightIntensity 
   } = useUI();
-  const [nodes, setNodes] = useState();
-  const [phoneClicked, setPhoneClicked] = useState();
+  const [sceneNodes, setSceneNodes] = useState();
+  const [clickedPhoneName, setClickedPhoneName] = useState();
   
   // Memoized values to prevent unnecessary recalculations
-  const position = useMemo(() => 
-    windowWidth < 800 ? [-4.055, -2.7, -1.6] : [-4.055, -2.7, -1.6], [windowWidth]
+  const iframePosition = useMemo(() => 
+    screenWidth < 800 ? [-4.055, -2.7, -1.6] : [-4.055, -2.7, -1.6], [screenWidth]
   );
-  const className = useMemo(() => 
-    windowWidth < 800 ? "arcadewrapper-small" : "arcadewrapper", [windowWidth]
+  const iframeClassName = useMemo(() => 
+    screenWidth < 800 ? "arcadewrapper-small" : "arcadewrapper", [screenWidth]
   );
   
   const iframe1Ref = useRef(null);
   const iframe2Ref = useRef(null);
+  
+ const handleIframeLoad = useCallback(() => {
+    if (gltfModel && iframe1Ref.current) {
+      iframe1Ref.current.classList.add('loaded');
+      /** Waiting on change to freepacman.org 
+      // Monitor for scaledTileSize changes and adjust scale
+      const checkScale = () => {
+        console.log('Checking scaledTileSize...');
+        try {
+          const iframeWindow = iframe1Ref.current;
+          
+          if (iframeWindow && iframeWindow.scaledTileSize) {
+            const scaledTileSize = iframeWindow.scaledTileSize;
+            console.log('scaledTileSize detected:', scaledTileSize);
+            
+            if (scaledTileSize === 8) {
+              iframe1Ref.current.style.transform = 'scale(0.5)';
+              console.log('Applied scale(0.5) for scaledTileSize 8');
+            } else {
+              iframe1Ref.current.style.transform = 'scale(0.25)';
+              console.log('Applied scale(0.25) for scaledTileSize', scaledTileSize);
+            }
+          }
+        } catch (error) {
+          // CORS restrictions
+        }
+      };
+      
+      // Check periodically for scaledTileSize changes
+      const interval = setInterval(checkScale, 1000);
+      iframe1Ref.current.scaleInterval = interval;
+      */
+    }
+  }, [gltfModel]);
+
 
   useEffect(() => {
-    if (nodes) {
-      if (!graphics && iframe1Ref.current) {
-        if (iframe1) {
+    if (sceneNodes) {
+      if (iframe1Ref.current) {
+        if (showArcadeIframe) {
           iframe1Ref.current.style.display = "block";
         } else {
           iframe1Ref.current.style.display = "none";
         }
       }
       if (iframe2Ref.current) {
-        if (iframe2) {
+        if (showMusicIframe) {
           iframe2Ref.current.style.display = "block";
         } else {
           iframe2Ref.current.style.display = "none";
         }
       }
     }
-  }, [iframe1, iframe2, nodes, graphics]);
+  }, [showArcadeIframe, showMusicIframe, sceneNodes]);
 
   const textSpring = useSprings(
     nodesList.length,
     nodesList.map((node, index) => {
-      const isMatch = phoneList.indexOf(phoneClicked) === index;
+      const isMatch = phoneList.indexOf(clickedPhoneName) === index;
       return {
-        scale: isMatch && closeUp ? [100, 100, 100] : [1, 1, 1],
+        scale: isMatch && isCloseUpView ? [100, 100, 100] : [1, 1, 1],
         config: { tension: 200, friction: 5 },
       };
     })
   );
 
-  const sliderSpring = slidersList.map((slider, index) =>
-    useSliderSpring(
-      slider,
-      index,
-      sliderPosition[index][1],
+  const sliderSpring = useSliderSpring(
+      "Slider_4",
+      0,
+      sliderPosition[0][1],
       sliderPosition,
       setIsDragging,
       setLightIntensity
-    )
-  );
+    );
 
   useEffect(() => {
     if (phoneList.includes(clickPoint)) {
-      setPhoneClicked(clickPoint);
+      setClickedPhoneName(clickPoint);
     }
   }, [clickPoint]);
 
   useEffect(() => {
-    if (gltf) {
-      const { nodes } = gltf;
-      setNodes(nodes);
+    if (gltfModel) {
+      const { nodes } = gltfModel;
+      setSceneNodes(nodes);
     }
-  }, [gltf]);
+  }, [gltfModel]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -130,51 +166,55 @@ export const Animations = React.memo(() => {
 
     window.onYouTubeIframeAPIReady = () => {
       const playerInstance = new window.YT.Player(iframe2Ref.current, {
-        videoId: vibeURLs[vibe].srcID,
+        videoId: vibeURLs[selectedVibe].srcID,
       });
       setPlayer(playerInstance);
+    };
+
+    // Cleanup interval on unmount
+    return () => {
+      if (iframe1Ref.current && iframe1Ref.current.scaleInterval) {
+        clearInterval(iframe1Ref.current.scaleInterval);
+      }
     };
   }, []);
 
   return (
     <>
-      {nodes &&
-        slidersList.map((slider, index) => {
-          return (
-            <animated.primitive
-              key={slider}
-              object={nodes[slider]}
-              {...sliderSpring[index].bind()}
-              position={sliderPosition[index]}
-              rotation={sliderRotation}
-              position-y={sliderSpring[index].y}
-              scale={sliderScale}
-            />
-          );
-        })}
-      {nodes &&
+      {sceneNodes && (
+      <animated.primitive
+        key="Slider_4"
+        object={sceneNodes["Slider_4"]}
+        {...sliderSpring.bind()}
+        position={sliderPosition[0]}
+        rotation={sliderRotation}
+        position-y={sliderSpring.y}
+        scale={sliderScale}
+      />
+    )}
+      {sceneNodes &&
         nodesList.map((node, index) => {
           return (
             <animated.primitive
               key={node}
               scale={textSpring[index].scale}
-              object={nodes[node]}
+              object={sceneNodes[node]}
               position={textPosition[index]}
               rotation={rotation[index]}
             />
           );
         })}
 
-      {nodes && (
+      {sceneNodes && (
         <>
           <primitive
             scale={0.15}
-            object={nodes["Tball"]}
+            object={sceneNodes["Tball"]}
             position={[5.11, 0.33, 2.145]}
           >
             <CustomGeometryParticles count={1500} />
           </primitive>
-          <primitive key="music_screen" object={nodes["music_screen"]} rotation-y={.3}>
+          <primitive key="music_screen" object={sceneNodes["music_screen"]} rotation-y={.3}>
             <Html
               className="musicwrapper"
               position={[-.9, -0.145, -0.65]}
@@ -185,50 +225,37 @@ export const Animations = React.memo(() => {
                 <iframe
                   ref={iframe2Ref}
                   id="player"
-                  src={vibeURLs[vibe].iframe2}
+                  src={vibeURLs[selectedVibe].iframe2}
                   allow="autoplay"
                   title="description"
                 />
               </div>
             </Html>
           </primitive>
-          {!graphics && (
-            <primitive key="zelda_screen" object={nodes["zelda_screen"]}>
+          
+            <primitive key="zelda_screen" object={sceneNodes["zelda_screen"]}>
               <Html
-                className={className}
-                position={position}
+                className={iframeClassName}
+                position={iframePosition}
                 transform
                 distanceFactor={1.16}
               >
                 <div className="arcade">
                   <iframe
-                    ref={iframe1Ref}
-                    src={vibeURLs[vibe].iframe1}
-                    allow="muted"
-                  />
+                  ref={iframe1Ref}     
+                  src={vibeURLs[selectedVibe].iframe1}
+                  onLoad={handleIframeLoad}
+                  allow="muted"
+                  title="Arcade Content" 
+                />
                 </div>
               </Html>
             </primitive>
-          )}
+          
         </>
       )}
     </>
   );
 });
 
-const slidersList = [
-  
-  "Slider_4",
-  
-];
 
-const instructionsList = [
-  "text_navigate",
-  "text_rotate",
-  "text_scroll",
-  "text_middle",
-  "text_click",
-];
-
-const sliderRotation = [7.36, 0, 0];
-const sliderScale = [0.4, 0.4, 0.4];

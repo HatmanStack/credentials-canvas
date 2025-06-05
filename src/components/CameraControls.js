@@ -23,24 +23,22 @@ extend({ OrbitControls });
 
 export const CameraControls = React.memo(() => {
   const { 
-    mobileScroll, clickPoint, setClickPoint, setCloseUp, isDragging, closeUp,
-    setScrollStarted
+    mobileScrollCount, clickPoint, setClickPoint, setCloseUp, isDragging, isCloseUpView,
+    setScrollStarted, currentCameraIndex, setCurrentPosIndex, cameraProgress, setCameraProgress
   } = useInteraction();
-  const { windowWidth, setIframe1, setIframe2 } = useUI();
-  const [closeUpPosIndex, setCloseUpPosIndex] = useState(0);
-  const [cameraClone, setCameraClone] = useState(true);
-  const [patchCamera, setPatchCamera] = useState(true);
-  const [holderprogress, setProgress] = useState(0);
-  const [currentPosIndex, setCurrentPosIndex] = useState(0);
+  const { screenWidth, setIframe1, setIframe2 } = useUI();
+  const [closeUpCameraIndex, setCloseUpCameraIndex] = useState(0);
+  const [usePrimaryCameraPosition, setUsePrimaryCameraPosition] = useState(true);
+  const [shouldResetCamera, setShouldResetCamera] = useState(true);
   
   // Memoized positions to prevent recreation
-  const positions = useMemo(() => [
-    cameraClone ? [1, 1, 13] : [10, 1, 13],
+  const cameraPositions = useMemo(() => [
+    usePrimaryCameraPosition ? [1, 1, 13] : [10, 1, 13],
     [4, 1, 2],
     [3, 1, 3.75],
     [0, 1, 6.5],
     [-12, 6, 0],
-  ], [cameraClone]);
+  ], [usePrimaryCameraPosition]);
 
   const {
     camera,
@@ -50,38 +48,38 @@ export const CameraControls = React.memo(() => {
 
   // Custom hooks for scroll and animation logic
   const { handleMobileScroll } = useCameraScroll({
-    currentPosIndex,
+    currentPosIndex: currentCameraIndex,
     setCurrentPosIndex,
-    positions,
+    positions: cameraPositions,
     camera,
     domElement,
     setScrollStarted,
     setCloseUp,
-    setCloseUpPosIndex,
-    setCameraClone,
-    holderprogress,
-    setProgress,
-    mobileScroll
+    setCloseUpPosIndex: setCloseUpCameraIndex,
+    setCameraClone: setUsePrimaryCameraPosition,
+    holderprogress: cameraProgress,
+    setProgress: setCameraProgress,
+    mobileScroll: mobileScrollCount
   });
 
   const { rotationPoint } = useCameraAnimation({
     camera,
-    windowWidth,
-    closeUp,
-    closeUpPosIndex,
-    setCloseUpPosIndex,
-    currentPosIndex,
+    windowWidth: screenWidth,
+    closeUp: isCloseUpView,
+    closeUpPosIndex: closeUpCameraIndex,
+    setCloseUpPosIndex: setCloseUpCameraIndex,
+    currentPosIndex: currentCameraIndex,
     clickPoint,
     setClickPoint,
     setCloseUp,
-    setCameraClone
+    setCameraClone: setUsePrimaryCameraPosition
   });
 
   useFrame(() => {
     if (controls.current) {
-      if (patchCamera) {
+      if (shouldResetCamera) {
         camera.position.set(1, 13, 1);
-        setPatchCamera(false);
+        setShouldResetCamera(false);
       }
       controls.current.update();
       controls.current.target.copy(rotationPoint);

@@ -9,13 +9,15 @@ import segaSound from "../assets/sega.mp3";
 
 export function Sounds() {
   const { clickLight, clickCount, clickPoint } = useInteraction();
-  const { vibe } = useUI();
-  const [playActive] = useSound(buttonClickSound, { volume: 0.25 });
-  const [playSega] = useSound(segaSound, { volume: 1 });
+  const { selectedVibe } = useUI();
+  const [playButtonClick] = useSound(buttonClickSound, { volume: 0.25 });
+  const [playSegaSound] = useSound(segaSound, { volume: 1});
 
   useEffect(() => {
-    playActive();
-  }, [clickLight, clickCount]);
+    if (clickLight) {
+      playButtonClick();
+    }
+  }, [clickLight, playButtonClick]);
 
   useEffect(() => {
     if (
@@ -23,12 +25,12 @@ export function Sounds() {
       clickPoint !== "Light_Control_Box" &&
       clickPoint !== "Music_Control_Box"
     ) {
-      playActive();
+      playButtonClick();
     }
-    if (vibe == 0 && clickPoint == "Cube009_2") {
-      playSega();
+    if (selectedVibe === "0" && clickPoint === "Cube009_2") {
+      playSegaSound();
     }
-  }, [clickPoint]);
+  }, [clickPoint, selectedVibe, playButtonClick, playSegaSound]);
 
   return null;
 }

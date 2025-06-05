@@ -64,9 +64,6 @@ Rather than listing projects in a traditional format, Credentials Canvas present
 - Node.js backend
 
 ## Setup
-
-
-
 1. Installation:
 ```bash
 git clone https://github.com/hatmanstack/credentials-camvas.git
@@ -80,11 +77,13 @@ npm start
 - Get `.glb` file from [here](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb)
 - Place in public folder
 
-
 ## Model Optimization (if altering in Blender):
 ```bash
 gltf-pipeline -i updated.glb -o compressed_model.glb --draco.compressionLevel=7 --keepUnusedElements --keepDefaultScene
 ```
+
+## Special Thanks  
+A big thank you to [freepacman.org](https://freepacman.org) for their site contribution, which is featured as an interactive iframe within this portfolio.
 
 ## License
 

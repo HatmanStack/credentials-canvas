@@ -17,7 +17,7 @@ const lightIntensityStarter = 30;
 
 export const Environment = React.memo(() => {
   const { clickLight, clickCount } = useInteraction();
-  const { vibe, lightIntensity } = useUI();
+  const { selectedVibe, lightIntensity } = useUI();
   // Memoize initial color to prevent random regeneration
   const initialColor = useMemo(() => 
     lightColorWheel[Math.floor(Math.random() * lightColorWheel.length)], []
@@ -88,15 +88,15 @@ export const Environment = React.memo(() => {
       const newColors = { ...prevColors };
       pointLightPositions.forEach((light, index) => {
         light.signName.forEach((name) => {
-          newColors[name] = vibeToLight[vibe].lightColor3;
+          newColors[name] = vibeToLight[selectedVibe].lightColor3;
           if (index < 1) {
-            newColors[name] = vibeToLight[vibe].lightColor2;
+            newColors[name] = vibeToLight[selectedVibe].lightColor2;
           }
         });
       });
       return newColors;
     });
-  }, [vibe]);
+  }, [selectedVibe]);
 
   // Memoized lights to prevent recreation
   const directionalLights = useMemo(() => (

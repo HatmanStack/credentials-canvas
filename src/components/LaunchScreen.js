@@ -8,18 +8,18 @@ import { useUI } from '../contexts';
 import "../css/launch.css";
 
 export const LaunchScreen = React.memo(() => {
-  const { graphics, setVibe, setGraphics } = useUI();
+  const { setVibe } = useUI();
   const textAnimationRef = useRef(null);
-  const [selectedVibe, setSelectedVibe] = useState(null);
+  const [selectedVibeOption, setSelectedVibeOption] = useState(null);
   const resetButtonRef = useRef(null);
 
   useEffect(() => {
-    if (selectedVibe !== null && resetButtonRef.current) {
-      const selectedTheme = vibeThemes.find(theme => theme.id === selectedVibe);
+    if (selectedVibeOption !== null && resetButtonRef.current) {
+      const selectedTheme = vibeThemes.find(theme => theme.id === selectedVibeOption);
       const hoverColor = selectedTheme ? selectedTheme.color : "#B68672";
       resetButtonRef.current.style.setProperty("--hover-color", hoverColor);
     }
-  }, [selectedVibe]);
+  }, [selectedVibeOption]);
 
   const setAnimationName = useCallback((animationName) => {
     const element = textAnimationRef.current;
@@ -29,16 +29,16 @@ export const LaunchScreen = React.memo(() => {
   }, []);
 
   const handleVibeSelect = useCallback((vibeId) => {
-    setSelectedVibe(vibeId);
+    setSelectedVibeOption(vibeId);
   }, []);
 
   const handleLaunchClick = useCallback(() => {
-    setVibe(selectedVibe);
+    setVibe(selectedVibeOption);
     setAnimationName("none");
     requestAnimationFrame(() =>
       setTimeout(() => setAnimationName("textStrokeAnim"), 0)
     );
-  }, [selectedVibe, setVibe, setAnimationName]);
+  }, [selectedVibeOption, setVibe, setAnimationName]);
 
 
   return (
@@ -73,7 +73,7 @@ export const LaunchScreen = React.memo(() => {
             <VibeOption
               key={theme.id}
               theme={theme}
-              selectedVibe={selectedVibe}
+              selectedVibe={selectedVibeOption}
               onVibeSelect={handleVibeSelect}
               textAnimationRef={textAnimationRef}
             />

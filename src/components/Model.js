@@ -48,9 +48,9 @@ function useGLTFLoaderWithDRACO(path) {
 }
 
 const Model = React.memo(() => {
-  const { closeUp, setClickPoint, setClickLight, setClickCount, setIsDragging } = useInteraction();
-  const { graphics, setGLTF } = useUI();
-  const [count, setCount] = useState(true);
+  const { isCloseUpView, setClickPoint, setClickLight, setClickCount, setIsDragging } = useInteraction();
+  const { setGLTF } = useUI();
+  const [clickThroughCount, setClickThroughCount] = useState(true);
  
   
   const filePath = MODEL_PATH;
@@ -67,7 +67,7 @@ const Model = React.memo(() => {
   useEffect(() => {
     
     if (gltf) {
-      if (!graphics) {
+      
         
         gltf.scene.traverse((node) => {
           const interactiveNodes = [];
@@ -107,7 +107,7 @@ const Model = React.memo(() => {
           }
         
         });
-      }
+      
       setGLTF(gltf);
     }
   }, [gltf]);
@@ -125,15 +125,15 @@ const Model = React.memo(() => {
       for (const phoneUrl of phoneUrls) {
         if (phoneUrl.signName.includes(signName)) {
           setClickPoint(signName);
-          if (closeUp) {
-            setCount((prevCount) => prevCount + 1);
+          if (isCloseUpView) {
+            setClickThroughCount((prevCount) => prevCount + 1);
             if (
-              count >= closeUpClickThrough &&
+              clickThroughCount >= closeUpClickThrough &&
               !phoneUrl.signName.includes("Music_Control_Box") &&
               !phoneUrl.signName.includes("Cube009_4")
             ) {
               window.open(phoneUrl.url, "_blank");
-              setCount(0);
+              setClickThroughCount(0);
             }
           }
           break;

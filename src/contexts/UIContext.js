@@ -12,18 +12,17 @@ export const useUI = () => {
 
 export const UIProvider = ({ children }) => {
   const [uiState, setUIState] = useState({
-    titleColor: null,
-    iframe1: true,
-    iframe2: true,
-    isMuted: false,
-    graphics: false
+    titleColorHue: null,
+    showArcadeIframe: true,
+    showMusicIframe: true,
+    isAudioMuted: false
   });
 
   const [appState, setAppState] = useState({
-    vibe: null,
-    gltf: null,
-    player: null,
-    windowWidth: window.innerWidth,
+    selectedVibe: null,
+    gltfModel: null,
+    videoPlayer: null,
+    screenWidth: window.innerWidth,
     lightIntensity: {
       sliderName: "Slider_4",
       intensity: 10,
@@ -32,40 +31,36 @@ export const UIProvider = ({ children }) => {
 
   // UI State setters
   const setTitleColor = useCallback((value) => {
-    setUIState(prev => ({ ...prev, titleColor: value }));
+    setUIState(prev => ({ ...prev, titleColorHue: value }));
   }, []);
 
   const setIframe1 = useCallback((value) => {
-    setUIState(prev => ({ ...prev, iframe1: value }));
+    setUIState(prev => ({ ...prev, showArcadeIframe: value }));
   }, []);
 
   const setIframe2 = useCallback((value) => {
-    setUIState(prev => ({ ...prev, iframe2: value }));
+    setUIState(prev => ({ ...prev, showMusicIframe: value }));
   }, []);
 
   const setIsMuted = useCallback((value) => {
-    setUIState(prev => ({ ...prev, isMuted: value }));
-  }, []);
-
-  const setGraphics = useCallback((value) => {
-    setUIState(prev => ({ ...prev, graphics: value }));
+    setUIState(prev => ({ ...prev, isAudioMuted: value }));
   }, []);
 
   // App State setters
   const setVibe = useCallback((value) => {
-    setAppState(prev => ({ ...prev, vibe: value }));
+    setAppState(prev => ({ ...prev, selectedVibe: value }));
   }, []);
 
   const setGLTF = useCallback((value) => {
-    setAppState(prev => ({ ...prev, gltf: value }));
+    setAppState(prev => ({ ...prev, gltfModel: value }));
   }, []);
 
   const setPlayer = useCallback((value) => {
-    setAppState(prev => ({ ...prev, player: value }));
+    setAppState(prev => ({ ...prev, videoPlayer: value }));
   }, []);
 
   const setWindowWidth = useCallback((value) => {
-    setAppState(prev => ({ ...prev, windowWidth: value }));
+    setAppState(prev => ({ ...prev, screenWidth: value }));
   }, []);
 
   const setLightIntensity = useCallback((value) => {
@@ -84,7 +79,7 @@ export const UIProvider = ({ children }) => {
     setIframe1,
     setIframe2,
     setIsMuted,
-    setGraphics,
+    
     
     // App Setters
     setVibe,

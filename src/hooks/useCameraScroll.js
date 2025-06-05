@@ -4,97 +4,118 @@ import { useInteraction } from '../contexts';
 import { scrollConstants } from '../data/camera';
 
 export const useCameraScroll = ({
-  currentPosIndex,
-  setCurrentPosIndex,
-  positions,
+  currentPosIndex: currentCameraIndex,
+  setCurrentPosIndex: setCurrentCameraIndex,
+  positions: cameraPositions,
   camera,
   domElement,
   setScrollStarted,
   setCloseUp,
-  setCloseUpPosIndex,
-  setCameraClone,
-  holderprogress,
-  setProgress,
-  mobileScroll
+  setCloseUpPosIndex: setCloseUpCameraIndex,
+  setCameraClone: setUsePrimaryCameraPosition,
+  holderprogress: cameraProgress,
+  setProgress: setCameraProgress,
+  mobileScroll: mobileScrollCount
 }) => {
-  const currentPos = useRef(new Vector3());
-  const nextPos = useRef(new Vector3());
-  const newPos = useRef(new Vector3());
+  const currentCameraPosition = useRef(new Vector3());
+  const nextCameraPosition = useRef(new Vector3());
+  const interpolatedPosition = useRef(new Vector3());
+  
+  // Local refs for each scroll type
+  const mobileIndexRef = useRef(currentCameraIndex);
+  const desktopIndexRef = useRef(currentCameraIndex);
+  const desktopScrollProgress = useRef(0);
+  const mobileScrollProgress = useRef(0);
 
-  const handleMobileScroll = useCallback((event) => {
+  // Sync local refs when context currentCameraIndex changes
+  useEffect(() => {
+    mobileIndexRef.current = currentCameraIndex;
+    desktopIndexRef.current = currentCameraIndex;
+    desktopScrollProgress.current = 0; // Reset progress when position changes externally
+    mobileScrollProgress.current = 0; // Reset mobile progress too
+  }, [currentCameraIndex]);
+
+  const handleMobileScroll = useCallback(() => {
     setScrollStarted(true);
-    if (setCloseUp) {
-      setCloseUpPosIndex(9);
-      setCloseUp(false);
-    }
+    setCloseUp(false);
+    setCloseUpCameraIndex(9);
     
-    const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
-    const scrollAmount = scrollConstants.mobile / 2;
-    const newProgress = holderprogress + scrollAmount;
+    const currentIndex = mobileIndexRef.current;
+    const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
+    mobileScrollProgress.current += scrollConstants.mobile / 2;
     
-    currentPos.current.set(...positions[currentPosIndex]);
-    nextPos.current.set(...positions[(currentPosIndex + 1) % positions.length]);
-    
-    newPos.current.lerpVectors(
-      currentPos.current,
-      nextPos.current,
-      Math.max(0, Math.min(1, newProgress / steps))
+    const currentPos = new Vector3(...cameraPositions[currentIndex]);
+    const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
+    const interpolatedPos = new Vector3().lerpVectors(
+      currentPos,
+      nextPos,
+      Math.max(0, Math.min(1, mobileScrollProgress.current / interpolationSteps))
     );
     
-    camera.position.copy(newPos.current);
+    camera.position.copy(interpolatedPos);
     
-    if (newProgress >= steps) {
-      setCameraClone(false);
-      setProgress(0);
-      setCurrentPosIndex((currentPosIndex + 1) % positions.length);
-    } else {
-      setProgress(newProgress);
+    if (mobileScrollProgress.current >= interpolationSteps) {
+      mobileScrollProgress.current = 0;
+      setUsePrimaryCameraPosition(false);
+      
+      // Advance mobile index
+      const nextIndex = (currentIndex + 1) % cameraPositions.length;
+      mobileIndexRef.current = nextIndex;
+      
+      // Update context and sync desktop ref
+      setCurrentCameraIndex(nextIndex);
     }
-  }, [currentPosIndex, positions, camera, holderprogress, setScrollStarted, setCloseUp, setCloseUpPosIndex, setCameraClone, setProgress, setCurrentPosIndex]);
+  }, [cameraPositions, camera, setScrollStarted, setCloseUp, setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex]);
 
   // Handle mobile scroll trigger
   useEffect(() => {
-    if (mobileScroll) {
-      const event = { deltaY: 400 };
-      handleMobileScroll(event);
+    if (mobileScrollCount) {
+      const mockScrollEvent = { deltaY: 400 };
+      handleMobileScroll(mockScrollEvent);
     }
-  }, [mobileScroll, handleMobileScroll]);
+  }, [mobileScrollCount, handleMobileScroll]);
 
   // Handle desktop scroll
   useEffect(() => {
     if (!domElement) return;
     
-    let progress = 0;
-    const handleScroll = (event) => {
+    const handleDesktopScroll = (event) => {
       setScrollStarted(true);
       setCloseUp(false);
-      setCloseUpPosIndex(9);
+      setCloseUpCameraIndex(9);
       
-      const steps = currentPosIndex >= 1 && currentPosIndex <= 3 ? 3 : 2;
-      progress += scrollConstants.desktop / 2;
+      const currentIndex = desktopIndexRef.current;
+      const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
+      desktopScrollProgress.current += scrollConstants.desktop / 2;
       
-      const currentPos = new Vector3(...positions[currentPosIndex]);
-      const nextPos = new Vector3(...positions[(currentPosIndex + 1) % positions.length]);
-      const newPos = new Vector3().lerpVectors(
+      const currentPos = new Vector3(...cameraPositions[currentIndex]);
+      const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
+      const interpolatedPos = new Vector3().lerpVectors(
         currentPos,
         nextPos,
-        Math.max(0, Math.min(1, progress / steps))
+        Math.max(0, Math.min(1, desktopScrollProgress.current / interpolationSteps))
       );
       
-      camera.position.copy(newPos);
+      camera.position.copy(interpolatedPos);
       
-      if (progress >= steps) {
-        progress = 0;
-        setCameraClone(false);
-        setCurrentPosIndex((currentPosIndex + 1) % positions.length);
+      if (desktopScrollProgress.current >= interpolationSteps) {
+        desktopScrollProgress.current = 0;
+        setUsePrimaryCameraPosition(false);
+        
+        // Advance desktop index
+        const nextIndex = (currentIndex + 1) % cameraPositions.length;
+        desktopIndexRef.current = nextIndex;
+        
+        // Update context and sync mobile ref
+        setCurrentCameraIndex(nextIndex);
       }
     };
 
-    domElement.addEventListener("wheel", handleScroll);
+    domElement.addEventListener("wheel", handleDesktopScroll);
     return () => {
-      domElement.removeEventListener("wheel", handleScroll);
+      domElement.removeEventListener("wheel", handleDesktopScroll);
     };
-  }, [camera, domElement, currentPosIndex, positions, setScrollStarted, setCloseUp, setCloseUpPosIndex, setCameraClone, setCurrentPosIndex]);
+  }, [camera, domElement, cameraPositions, setScrollStarted, setCloseUp, setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex]);
 
   return { handleMobileScroll };
 };

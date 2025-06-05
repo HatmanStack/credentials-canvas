@@ -19,7 +19,7 @@ import { colorMap } from './data';
 // Preload GLTF model
 useGLTF.preload(process.env.PUBLIC_URL + "compressed_model.glb");
 
-const TitleEffect = React.memo(({ text, startColorHue}) => {
+const TitleEffect = React.memo(({ text, startColorHue }) => {
   const totalLetters = text.length;
   
   const titleStyle = useMemo(() => ({
@@ -50,29 +50,30 @@ const TitleEffect = React.memo(({ text, startColorHue}) => {
 const AppContent = () => {
   // Use contexts instead of local state
   const {
-    clickPoint, clickLight, clickCount, closeUp, isDragging, scrollStarted, mobileScroll,
+    clickPoint, clickLight, clickCount, isCloseUpView, isDragging, hasScrollStarted, mobileScrollCount,
     setMobileScroll
   } = useInteraction();
   
   const {
-    vibe, gltf, player, windowWidth, lightIntensity, titleColor, iframe1, iframe2, isMuted, graphics,
-    setVibe, setWindowWidth
+    selectedVibe, gltfModel, videoPlayer, screenWidth, lightIntensity, titleColorHue, showArcadeIframe, showMusicIframe, isAudioMuted, showHighQualityGraphics,
+    setVibe, setWindowWidth, setIsMuted, setTitleColor
   } = useUI();
 
-  const navigateButtonRef = useRef(null);
+  const navigationButtonRef = useRef(null);
   const muteButtonRef = useRef(null);
 
 
   useEffect(() => {
-    if (vibe !== null && navigateButtonRef.current && muteButtonRef.current) {
-      const colors = colorMap[vibe] || colorMap["default"];
+    if (selectedVibe !== null && navigationButtonRef.current && muteButtonRef.current) {
+      const vibeColors = colorMap[selectedVibe] || colorMap["default"];
+      setTitleColor(vibeColors.title);
       
-      [navigateButtonRef.current, muteButtonRef.current].forEach((button) => {
-        button.style.setProperty("--active-color", colors.active);
-        button.style.setProperty("--rest-color", colors.rest);
+      [navigationButtonRef.current, muteButtonRef.current].forEach((button) => {
+        button.style.setProperty("--active-color", vibeColors.active);
+        button.style.setProperty("--rest-color", vibeColors.rest);
       });
     }
-  }, [vibe]);
+  }, [selectedVibe, setTitleColor]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -84,20 +85,23 @@ const AppContent = () => {
     };
   }, [setWindowWidth]);
 
-  const handleMute = useCallback(() => {
-    if (player && player.isMuted() === false) {
-      player.mute();
+  const handleMuteToggle = useCallback(() => {
+    if (videoPlayer) {
+      if (videoPlayer.isMuted()) {
+        videoPlayer.unMute();
+        setIsMuted(false);
+      } else {
+        videoPlayer.mute();
+        setIsMuted(true);
+      }
     }
-    if (player && player.isMuted() === true) {
-      player.unMute();
-    }
-  }, [player]);
+  }, [videoPlayer, setIsMuted]);
 
-  const { progress } = useProgress();
+  const { progress: loadingProgress } = useProgress();
 
-  const Loader = useMemo(() => () => (
+  const LoadingScreen = useMemo(() => () => (
     <>
-    <link rel="manifest" href="/manifest.json"></link>
+      <link rel="manifest" href="/manifest.json" />
       <div
         style={{
           display: "flex",
@@ -109,48 +113,48 @@ const AppContent = () => {
           margin: "10rem",
         }}
       >
-        <img src={handGif} width="250" />
-        {Math.round(progress)} % loaded<br></br>
-        <br></br>
-        <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleColor} />
+        <img src={handGif} width="250" alt="Loading animation" />
+        {Math.round(loadingProgress)}% loaded<br />
+        <br />
+        <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleColorHue} />
         <p style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.1rem', lineHeight: '1.5' }}>
-        <br></br>
-        lights, joystick, phone displays, signposts,<br></br>
-        control panels, text and antenna surfaces.
+          <br />
+          lights, joystick, phone displays, signposts,<br />
+          control panels, text and antenna surfaces.
         </p>
       </div>
     </>
-  ), [progress, titleColor]);
+  ), [loadingProgress, titleColorHue]);
 
-  const handleStart = useCallback(() => {
-    setMobileScroll(prev => prev + 1);
-  }, [setMobileScroll]);
+  const handleNavigationClick = useCallback(() => {
+    setMobileScroll((mobileScrollCount || 0) + 1);
+  }, [setMobileScroll, mobileScrollCount]);
 
   // Memoized button styles to prevent re-creation
-  const navigateButtonStyle = useMemo(() => ({
-    opacity: progress < 100 ? 0 : 1,
+  const navigationButtonStyle = useMemo(() => ({
+    opacity: loadingProgress < 100 ? 0 : 1,
     marginLeft: 20,
     marginBottom: 20,
-  }), [progress]);
+  }), [loadingProgress]);
 
   const muteButtonStyle = useMemo(() => ({
-    opacity: progress < 100 ? 0 : 1,
-    cursor: 'pointer', 
-    width: '40px', 
+    opacity: loadingProgress < 100 ? 0 : 1,
+    cursor: 'pointer',
+    width: '40px',
     height: '40px',
-    backgroundImage: `url(${isMuted ? mute : volumeUp})`,
-    backgroundColor: isMuted ? 'var(--rest-color)' : 'var(--active-color)',
+    backgroundImage: `url(${isAudioMuted ? mute : volumeUp})`,
+    backgroundColor: isAudioMuted ? 'var(--rest-color)' : 'var(--active-color)',
     marginTop: 20,
     marginRight: 20,
-    border: 'none', 
+    border: 'none',
     padding: 0
-  }), [progress, isMuted]);
+  }), [loadingProgress, isAudioMuted]);
 
   return (
     <>
-    <link rel="manifest" href="/manifest.json"></link>
-      {vibe != null ? (
-        <Suspense fallback={<Loader />}>
+      <link rel="manifest" href="/manifest.json" />
+      {selectedVibe != null ? (
+        <Suspense fallback={<LoadingScreen />}>
           
           <div className="button-container">
             <Canvas>
@@ -162,16 +166,16 @@ const AppContent = () => {
             </Canvas>
             <button
               className="navigate"
-              ref={navigateButtonRef}
-              style={navigateButtonStyle}
-              onMouseDown={handleStart}
-              onTouchStart={handleStart}
+              ref={navigationButtonRef}
+              style={navigationButtonStyle}
+              onMouseDown={handleNavigationClick}
+              onTouchStart={handleNavigationClick}
             />
             <button
               className="mute"
               ref={muteButtonRef}
               style={muteButtonStyle}
-              onClick={handleMute}
+              onClick={handleMuteToggle}
             />
           </div>
         </Suspense>
