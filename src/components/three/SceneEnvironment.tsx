@@ -33,7 +33,7 @@ export const SceneEnvironment: React.FC = React.memo(() => {
 
   const [lightColors, setLightColors] = useState<Record<string, string>>(() =>
     POINT_LIGHT_POSITION_CONFIGURATIONS.reduce((colors, light) => {
-      light.signName.forEach((name) => {
+      light.signName.forEach(name => {
         colors[name] = initialColor;
       });
       return colors;
@@ -57,10 +57,10 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     const normalizedIntensity =
       ((intensity - 0.503) / oldRange) * LIGHT_INTENSITY_INITIAL_VALUE;
 
-    setLightIntensities((prevIntensities) => {
+    setLightIntensities(prevIntensities => {
       const newIntensities = { ...prevIntensities };
       if (sliderName === 'Slider_4') {
-        Object.keys(newIntensities).forEach((name) => {
+        Object.keys(newIntensities).forEach(name => {
           newIntensities[name] = normalizedIntensity;
         });
       } else {
@@ -72,17 +72,17 @@ export const SceneEnvironment: React.FC = React.memo(() => {
 
   // Update light colors on click
   useEffect(() => {
-    setLightColors((prevColors) => {
+    setLightColors(prevColors => {
       const newColors = { ...prevColors };
       if (clickLight === 'Button_Light_4') {
         const newColor =
           LIGHT_COLOR_WHEEL[Math.floor(Math.random() * LIGHT_COLOR_WHEEL.length)];
-        Object.keys(newColors).forEach((name) => {
+        Object.keys(newColors).forEach(name => {
           newColors[name] = newColor;
         });
       } else {
-        POINT_LIGHT_POSITION_CONFIGURATIONS.forEach((light) => {
-          light.signName.forEach((name) => {
+        POINT_LIGHT_POSITION_CONFIGURATIONS.forEach(light => {
+          light.signName.forEach(name => {
             if (name === clickLight) {
               newColors[name] =
                 LIGHT_COLOR_WHEEL[
@@ -103,10 +103,10 @@ export const SceneEnvironment: React.FC = React.memo(() => {
       const vibeColors = THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY[vibeIndex];
 
       if (vibeColors) {
-        setLightColors((prevColors) => {
+        setLightColors(prevColors => {
           const newColors = { ...prevColors };
           POINT_LIGHT_POSITION_CONFIGURATIONS.forEach((light, index) => {
-            light.signName.forEach((name) => {
+            light.signName.forEach(name => {
               newColors[name] = vibeColors.lightColor3;
               if (index < 1) {
                 newColors[name] = vibeColors.lightColor2;

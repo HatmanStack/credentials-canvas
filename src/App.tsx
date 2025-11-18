@@ -85,7 +85,7 @@ const AppContent: React.FC = () => {
       const vibeColors = THEME_COLOR_CONFIGURATION_MAP[vibeId] || THEME_COLOR_CONFIGURATION_MAP['default'];
       setTitleColor(vibeColors.title);
 
-      [navigationButtonRef.current, muteButtonRef.current].forEach((button) => {
+      [navigationButtonRef.current, muteButtonRef.current].forEach(button => {
         button.style.setProperty('--active-color', vibeColors.active);
         button.style.setProperty('--rest-color', vibeColors.rest);
       });

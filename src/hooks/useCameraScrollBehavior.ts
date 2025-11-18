@@ -53,7 +53,6 @@ export const useCameraScrollBehavior = ({
   setCameraClone: setUsePrimaryCameraPosition,
   mobileScroll: mobileScrollCount
 }: UseCameraScrollBehaviorParameters): UseCameraScrollBehaviorReturn => {
-
   // Local refs for each scroll type
   const mobileIndexRef = useRef<number>(currentCameraIndex);
   const desktopIndexRef = useRef<number>(currentCameraIndex);
@@ -95,7 +94,10 @@ export const useCameraScrollBehavior = ({
       mobileIndexRef.current = nextIndex;
       setCurrentCameraIndex(nextIndex);
     }
-  }, [cameraPositions, camera, setScrollStarted, setCloseUp, setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex]);
+  }, [
+    cameraPositions, camera, setScrollStarted, setCloseUp,
+    setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex
+  ]);
 
   // Handle mobile scroll trigger
   useEffect(() => {
@@ -141,7 +143,10 @@ export const useCameraScrollBehavior = ({
     return () => {
       domElement.removeEventListener('wheel', handleDesktopScroll);
     };
-  }, [camera, domElement, cameraPositions, setScrollStarted, setCloseUp, setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex]);
+  }, [
+    camera, domElement, cameraPositions, setScrollStarted, setCloseUp,
+    setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex
+  ]);
 
   return { handleMobileScroll };
 };

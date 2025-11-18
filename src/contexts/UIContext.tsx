@@ -84,7 +84,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     videoPlayer: null,
     screenWidth: window.innerWidth,
     lightIntensity: {
-      sliderName: "Slider_4",
+      sliderName: 'Slider_4',
       intensity: 10,
     }
   });

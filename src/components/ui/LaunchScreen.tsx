@@ -77,7 +77,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
             justifyContent: 'center',
           }}
         >
-          {AVAILABLE_THEME_CONFIGURATIONS.map((theme) => (
+          {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
             <ThemeSelectionOption
               key={theme.id}
               theme={theme}
@@ -122,8 +122,8 @@ export const LaunchScreen: React.FC = React.memo(() => {
               marginBottom: 50,
               transition: 'transform 0.3s ease-in-out',
             }}
-            onMouseEnter={(e) => ((e.target as HTMLAnchorElement).style.transform = 'scale(2)')}
-            onMouseLeave={(e) => ((e.target as HTMLAnchorElement).style.transform = 'scale(1)')}
+            onMouseEnter={e => ((e.target as HTMLAnchorElement).style.transform = 'scale(2)')}
+            onMouseLeave={e => ((e.target as HTMLAnchorElement).style.transform = 'scale(1)')}
           >
             Traditional Portfolio
           </a>

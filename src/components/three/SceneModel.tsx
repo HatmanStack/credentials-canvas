@@ -74,7 +74,7 @@ export const SceneModel: React.FC = React.memo(() => {
   // Setup video textures when model loads
   useEffect(() => {
     if (gltf) {
-      gltf.scene.traverse((node) => {
+      gltf.scene.traverse(node => {
         const mesh = node as THREE.Mesh;
 
         // Apply video textures to matching meshes
@@ -107,7 +107,7 @@ export const SceneModel: React.FC = React.memo(() => {
           // Handle glass transparency for Base mesh
           if (mesh.name === 'Base') {
             const circle = mesh.children.find(
-              (child) => child.name === 'Circle_1'
+              child => child.name === 'Circle_1'
             ) as THREE.Mesh;
 
             if (circle) {
@@ -147,7 +147,7 @@ export const SceneModel: React.FC = React.memo(() => {
         if (phoneUrl.signName.includes(signName)) {
           setClickPoint(signName);
           if (isCloseUpView) {
-            setClickThroughCount((prevCount) => prevCount + 1);
+            setClickThroughCount(prevCount => prevCount + 1);
             if (
               clickThroughCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
               !phoneUrl.signName.includes('Music_Control_Box') &&
