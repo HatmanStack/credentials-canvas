@@ -16,7 +16,6 @@ export interface ThemeSelectionOptionProps {
   theme: VibeThemeConfiguration;
   selectedVibe: string | null;
   onVibeSelect: (vibeId: string) => void;
-  textAnimationRef: React.RefObject<SVGSVGElement>;
 }
 
 /**
@@ -25,8 +24,7 @@ export interface ThemeSelectionOptionProps {
 export const ThemeSelectionOption: React.FC<ThemeSelectionOptionProps> = React.memo(({
   theme,
   selectedVibe,
-  onVibeSelect,
-  textAnimationRef
+  onVibeSelect
 }) => {
   const handleClick = useCallback((): void => {
     onVibeSelect(theme.id);
@@ -39,7 +37,6 @@ export const ThemeSelectionOption: React.FC<ThemeSelectionOptionProps> = React.m
     )}>
       <svg
         className={`text-stroke-${theme.name}`}
-        ref={textAnimationRef}
         style={{ width: theme.svgWidth }}
         role="img"
         aria-label={`${theme.displayName} theme option`}

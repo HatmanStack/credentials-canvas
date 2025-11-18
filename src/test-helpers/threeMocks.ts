@@ -28,7 +28,7 @@ export const createMockVector3 = (x = 0, y = 0, z = 0): MockVector3 => {
   // Create mutable vector object that methods close over
   const vec = { x, y, z };
 
-  return {
+  const mockVector: MockVector3 = {
     get x() {
       return vec.x;
     },
@@ -51,30 +51,32 @@ export const createMockVector3 = (x = 0, y = 0, z = 0): MockVector3 => {
       vec.x = v.x;
       vec.y = v.y;
       vec.z = v.z;
-      return vec as MockVector3;
+      return mockVector;
     }),
     set: jest.fn((x: number, y: number, z: number) => {
       vec.x = x;
       vec.y = y;
       vec.z = z;
-      return vec as MockVector3;
+      return mockVector;
     }),
     lerp: jest.fn((v: MockVector3, alpha: number) => {
       vec.x += (v.x - vec.x) * alpha;
       vec.y += (v.y - vec.y) * alpha;
       vec.z += (v.z - vec.z) * alpha;
-      return vec as MockVector3;
+      return mockVector;
     }),
     lerpVectors: jest.fn((v1: MockVector3, v2: MockVector3, alpha: number) => {
       vec.x = v1.x + (v2.x - v1.x) * alpha;
       vec.y = v1.y + (v2.y - v1.y) * alpha;
       vec.z = v1.z + (v2.z - v1.z) * alpha;
-      return vec as MockVector3;
+      return mockVector;
     }),
     clone: jest.fn(() => {
       return createMockVector3(vec.x, vec.y, vec.z);
     }),
   } as MockVector3;
+
+  return mockVector;
 };
 
 /**

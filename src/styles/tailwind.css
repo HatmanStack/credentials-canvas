@@ -1,3 +1,6 @@
+/* Custom animations that Tailwind doesn't replace */
+@import '../css/checkbox.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,6 +21,3 @@
     50%
   );
 }
-
-/* Custom animations that Tailwind doesn't replace */
-@import '../css/checkbox.css';

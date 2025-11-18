@@ -52,9 +52,9 @@ export const LaunchScreen: React.FC = React.memo(() => {
     const selectedTheme = AVAILABLE_THEME_CONFIGURATIONS.find(theme => theme.id === selectedVibeOption);
     setSelectedThemeConfiguration(selectedTheme || null);
     setAnimationName('none');
-    requestAnimationFrame(() =>
-      setTimeout(() => setAnimationName('textStrokeAnim'), 0)
-    );
+    requestAnimationFrame(() => {
+      setAnimationName('textStrokeAnim');
+    });
   }, [selectedVibeOption, setSelectedThemeConfiguration, setAnimationName]);
 
   return (
@@ -81,7 +81,6 @@ export const LaunchScreen: React.FC = React.memo(() => {
             theme={theme}
             selectedVibe={selectedVibeOption}
             onVibeSelect={handleVibeSelect}
-            textAnimationRef={vibeTextRef}
           />
         ))}
       </div>
@@ -102,7 +101,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
           style={{ width: 620 }}
           display="none"
         >
-          <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
+          <text y="50%" dy=".6em">
               LOW GRAPHICS
           </text>
         </svg>
@@ -112,7 +111,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
             'text-white no-underline',
             'mt-24 mb-12',
             'transition-transform duration-300 ease-in-out',
-            'hover:scale-200'
+            'hover:scale-105'
           )}
         >
             Traditional Portfolio

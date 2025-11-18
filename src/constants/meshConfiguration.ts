@@ -64,4 +64,4 @@ export const CLOSE_UP_CLICK_THRESHOLD_COUNT: number = 2;
 /**
  * GLTF model file path
  */
-export const GLTF_MODEL_FILE_PATH: string = process.env.PUBLIC_URL + 'compressed_model.glb';
+export const GLTF_MODEL_FILE_PATH: string = process.env.PUBLIC_URL + '/compressed_model.glb';

@@ -10,7 +10,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
-import { CAMERA_SCROLL_CONFIGURATION } from 'constants/cameraConfiguration';
+import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from 'constants/cameraConfiguration';
 import type { CameraPositionTuple } from 'types';
 
 /**
@@ -73,7 +73,7 @@ export const useCameraScrollBehavior = ({
 
     setScrollStarted(true);
     setCloseUp(false);
-    setCloseUpCameraIndex(9);
+    setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
     const currentIndex = mobileIndexRef.current;
 
@@ -125,7 +125,7 @@ export const useCameraScrollBehavior = ({
 
       setScrollStarted(true);
       setCloseUp(false);
-      setCloseUpCameraIndex(9);
+      setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
       const currentIndex = desktopIndexRef.current;
 

@@ -78,8 +78,9 @@ export const SceneModel: React.FC = React.memo(() => {
   const filePath = GLTF_MODEL_FILE_PATH;
   const gltf = useGLTFLoaderWithDRACO(filePath);
 
-  // Create refs for video elements
+  // Create refs for video elements and their textures
   const videoRefs = useRef<Record<string, HTMLVideoElement>>({});
+  const videoTextureRefs = useRef<Record<string, THREE.VideoTexture>>({});
 
   // Setup video textures when model loads
   useEffect(() => {
@@ -112,6 +113,7 @@ export const SceneModel: React.FC = React.memo(() => {
             material.needsUpdate = true;
 
             videoRefs.current[config.name] = video;
+            videoTextureRefs.current[config.name] = videoTexture;
           }
 
           // Handle glass transparency for Base mesh
@@ -133,13 +135,18 @@ export const SceneModel: React.FC = React.memo(() => {
       setThreeJSSceneModel(gltf.scene);
     }
 
-    // Cleanup video elements
+    // Cleanup video elements and textures
     return () => {
       Object.values(videoRefs.current).forEach(video => {
         if (video && !video.paused) {
           video.pause();
         }
       });
+      // Dispose video textures to prevent WebGL memory leak
+      Object.values(videoTextureRefs.current).forEach(texture => {
+        texture.dispose();
+      });
+      videoTextureRefs.current = {};
     };
   }, [gltf, setThreeJSSceneModel]);
 
@@ -163,7 +170,7 @@ export const SceneModel: React.FC = React.memo(() => {
             if (
               nextCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
               !phoneUrl.signName.includes('Music_Control_Box') &&
-              !phoneUrl.signName.includes('Cube009_4')
+              !phoneUrl.signName.includes('Cube009_2')
             ) {
               window.open(phoneUrl.url, '_blank', 'noopener,noreferrer');
               setClickThroughCount(0);

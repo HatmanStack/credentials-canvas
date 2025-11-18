@@ -46,6 +46,12 @@ export const CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN: CameraPositionTuple[] 
 ];
 
 /**
+ * Sentinel value indicating no close-up view is active
+ * This index is out of bounds for CLOSE_UP_CAMERA_POSITION_ARRAY (0-8)
+ */
+export const NO_CLOSE_UP_INDEX = 9;
+
+/**
  * Close-up camera rotation values
  */
 export const CLOSE_UP_CAMERA_ROTATION_ARRAY: CameraPositionTuple[] = [

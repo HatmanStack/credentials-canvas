@@ -15,7 +15,8 @@ import {
   CLOSE_UP_CAMERA_POSITION_ARRAY,
   CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN,
   CLOSE_UP_CAMERA_ROTATION_ARRAY,
-  MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP
+  MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
+  NO_CLOSE_UP_INDEX
 } from 'constants/cameraConfiguration';
 import type { CameraPositionTuple } from 'types';
 
@@ -63,10 +64,10 @@ export const useCameraPositionAnimation = ({
   useEffect(() => {
     let newRotationTarget: Vector3;
     if (isCloseUpView) {
-      const safeCloseUpIndex = Math.min(closeUpCameraIndex, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1);
+      const safeCloseUpIndex = Math.max(0, Math.min(closeUpCameraIndex, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1));
       newRotationTarget = new Vector3(...CLOSE_UP_CAMERA_ROTATION_ARRAY[safeCloseUpIndex]);
     } else {
-      const safeCameraIndex = Math.min(currentCameraIndex, CAMERA_ROTATION_POSITION_ARRAY.length - 1);
+      const safeCameraIndex = Math.max(0, Math.min(currentCameraIndex, CAMERA_ROTATION_POSITION_ARRAY.length - 1));
       newRotationTarget = new Vector3(...CAMERA_ROTATION_POSITION_ARRAY[safeCameraIndex]);
     }
     setCameraRotationTarget(newRotationTarget);
@@ -84,7 +85,7 @@ export const useCameraPositionAnimation = ({
 
   // Handle close-up camera positioning
   useEffect(() => {
-    if (closeUpCameraIndex !== 9) {
+    if (closeUpCameraIndex !== NO_CLOSE_UP_INDEX) {
       // Pick the appropriate positions array based on screen width
       const positions = screenWidth > 800 ?
         CLOSE_UP_CAMERA_POSITION_ARRAY :

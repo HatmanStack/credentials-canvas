@@ -10,6 +10,7 @@ export {
   CLOSE_UP_CAMERA_ROTATION_ARRAY,
   MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
   CAMERA_SCROLL_CONFIGURATION,
+  NO_CLOSE_UP_INDEX,
 } from './cameraConfiguration';
 
 // Lighting configuration
