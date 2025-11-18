@@ -47,7 +47,7 @@ export const useLightingController = (
 
   const [lightColors, setLightColors] = useState<Record<string, string>>(() =>
     POINT_LIGHT_POSITION_CONFIGURATIONS.reduce((colors, light) => {
-      light.signName.forEach((name) => {
+      light.signName.forEach(name => {
         colors[name] = initialColor;
       });
       return colors;
