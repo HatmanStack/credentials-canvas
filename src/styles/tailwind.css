@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations that Tailwind doesn't replace */
+@import '../css/checkbox.css';
