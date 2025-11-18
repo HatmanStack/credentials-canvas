@@ -17,23 +17,28 @@ The phased approach ensures incremental, reviewable changes that can be tested a
 - **Code Editor**: VS Code recommended (with ESLint, Prettier, TypeScript extensions)
 
 ### Dependencies to Install
+
+**Exact versions recommended (tested and verified):**
+
 ```bash
 # TypeScript & Type Definitions
-npm install --save-dev typescript @types/react @types/react-dom @types/node @types/three
+npm install --save-dev typescript@5.3.3 @types/react@18.2.45 @types/react-dom@18.2.18 @types/node@20.10.5 @types/three@0.159.0
 
 # State Management
-npm install zustand
+npm install zustand@4.4.7
 
 # Styling
-npm install -D tailwindcss postcss autoprefixer
-npm install tailwind-merge clsx
+npm install -D tailwindcss@3.4.0 postcss@8.4.32 autoprefixer@10.4.16
+npm install tailwind-merge@2.2.0 clsx@2.0.0
 
 # Testing
-npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-environment-jsdom
+npm install --save-dev @testing-library/react@14.1.2 @testing-library/jest-dom@6.1.5 @testing-library/user-event@14.5.1 jest-environment-jsdom@29.7.0
 
 # Additional Dev Dependencies
-npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/parser
+npm install --save-dev @typescript-eslint/eslint-plugin@6.15.0 @typescript-eslint/parser@6.15.0
 ```
+
+**Note:** These specific versions are tested together. Using latest versions may introduce breaking changes.
 
 ### Environment Setup
 - Ensure `src/` directory is writable
@@ -70,11 +75,43 @@ npm install --save-dev @typescript-eslint/eslint-plugin @typescript-eslint/parse
 1. **Read Phase-0.md completely** before starting any implementation
 2. Read the target phase document thoroughly
 3. Verify all prerequisites are met
-4. Work through tasks sequentially
+4. Work through tasks sequentially (including Task 0 inventory/discovery)
 5. Follow the verification checklist for each task
 6. Run tests after each task completion
 7. Make atomic commits using conventional commit format
 8. Complete phase verification before moving to next phase
+
+### Mid-Phase Work Guidelines
+
+**Commit Strategy:**
+- ✅ **Commit after EACH task** - Don't batch multiple tasks
+- ✅ **Use provided templates** - Copy commit message from task
+- ✅ **Push regularly** - Push to remote after 3-5 commits
+- ✅ **Test frequently** - Run `npm start` after each task
+- ❌ **Don't** wait until entire phase to commit
+- ❌ **Don't** batch unrelated changes in one commit
+
+**Resuming Work Mid-Phase:**
+If you need to stop and resume later:
+
+1. **Before Stopping:**
+   - Complete the current task fully
+   - Commit with detailed message
+   - Push to remote branch
+   - Note which task you completed
+
+2. **When Resuming:**
+   - Pull latest from remote: `git pull origin <branch>`
+   - Run `npm install` to verify dependencies
+   - Run `npm start` to verify app works
+   - Review the phase document
+   - Find the last completed task in checklist
+   - Continue with next task
+
+**Handling Interruptions:**
+- Partial task work should be stashed: `git stash`
+- Resume from clean state
+- Don't commit half-finished tasks
 
 ### Commit Message Format
 ```
