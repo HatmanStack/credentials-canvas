@@ -11,7 +11,7 @@ import type { ThreeEvent } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useGLTF } from '@react-three/drei';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { useInteraction, useUI } from 'contexts';
+import { useSceneInteractionStore, useThreeJSSceneStore } from 'stores';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from 'constants/urlConfiguration';
 import {
   INTERACTIVE_LIGHT_MESH_NAMES,
@@ -61,8 +61,15 @@ function useGLTFLoaderWithDRACO(path: string) {
  * Main scene model component
  */
 export const SceneModel: React.FC = React.memo(() => {
-  const { isCloseUpView, setClickPoint, setClickLight, setClickCount, clickCount } = useInteraction();
-  const { setGLTF } = useUI();
+  // Scene interaction store - selective subscriptions
+  const isCloseUpViewActive = useSceneInteractionStore(state => state.isCloseUpViewActive);
+  const setClickedMeshPosition = useSceneInteractionStore(state => state.setClickedMeshPosition);
+  const setClickedLightName = useSceneInteractionStore(state => state.setClickedLightName);
+  const incrementClickCount = useSceneInteractionStore(state => state.incrementClickCount);
+
+  // Three.js scene store
+  const setThreeJSSceneModel = useThreeJSSceneStore(state => state.setThreeJSSceneModel);
+
   const [clickThroughCount, setClickThroughCount] = useState<number>(0);
 
   const filePath = GLTF_MODEL_FILE_PATH;
@@ -120,7 +127,7 @@ export const SceneModel: React.FC = React.memo(() => {
         }
       });
 
-      setGLTF(gltf.scene);
+      setThreeJSSceneModel(gltf.scene);
     }
 
     // Cleanup video elements
@@ -131,22 +138,22 @@ export const SceneModel: React.FC = React.memo(() => {
         }
       });
     };
-  }, [gltf, setGLTF]);
+  }, [gltf, setThreeJSSceneModel]);
 
   const handleClick = (event: ThreeEvent<MouseEvent>): void => {
     const signName = event.object.name;
 
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
-      setClickCount(clickCount + 1);
+      incrementClickCount();
       window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
     } else if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
-      setClickLight(signName);
-      setClickCount(clickCount + 1);
+      setClickedLightName(signName);
+      incrementClickCount();
     } else {
       for (const phoneUrl of INTERACTIVE_PHONE_URL_CONFIGURATIONS) {
         if (phoneUrl.signName.includes(signName)) {
-          setClickPoint(signName);
-          if (isCloseUpView) {
+          setClickedMeshPosition(signName);
+          if (isCloseUpViewActive) {
             setClickThroughCount(prevCount => prevCount + 1);
             if (
               clickThroughCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
