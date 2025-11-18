@@ -15,7 +15,7 @@ import { SceneModel } from 'components/three/SceneModel';
 import { CameraController } from 'components/controls/CameraController';
 import { AudioController } from 'components/controls/AudioController';
 import { LaunchScreen } from 'components/ui/LaunchScreen';
-import { InteractionProvider, UIProvider, useInteraction, useUI } from 'contexts';
+import { useSceneInteractionStore, useUserInterfaceStore, useThreeJSSceneStore } from 'stores';
 import { THEME_COLOR_CONFIGURATION_MAP } from 'constants/themeConfiguration';
 import { GLTF_MODEL_FILE_PATH } from 'constants/meshConfiguration';
 import handGif from './assets/hand.gif';
@@ -66,55 +66,64 @@ const TitleEffect: React.FC<TitleEffectProps> = React.memo(({ text, startColorHu
 });
 
 /**
- * App content component (requires context providers)
+ * App content component
  */
 const AppContent: React.FC = () => {
-  const { setMobileScroll, mobileScrollCount } = useInteraction();
-  const {
-    selectedVibe, videoPlayer, titleColorHue, isAudioMuted,
-    setWindowWidth, setIsMuted, setTitleColor
-  } = useUI();
+  // Scene interaction store - selective subscriptions
+  const mobileScrollTriggerCount = useSceneInteractionStore(state => state.mobileScrollTriggerCount);
+  const setMobileScrollTriggerCount = useSceneInteractionStore(state => state.setMobileScrollTriggerCount);
+
+  // User interface store - selective subscriptions
+  const selectedThemeConfiguration = useUserInterfaceStore(state => state.selectedThemeConfiguration);
+  const titleTextColorHue = useUserInterfaceStore(state => state.titleTextColorHue);
+  const isAudioCurrentlyMuted = useUserInterfaceStore(state => state.isAudioCurrentlyMuted);
+  const setCurrentWindowWidth = useUserInterfaceStore(state => state.setCurrentWindowWidth);
+  const setIsAudioCurrentlyMuted = useUserInterfaceStore(state => state.setIsAudioCurrentlyMuted);
+  const setTitleTextColorHue = useUserInterfaceStore(state => state.setTitleTextColorHue);
+
+  // Three.js scene store - selective subscription
+  const htmlVideoPlayerElement = useThreeJSSceneStore(state => state.htmlVideoPlayerElement);
 
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const muteButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Update theme colors when vibe changes
+  // Update theme colors when theme changes
   useEffect(() => {
-    if (selectedVibe !== null && navigationButtonRef.current && muteButtonRef.current) {
-      const vibeId = selectedVibe.id;
+    if (selectedThemeConfiguration !== null && navigationButtonRef.current && muteButtonRef.current) {
+      const vibeId = selectedThemeConfiguration.id;
       const vibeColors = THEME_COLOR_CONFIGURATION_MAP[vibeId] || THEME_COLOR_CONFIGURATION_MAP['default'];
-      setTitleColor(vibeColors.title);
+      setTitleTextColorHue(vibeColors.title);
 
       [navigationButtonRef.current, muteButtonRef.current].forEach(button => {
         button.style.setProperty('--active-color', vibeColors.active);
         button.style.setProperty('--rest-color', vibeColors.rest);
       });
     }
-  }, [selectedVibe, setTitleColor]);
+  }, [selectedThemeConfiguration, setTitleTextColorHue]);
 
   // Handle window resize
   useEffect(() => {
     const handleResize = (): void => {
-      setWindowWidth(window.innerWidth);
+      setCurrentWindowWidth(window.innerWidth);
     };
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [setWindowWidth]);
+  }, [setCurrentWindowWidth]);
 
   // Handle mute toggle
   const handleMuteToggle = useCallback((): void => {
-    if (videoPlayer) {
-      if ((videoPlayer as any).isMuted()) {
-        (videoPlayer as any).unMute();
-        setIsMuted(false);
+    if (htmlVideoPlayerElement) {
+      if ((htmlVideoPlayerElement as any).isMuted()) {
+        (htmlVideoPlayerElement as any).unMute();
+        setIsAudioCurrentlyMuted(false);
       } else {
-        (videoPlayer as any).mute();
-        setIsMuted(true);
+        (htmlVideoPlayerElement as any).mute();
+        setIsAudioCurrentlyMuted(true);
       }
     }
-  }, [videoPlayer, setIsMuted]);
+  }, [htmlVideoPlayerElement, setIsAudioCurrentlyMuted]);
 
   const { progress: loadingProgress } = useProgress();
 
@@ -136,7 +145,7 @@ const AppContent: React.FC = () => {
         <img src={handGif} width="250" alt="Loading animation" />
         {Math.round(loadingProgress)}% loaded<br />
         <br />
-        <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleColorHue} />
+        <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleTextColorHue} />
         <p style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.1rem', lineHeight: '1.5' }}>
           <br />
           lights, joystick, phone displays, signposts,<br />
@@ -144,12 +153,12 @@ const AppContent: React.FC = () => {
         </p>
       </div>
     </>
-  ), [loadingProgress, titleColorHue]);
+  ), [loadingProgress, titleTextColorHue]);
 
   // Handle mobile navigation
   const handleNavigationClick = useCallback((): void => {
-    setMobileScroll((mobileScrollCount || 0) + 1);
-  }, [setMobileScroll, mobileScrollCount]);
+    setMobileScrollTriggerCount((mobileScrollTriggerCount || 0) + 1);
+  }, [setMobileScrollTriggerCount, mobileScrollTriggerCount]);
 
   // Memoized button styles
   const navigationButtonStyle = useMemo((): React.CSSProperties => ({
@@ -163,18 +172,18 @@ const AppContent: React.FC = () => {
     cursor: 'pointer',
     width: '40px',
     height: '40px',
-    backgroundImage: `url(${isAudioMuted ? mute : volumeUp})`,
-    backgroundColor: isAudioMuted ? 'var(--rest-color)' : 'var(--active-color)',
+    backgroundImage: `url(${isAudioCurrentlyMuted ? mute : volumeUp})`,
+    backgroundColor: isAudioCurrentlyMuted ? 'var(--rest-color)' : 'var(--active-color)',
     marginTop: 20,
     marginRight: 20,
     border: 'none',
     padding: 0
-  }), [loadingProgress, isAudioMuted]);
+  }), [loadingProgress, isAudioCurrentlyMuted]);
 
   return (
     <>
       <link rel="manifest" href="/manifest.json" />
-      {selectedVibe != null ? (
+      {selectedThemeConfiguration != null ? (
         <Suspense fallback={<LoadingScreen />}>
           <div className="button-container">
             <Canvas>
@@ -206,14 +215,8 @@ const AppContent: React.FC = () => {
 };
 
 /**
- * Root App component with context providers
+ * Root App component
  */
 export default function App(): React.ReactElement {
-  return (
-    <InteractionProvider>
-      <UIProvider>
-        <AppContent />
-      </UIProvider>
-    </InteractionProvider>
-  );
+  return <AppContent />;
 }
