@@ -8,14 +8,16 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ThemeSelectionOption } from './ThemeSelectionOption';
 import { AVAILABLE_THEME_CONFIGURATIONS } from 'constants/themeConfiguration';
-import { useUI } from 'contexts';
+import { useUserInterfaceStore } from 'stores';
 import '../../css/launch.css';
 
 /**
  * Launch Screen component for theme selection
  */
 export const LaunchScreen: React.FC = React.memo(() => {
-  const { setVibe } = useUI();
+  // User interface store - selective subscription
+  const setSelectedThemeConfiguration = useUserInterfaceStore(state => state.setSelectedThemeConfiguration);
+
   const textAnimationRef = useRef<SVGSVGElement>(null);
   const [selectedVibeOption, setSelectedVibeOption] = useState<string | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
@@ -42,12 +44,12 @@ export const LaunchScreen: React.FC = React.memo(() => {
 
   const handleLaunchClick = useCallback((): void => {
     const selectedTheme = AVAILABLE_THEME_CONFIGURATIONS.find(theme => theme.id === selectedVibeOption);
-    setVibe(selectedTheme || null);
+    setSelectedThemeConfiguration(selectedTheme || null);
     setAnimationName('none');
     requestAnimationFrame(() =>
       setTimeout(() => setAnimationName('textStrokeAnim'), 0)
     );
-  }, [selectedVibeOption, setVibe, setAnimationName]);
+  }, [selectedVibeOption, setSelectedThemeConfiguration, setAnimationName]);
 
   return (
     <>
