@@ -17,18 +17,18 @@ export interface VibeIframeURLConfiguration {
  * Interactive slider mesh names
  */
 export const INTERACTIVE_SLIDER_MESH_NAMES: string[] = [
-  "Slider_4",
+  'Slider_4',
 ];
 
 /**
  * Instruction text mesh names
  */
 export const INSTRUCTION_TEXT_MESH_NAMES: string[] = [
-  "text_navigate",
-  "text_rotate",
-  "text_scroll",
-  "text_middle",
-  "text_click",
+  'text_navigate',
+  'text_rotate',
+  'text_scroll',
+  'text_middle',
+  'text_click',
 ];
 
 /**
@@ -37,28 +37,28 @@ export const INSTRUCTION_TEXT_MESH_NAMES: string[] = [
  */
 export const THEME_IFRAME_URL_CONFIGURATIONS: VibeIframeURLConfiguration[] = [
   {
-    iframe1: "https://freepacman.org/",
+    iframe1: 'https://freepacman.org/',
     iframe2:
-      "https://www.youtube.com/embed/pCx5Std7mCo?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "pCx5Std7mCo",
+      'https://www.youtube.com/embed/pCx5Std7mCo?enablejsapi=1&autoplay=1&loop=1&mute=0',
+    srcID: 'pCx5Std7mCo',
   },
   {
-    iframe1: "https://freepacman.org/",
+    iframe1: 'https://freepacman.org/',
     iframe2:
-      "https://www.youtube.com/embed/A3svABDnmio?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "A3svABDnmio",
+      'https://www.youtube.com/embed/A3svABDnmio?enablejsapi=1&autoplay=1&loop=1&mute=0',
+    srcID: 'A3svABDnmio',
   },
   {
-    iframe1: "https://freepacman.org/",
+    iframe1: 'https://freepacman.org/',
     iframe2:
-      "https://www.youtube.com/embed/JvNQLJ1_HQ0?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "JvNQLJ1_HQ0",
+      'https://www.youtube.com/embed/JvNQLJ1_HQ0?enablejsapi=1&autoplay=1&loop=1&mute=0',
+    srcID: 'JvNQLJ1_HQ0',
   },
   {
-    iframe1: "https://freepacman.org/",
+    iframe1: 'https://freepacman.org/',
     iframe2:
-      "https://www.youtube.com/embed/6HbrymTIbyg?enablejsapi=1&autoplay=1&loop=1&mute=0",
-    srcID: "6HbrymTIbyg",
+      'https://www.youtube.com/embed/6HbrymTIbyg?enablejsapi=1&autoplay=1&loop=1&mute=0',
+    srcID: '6HbrymTIbyg',
   },
 ];
 
@@ -66,24 +66,24 @@ export const THEME_IFRAME_URL_CONFIGURATIONS: VibeIframeURLConfiguration[] = [
  * Phone text node mesh names
  */
 export const PHONE_TEXT_NODE_MESH_NAMES: string[] = [
-  "Phone_Looper_Text",
-  "Phone_Vocabulary_Text",
-  "Phone_Italian_Text",
-  "Phone_Trachtenberg_Text",
-  "Phone_Movies_Text",
-  "Phone_Stocks_Text",
+  'Phone_Looper_Text',
+  'Phone_Vocabulary_Text',
+  'Phone_Italian_Text',
+  'Phone_Trachtenberg_Text',
+  'Phone_Movies_Text',
+  'Phone_Stocks_Text',
 ];
 
 /**
  * Phone mesh names (main phone objects)
  */
 export const PHONE_MESH_NAMES: string[] = [
-  "Phone_Looper_5",
-  "Phone_Vocabulary_5",
-  "Phone_Italian_5",
-  "Phone_Trachtenberg_5",
-  "Phone_Movies_5",
-  "Phone_Stocks_5",
+  'Phone_Looper_5',
+  'Phone_Vocabulary_5',
+  'Phone_Italian_5',
+  'Phone_Trachtenberg_5',
+  'Phone_Movies_5',
+  'Phone_Stocks_5',
 ];
 
 /**
