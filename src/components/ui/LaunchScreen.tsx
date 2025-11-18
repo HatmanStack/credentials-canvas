@@ -57,62 +57,62 @@ export const LaunchScreen: React.FC = React.memo(() => {
       'flex flex-col justify-center items-center',
       'm-8'
     )}>
-        <svg
-          className="title-stroke"
-          ref={textAnimationRef}
-          style={{ width: 265 }}
-        >
-          <text y="50%" dy=".3em">
+      <svg
+        className="title-stroke"
+        ref={textAnimationRef}
+        style={{ width: 265 }}
+      >
+        <text y="50%" dy=".3em">
             VIBE
+        </text>
+      </svg>
+      <div className={cn(
+        'checkbox-container',
+        'flex flex-row justify-center'
+      )}>
+        {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
+          <ThemeSelectionOption
+            key={theme.id}
+            theme={theme}
+            selectedVibe={selectedVibeOption}
+            onVibeSelect={handleVibeSelect}
+            textAnimationRef={textAnimationRef}
+          />
+        ))}
+      </div>
+      <div className={cn(
+        'flex flex-col justify-center items-center',
+        'm-0'
+      )}>
+        <button
+          className="reset"
+          ref={resetButtonRef}
+          onClick={handleLaunchClick}
+        >
+            LAUNCH
+        </button>
+        <svg
+          className="text-stroke-graphics"
+          ref={textAnimationRef}
+          style={{ width: 620 }}
+          display="None"
+        >
+          <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
+              LOW GRAPHICS
           </text>
         </svg>
-        <div className={cn(
-          'checkbox-container',
-          'flex flex-row justify-center'
-        )}>
-          {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
-            <ThemeSelectionOption
-              key={theme.id}
-              theme={theme}
-              selectedVibe={selectedVibeOption}
-              onVibeSelect={handleVibeSelect}
-              textAnimationRef={textAnimationRef}
-            />
-          ))}
-        </div>
-        <div className={cn(
-          'flex flex-col justify-center items-center',
-          'm-0'
-        )}>
-          <button
-            className="reset"
-            ref={resetButtonRef}
-            onClick={handleLaunchClick}
-          >
-            LAUNCH
-          </button>
-          <svg
-            className="text-stroke-graphics"
-            ref={textAnimationRef}
-            style={{ width: 620 }}
-            display="None"
-          >
-            <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
-              LOW GRAPHICS
-            </text>
-          </svg>
-          <a
-            href="https://www.cg-portfolio.com"
-            className={cn(
-              'text-white no-underline',
-              'mt-24 mb-12',
-              'transition-transform duration-300 ease-in-out',
-              'hover:scale-200'
-            )}
-          >
+        <a
+          href="https://www.cg-portfolio.com"
+          className={cn(
+            'text-white no-underline',
+            'mt-24 mb-12',
+            'transition-transform duration-300 ease-in-out',
+            'hover:scale-200'
+          )}
+        >
             Traditional Portfolio
-          </a>
-        </div>
+        </a>
       </div>
+    </div>
   );
 });
