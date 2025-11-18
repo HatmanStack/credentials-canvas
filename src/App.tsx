@@ -178,7 +178,7 @@ const AppContent: React.FC = () => {
       <link rel="manifest" href="/manifest.json" />
       {selectedThemeConfiguration != null ? (
         <Suspense fallback={<LoadingScreen />}>
-          <div className="button-container">
+          <div className={cn("relative h-full")}>
             <Canvas>
               <AudioController />
               <SceneModel />
