@@ -34,7 +34,8 @@ gltfLoader.setDRACOLoader(dracoLoader);
 function useGLTFLoaderWithDRACO(path: string) {
   // Type assertion needed: useGLTF expects UseDraco but we're providing GLTFLoader
   // with DRACO preconfigured. This is intentional to use custom DRACO paths.
-  const gltf = useGLTF(path, gltfLoader as any);
+  // Using unknown as intermediate for safe type assertion
+  const gltf = useGLTF(path, gltfLoader as unknown as boolean);
 
   // Clean up when component unmounts
   useEffect(() => {
