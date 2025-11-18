@@ -6,6 +6,7 @@
 
 import React, { useCallback } from 'react';
 import { CustomCheckbox } from './CustomCheckbox';
+import {cn} from 'utils/classNameUtils';
 import type { VibeThemeConfiguration } from 'types';
 
 /**
@@ -31,24 +32,15 @@ export const ThemeSelectionOption: React.FC<ThemeSelectionOptionProps> = React.m
     onVibeSelect(theme.id);
   }, [theme.id, onVibeSelect]);
 
-  const containerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: '2em',
-  };
-
-  const svgStyle: React.CSSProperties = {
-    width: theme.svgWidth
-  };
-
   return (
-    <div style={containerStyle}>
+    <div className={cn(
+      "flex flex-col justify-center items-center",
+      "m-8"
+    )}>
       <svg
         className={`text-stroke-${theme.name}`}
         ref={textAnimationRef}
-        style={svgStyle}
+        style={{ width: theme.svgWidth }}
       >
         <text y="50%" dy=".3em">
           {theme.displayName}
