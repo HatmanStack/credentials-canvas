@@ -6,7 +6,7 @@
 
 import React, { useCallback } from 'react';
 import { CustomCheckbox } from './CustomCheckbox';
-import {cn} from 'utils/classNameUtils';
+import { cn } from 'utils/classNameUtils';
 import type { VibeThemeConfiguration } from 'types';
 
 /**
@@ -34,8 +34,8 @@ export const ThemeSelectionOption: React.FC<ThemeSelectionOptionProps> = React.m
 
   return (
     <div className={cn(
-      "flex flex-col justify-center items-center",
-      "m-8"
+      'flex flex-col justify-center items-center',
+      'm-8'
     )}>
       <svg
         className={`text-stroke-${theme.name}`}

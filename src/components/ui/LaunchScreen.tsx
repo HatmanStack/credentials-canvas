@@ -9,7 +9,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ThemeSelectionOption } from './ThemeSelectionOption';
 import { AVAILABLE_THEME_CONFIGURATIONS } from 'constants/themeConfiguration';
 import { useUserInterfaceStore } from 'stores';
-import {cn} from 'utils/classNameUtils';
+import { cn } from 'utils/classNameUtils';
 import '../../css/launch.css';
 
 /**
@@ -54,8 +54,8 @@ export const LaunchScreen: React.FC = React.memo(() => {
 
   return (
     <div className={cn(
-      "flex flex-col justify-center items-center",
-      "m-8"
+      'flex flex-col justify-center items-center',
+      'm-8'
     )}>
         <svg
           className="title-stroke"
@@ -67,8 +67,8 @@ export const LaunchScreen: React.FC = React.memo(() => {
           </text>
         </svg>
         <div className={cn(
-          "checkbox-container",
-          "flex flex-row justify-center"
+          'checkbox-container',
+          'flex flex-row justify-center'
         )}>
           {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
             <ThemeSelectionOption
@@ -81,8 +81,8 @@ export const LaunchScreen: React.FC = React.memo(() => {
           ))}
         </div>
         <div className={cn(
-          "flex flex-col justify-center items-center",
-          "m-0"
+          'flex flex-col justify-center items-center',
+          'm-0'
         )}>
           <button
             className="reset"
@@ -104,10 +104,10 @@ export const LaunchScreen: React.FC = React.memo(() => {
           <a
             href="https://www.cg-portfolio.com"
             className={cn(
-              "text-white no-underline",
-              "mt-24 mb-12",
-              "transition-transform duration-300 ease-in-out",
-              "hover:scale-200"
+              'text-white no-underline',
+              'mt-24 mb-12',
+              'transition-transform duration-300 ease-in-out',
+              'hover:scale-200'
             )}
           >
             Traditional Portfolio

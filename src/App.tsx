@@ -22,7 +22,7 @@ import handGif from './assets/hand.gif';
 import volumeUp from './assets/volume_up.svg';
 import mute from './assets/volume_mute.svg';
 import arrowIcon from './assets/arrow.svg';
-import {cn} from 'utils/classNameUtils';
+import { cn } from 'utils/classNameUtils';
 
 // Preload GLTF model
 useGLTF.preload(GLTF_MODEL_FILE_PATH);
@@ -178,7 +178,7 @@ const AppContent: React.FC = () => {
       <link rel="manifest" href="/manifest.json" />
       {selectedThemeConfiguration != null ? (
         <Suspense fallback={<LoadingScreen />}>
-          <div className={cn("relative h-full")}>
+          <div className={cn('relative h-full')}>
             <Canvas>
               <AudioController />
               <SceneModel />
@@ -187,16 +187,16 @@ const AppContent: React.FC = () => {
             </Canvas>
             <button
               className={cn(
-                "w-12 h-12 rounded-full",
-                "absolute bottom-0 left-0",
-                "ml-5 mb-5",
-                "border-0 p-0",
-                "bg-rest-color",
-                "bg-no-repeat bg-center",
-                "bg-[length:75%]",
-                "z-10",
-                "active:scale-95 active:bg-active-color",
-                "transition-transform duration-200"
+                'w-12 h-12 rounded-full',
+                'absolute bottom-0 left-0',
+                'ml-5 mb-5',
+                'border-0 p-0',
+                'bg-rest-color',
+                'bg-no-repeat bg-center',
+                'bg-[length:75%]',
+                'z-10',
+                'active:scale-95 active:bg-active-color',
+                'transition-transform duration-200'
               )}
               ref={navigationButtonRef}
               style={navigationButtonStyle}
@@ -205,17 +205,17 @@ const AppContent: React.FC = () => {
             />
             <button
               className={cn(
-                "w-10 h-10 rounded-full",
-                "absolute top-0 right-0",
-                "mt-5 mr-5",
-                "border-0 p-0",
-                "cursor-pointer",
-                "bg-no-repeat bg-center",
-                "bg-[length:75%]",
-                "z-10",
-                "transition-transform duration-200",
-                "active:scale-95",
-                isAudioCurrentlyMuted ? "bg-rest-color" : "bg-active-color"
+                'w-10 h-10 rounded-full',
+                'absolute top-0 right-0',
+                'mt-5 mr-5',
+                'border-0 p-0',
+                'cursor-pointer',
+                'bg-no-repeat bg-center',
+                'bg-[length:75%]',
+                'z-10',
+                'transition-transform duration-200',
+                'active:scale-95',
+                isAudioCurrentlyMuted ? 'bg-rest-color' : 'bg-active-color'
               )}
               ref={muteButtonRef}
               style={muteButtonStyle}
