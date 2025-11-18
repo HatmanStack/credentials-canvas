@@ -128,15 +128,15 @@ export const useSceneInteractionStore = create<SceneInteractionState>()(
       cameraInterpolationProgress: 0,
 
       // Actions - Mesh interactions
-      setClickedMeshPosition: (position) =>
+      setClickedMeshPosition: position =>
         set({ clickedMeshPosition: position }, false, 'setClickedMeshPosition'),
 
-      setClickedLightName: (name) =>
+      setClickedLightName: name =>
         set({ clickedLightName: name }, false, 'setClickedLightName'),
 
       incrementClickCount: () =>
         set(
-          (state) => ({ totalClickCount: state.totalClickCount + 1 }),
+          state => ({ totalClickCount: state.totalClickCount + 1 }),
           false,
           'incrementClickCount'
         ),
@@ -145,17 +145,17 @@ export const useSceneInteractionStore = create<SceneInteractionState>()(
         set({ totalClickCount: 0 }, false, 'resetClickCount'),
 
       // Actions - View state
-      setIsCloseUpViewActive: (isActive) =>
+      setIsCloseUpViewActive: isActive =>
         set({ isCloseUpViewActive: isActive }, false, 'setIsCloseUpViewActive'),
 
-      setIsUserCurrentlyDragging: (isDragging) =>
+      setIsUserCurrentlyDragging: isDragging =>
         set({ isUserCurrentlyDragging: isDragging }, false, 'setIsUserCurrentlyDragging'),
 
       // Actions - Scroll state
-      setHasUserStartedScrolling: (hasStarted) =>
+      setHasUserStartedScrolling: hasStarted =>
         set({ hasUserStartedScrolling: hasStarted }, false, 'setHasUserStartedScrolling'),
 
-      setMobileScrollTriggerCount: (count) =>
+      setMobileScrollTriggerCount: count =>
         set({ mobileScrollTriggerCount: count }, false, 'setMobileScrollTriggerCount'),
 
       triggerMobileScrollNavigation: () => {
@@ -168,10 +168,10 @@ export const useSceneInteractionStore = create<SceneInteractionState>()(
       },
 
       // Actions - Camera state
-      setCurrentCameraPositionIndex: (index) =>
+      setCurrentCameraPositionIndex: index =>
         set({ currentCameraPositionIndex: index }, false, 'setCurrentCameraPositionIndex'),
 
-      setCameraInterpolationProgress: (progress) =>
+      setCameraInterpolationProgress: progress =>
         set({ cameraInterpolationProgress: progress }, false, 'setCameraInterpolationProgress'),
 
       // Reset action

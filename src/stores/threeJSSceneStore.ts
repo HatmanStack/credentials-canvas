@@ -64,16 +64,16 @@ export interface ThreeJSSceneState {
  */
 export const useThreeJSSceneStore = create<ThreeJSSceneState>()(
   devtools(
-    (set) => ({
+    set => ({
       // Initial state
       threeJSSceneModel: null,
       htmlVideoPlayerElement: null,
 
       // Actions
-      setThreeJSSceneModel: (scene) =>
+      setThreeJSSceneModel: scene =>
         set({ threeJSSceneModel: scene }, false, 'setThreeJSSceneModel'),
 
-      setHTMLVideoPlayerElement: (player) =>
+      setHTMLVideoPlayerElement: player =>
         set({ htmlVideoPlayerElement: player }, false, 'setHTMLVideoPlayerElement'),
 
       // Reset action

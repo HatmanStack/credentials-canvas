@@ -98,7 +98,7 @@ export interface UserInterfaceState {
  */
 export const useUserInterfaceStore = create<UserInterfaceState>()(
   devtools(
-    (set) => ({
+    set => ({
       // Initial state - Theme
       selectedThemeConfiguration: null,
       titleTextColorHue: null,
@@ -120,36 +120,36 @@ export const useUserInterfaceStore = create<UserInterfaceState>()(
       },
 
       // Actions - Theme
-      setSelectedThemeConfiguration: (theme) =>
+      setSelectedThemeConfiguration: theme =>
         set({ selectedThemeConfiguration: theme }, false, 'setSelectedThemeConfiguration'),
 
-      setTitleTextColorHue: (hue) =>
+      setTitleTextColorHue: hue =>
         set({ titleTextColorHue: hue }, false, 'setTitleTextColorHue'),
 
       // Actions - UI visibility
-      setShouldShowArcadeIframe: (show) =>
+      setShouldShowArcadeIframe: show =>
         set({ shouldShowArcadeIframe: show }, false, 'setShouldShowArcadeIframe'),
 
-      setShouldShowMusicIframe: (show) =>
+      setShouldShowMusicIframe: show =>
         set({ shouldShowMusicIframe: show }, false, 'setShouldShowMusicIframe'),
 
       // Actions - Audio
-      setIsAudioCurrentlyMuted: (isMuted) =>
+      setIsAudioCurrentlyMuted: isMuted =>
         set({ isAudioCurrentlyMuted: isMuted }, false, 'setIsAudioCurrentlyMuted'),
 
       toggleAudioMute: () =>
         set(
-          (state) => ({ isAudioCurrentlyMuted: !state.isAudioCurrentlyMuted }),
+          state => ({ isAudioCurrentlyMuted: !state.isAudioCurrentlyMuted }),
           false,
           'toggleAudioMute'
         ),
 
       // Actions - Responsive
-      setCurrentWindowWidth: (width) =>
+      setCurrentWindowWidth: width =>
         set({ currentWindowWidth: width }, false, 'setCurrentWindowWidth'),
 
       // Actions - Lighting
-      setCurrentLightIntensityConfiguration: (config) =>
+      setCurrentLightIntensityConfiguration: config =>
         set(
           { currentLightIntensityConfiguration: config },
           false,
