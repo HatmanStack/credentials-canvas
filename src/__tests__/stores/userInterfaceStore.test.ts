@@ -51,13 +51,13 @@ describe('userInterfaceStore', () => {
         result.current.setSelectedThemeConfiguration(urbanTheme);
       });
 
-      expect(result.current.selectedThemeConfiguration?.vibeIdentifier).toBe('urban');
+      expect(result.current.selectedThemeConfiguration?.name).toBe('urban');
 
       act(() => {
         result.current.setSelectedThemeConfiguration(ruralTheme);
       });
 
-      expect(result.current.selectedThemeConfiguration?.vibeIdentifier).toBe('rural');
+      expect(result.current.selectedThemeConfiguration?.name).toBe('rural');
     });
 
     it('should set title text color hue', () => {

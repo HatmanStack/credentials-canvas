@@ -20,6 +20,19 @@ module.exports = {
   // Test environment
   testEnvironment: 'jsdom',
 
+  // Test file patterns - only match .test.ts(x) files
+  testMatch: [
+    '**/__tests__/**/*.test.ts',
+    '**/__tests__/**/*.test.tsx',
+  ],
+
+  // Ignore test utilities and mocks
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/__tests__/mocks/.*\\.ts$',
+    '/__tests__/utils/testUtils\\.tsx$',
+  ],
+
   // Coverage collection configuration
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -27,6 +40,7 @@ module.exports = {
     '!src/index.tsx',
     '!src/reportWebVitals.ts',
     '!src/types/**/*',
+    '!src/__tests__/**/*',
   ],
 
   // Coverage thresholds

@@ -4,13 +4,27 @@
  */
 
 /**
+ * Mock Three.js Vector3 type
+ */
+type MockVector3 = {
+  x: number;
+  y: number;
+  z: number;
+  copy: jest.Mock;
+  set: jest.Mock;
+  lerp: jest.Mock;
+  lerpVectors: jest.Mock;
+  clone: jest.Mock;
+};
+
+/**
  * Mock Three.js Vector3 for testing
  * @param x - X coordinate
  * @param y - Y coordinate
  * @param z - Z coordinate
  * @returns Mock Vector3 object
  */
-export const createMockVector3 = (x = 0, y = 0, z = 0) => ({
+export const createMockVector3 = (x = 0, y = 0, z = 0): MockVector3 => ({
   x,
   y,
   z,

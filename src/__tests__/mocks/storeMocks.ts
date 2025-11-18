@@ -94,8 +94,8 @@ export const createMockUserInterfaceStore = (
     overrides?: Partial<UserInterfaceState>,
 ) => {
   const defaultLightConfig: LightIntensityConfiguration = {
-    lightIdentifier: 'DefaultLight',
-    intensityValue: 1,
+    sliderName: 'DefaultLight',
+    intensity: 1,
   };
 
   return create<UserInterfaceState>()((set, get) => ({
@@ -185,23 +185,21 @@ export const createMockThreeJSSceneStore = (
 
 /**
  * Create a mock theme configuration for testing
- * @param themeIdentifier - Theme identifier
+ * @param themeName - Theme name
  * @returns Mock theme configuration
  */
 export const createMockThemeConfiguration = (
-    themeIdentifier: 'urban' | 'rural' | 'classy' | 'chill' = 'urban',
+    themeName: 'urban' | 'rural' | 'classy' | 'chill' = 'urban',
 ): VibeThemeConfiguration => ({
-  vibeIdentifier: themeIdentifier,
-  titleColorHue: themeIdentifier === 'urban' ? 10 :
-    themeIdentifier === 'rural' ? 120 :
-    themeIdentifier === 'classy' ? 0 : 230,
-  activeButtonColorHex: themeIdentifier === 'urban' ? '#e96929' :
-    themeIdentifier === 'rural' ? '#80c080' :
-    themeIdentifier === 'classy' ? '#ef5555' : '#9fa8da',
-  restingButtonColorHex: themeIdentifier === 'urban' ? '#e96929' :
-    themeIdentifier === 'rural' ? '#80c080' :
-    themeIdentifier === 'classy' ? '#ef5555' : '#9fa8da',
-  externalVideoURL: `https://example.com/${themeIdentifier}`,
-  externalArcadeURL: `https://example.com/${themeIdentifier}-arcade`,
-  externalMusicURL: `https://example.com/${themeIdentifier}-music`,
+  id: themeName === 'urban' ? '0' :
+    themeName === 'rural' ? '1' :
+    themeName === 'classy' ? '2' : '3',
+  name: themeName,
+  color: themeName === 'urban' ? '#E96929' :
+    themeName === 'rural' ? '#80C080' :
+    themeName === 'classy' ? '#EF5555' : '#9FA8DA',
+  displayName: themeName.toUpperCase() as 'URBAN' | 'RURAL' | 'CLASSY' | 'CHILL',
+  svgWidth: themeName === 'urban' ? 280 :
+    themeName === 'rural' ? 275 :
+    themeName === 'classy' ? 320 : 240,
 });
