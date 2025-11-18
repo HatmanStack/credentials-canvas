@@ -1,0 +1,23 @@
+/* Custom animations that Tailwind doesn't replace */
+@import '../css/checkbox.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    @apply w-full h-full m-0 p-0 bg-background-primary;
+  }
+}
+
+/* Custom title color animation with CSS custom properties */
+.main__title-letter {
+  color: hsl(
+    calc(
+      var(--start-color-hue) + (var(--end-color-hue) - var(--start-color-hue)) * (var(--main__title-letter) / var(--total-letters))
+    ),
+    100%,
+    50%
+  );
+}
