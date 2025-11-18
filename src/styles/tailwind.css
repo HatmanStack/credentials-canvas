@@ -2,5 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html, body, #root {
+    @apply w-full h-full m-0 p-0 bg-background-primary;
+  }
+}
+
 /* Custom animations that Tailwind doesn't replace */
 @import '../css/checkbox.css';
