@@ -6,7 +6,6 @@
  */
 
 import React, { useEffect, useRef, useCallback } from 'react';
-import '../../css/checkbox.css';
 import type { ThemeName } from 'types';
 
 /**
