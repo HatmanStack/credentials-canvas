@@ -1,7 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
+  safelist: [
+    // Dynamic theme classes that use template literals
+    // These are CSS classes in launch.css, not Tailwind-generated
+    // Safelist ensures they're documented and won't be purged if moved to Tailwind
+    'text-stroke-urban',
+    'text-stroke-rural',
+    'text-stroke-classy',
+    'text-stroke-chill',
+    'text-stroke-graphics',
+    'title-stroke',
   ],
   theme: {
     extend: {
