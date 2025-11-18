@@ -1,8 +1,8 @@
-import {renderHook} from '@testing-library/react';
-import {useCameraPositionAnimation} from 'hooks/useCameraPositionAnimation';
-import {createMockCamera} from 'test-helpers/threeMocks';
-import type {Camera} from 'three';
-import {Vector3} from 'three';
+import { renderHook } from '@testing-library/react';
+import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
+import { createMockCamera } from 'test-helpers/threeMocks';
+import type { Camera } from 'three';
+import { Vector3 } from 'three';
 
 // Mock the constants
 jest.mock('constants/cameraConfiguration', () => ({
@@ -35,7 +35,7 @@ jest.mock('constants/cameraConfiguration', () => ({
 
 // Mock requestAnimationFrame
 beforeAll(() => {
-  global.requestAnimationFrame = jest.fn((cb) => {
+  global.requestAnimationFrame = jest.fn(cb => {
     cb(Date.now());
     return 0;
   });
@@ -59,7 +59,7 @@ describe('useCameraPositionAnimation', () => {
 
   describe('initialization', () => {
     it('should initialize with rotation point', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 1920,
@@ -78,7 +78,7 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should initialize rotation point on mount', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 1920,
@@ -100,63 +100,63 @@ describe('useCameraPositionAnimation', () => {
 
   describe('rotation target updates', () => {
     it('should update rotation target based on current camera index', () => {
-      const {result, rerender} = renderHook(
-          ({currentPosIndex}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: false,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex,
-              clickPoint: null,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {currentPosIndex: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ currentPosIndex }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: false,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex,
+            clickPoint: null,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { currentPosIndex: 0 },
+        },
       );
 
       const initialRotation = result.current.rotationPoint;
       expect(initialRotation).toBeInstanceOf(Vector3);
 
       // Change camera index
-      rerender({currentPosIndex: 1});
+      rerender({ currentPosIndex: 1 });
 
       const updatedRotation = result.current.rotationPoint;
       expect(updatedRotation).toBeInstanceOf(Vector3);
     });
 
     it('should update rotation target when in close-up view', () => {
-      const {result, rerender} = renderHook(
-          ({closeUp, closeUpPosIndex}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp,
-              closeUpPosIndex,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint: null,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {closeUp: false, closeUpPosIndex: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ closeUp, closeUpPosIndex }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp,
+            closeUpPosIndex,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint: null,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { closeUp: false, closeUpPosIndex: 0 },
+        },
       );
 
       // Enter close-up mode
-      rerender({closeUp: true, closeUpPosIndex: 1});
+      rerender({ closeUp: true, closeUpPosIndex: 1 });
 
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
     });
 
     it('should handle safe index clamping for close-up rotation', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 1920,
@@ -176,7 +176,7 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should handle safe index clamping for camera rotation', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 1920,
@@ -198,27 +198,27 @@ describe('useCameraPositionAnimation', () => {
 
   describe('click point navigation', () => {
     it('should handle click point and enter close-up mode', () => {
-      const {rerender} = renderHook(
-          ({clickPoint}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: false,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {clickPoint: null as string | null},
-          },
+      const { rerender } = renderHook(
+        ({ clickPoint }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: false,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { clickPoint: null as string | null },
+        },
       );
 
       // Trigger click on a mesh
-      rerender({clickPoint: 'mesh1'});
+      rerender({ clickPoint: 'mesh1' });
 
       expect(mockSetCloseUp).toHaveBeenCalledWith(true);
       expect(mockSetCloseUpPosIndex).toHaveBeenCalled();
@@ -226,51 +226,51 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should map click point to correct camera index', () => {
-      const {rerender} = renderHook(
-          ({clickPoint}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: false,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {clickPoint: null as string | null},
-          },
+      const { rerender } = renderHook(
+        ({ clickPoint }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: false,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { clickPoint: null as string | null },
+        },
       );
 
-      rerender({clickPoint: 'mesh2'});
+      rerender({ clickPoint: 'mesh2' });
 
       expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(1);
     });
 
     it('should handle unknown click point with fallback index', () => {
-      const {rerender} = renderHook(
-          ({clickPoint}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: false,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {clickPoint: null as string | null},
-          },
+      const { rerender } = renderHook(
+        ({ clickPoint }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: false,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { clickPoint: null as string | null },
+        },
       );
 
-      rerender({clickPoint: 'unknown-mesh'});
+      rerender({ clickPoint: 'unknown-mesh' });
 
       expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(0);
     });
@@ -293,7 +293,7 @@ describe('useCameraPositionAnimation', () => {
 
       // Should not trigger close-up (except initial animation calls)
       const closeUpCalls = mockSetCloseUp.mock.calls.filter(
-          (call) => call[0] === true,
+        call => call[0] === true,
       );
       expect(closeUpCalls.length).toBe(0);
     });
@@ -339,28 +339,28 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should use desktop position array for width > 800', () => {
-      const {rerender} = renderHook(
-          ({windowWidth}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth,
-              closeUp: true,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint: null,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {windowWidth: 1920},
-          },
+      const { rerender } = renderHook(
+        ({ windowWidth }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth,
+            closeUp: true,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint: null,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { windowWidth: 1920 },
+        },
       );
 
       const desktopCalls = (mockCamera.position.copy as jest.Mock).mock.calls.length;
 
-      rerender({windowWidth: 600});
+      rerender({ windowWidth: 600 });
 
       // Should have made additional calls for mobile
       expect((mockCamera.position.copy as jest.Mock).mock.calls.length).toBeGreaterThan(desktopCalls);
@@ -390,28 +390,28 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should update position when closeUpPosIndex changes', () => {
-      const {rerender} = renderHook(
-          ({closeUpPosIndex}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: true,
-              closeUpPosIndex,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint: null,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {closeUpPosIndex: 0},
-          },
+      const { rerender } = renderHook(
+        ({ closeUpPosIndex }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: true,
+            closeUpPosIndex,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint: null,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { closeUpPosIndex: 0 },
+        },
       );
 
       const initialCalls = (mockCamera.position.copy as jest.Mock).mock.calls.length;
 
-      rerender({closeUpPosIndex: 1});
+      rerender({ closeUpPosIndex: 1 });
 
       expect((mockCamera.position.copy as jest.Mock).mock.calls.length).toBeGreaterThan(initialCalls);
     });
@@ -419,27 +419,27 @@ describe('useCameraPositionAnimation', () => {
 
   describe('screen width responsiveness', () => {
     it('should respond to screen width changes', () => {
-      const {rerender} = renderHook(
-          ({windowWidth}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth,
-              closeUp: true,
-              closeUpPosIndex: 1,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint: null,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {windowWidth: 1920},
-          },
+      const { rerender } = renderHook(
+        ({ windowWidth }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth,
+            closeUp: true,
+            closeUpPosIndex: 1,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint: null,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { windowWidth: 1920 },
+        },
       );
 
       // Change to mobile width
-      rerender({windowWidth: 375});
+      rerender({ windowWidth: 375 });
 
       expect(mockCamera.position.copy).toHaveBeenCalled();
     });
@@ -466,7 +466,7 @@ describe('useCameraPositionAnimation', () => {
 
   describe('edge cases', () => {
     it('should handle zero window width', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 0, // Edge case
@@ -486,29 +486,29 @@ describe('useCameraPositionAnimation', () => {
     });
 
     it('should handle rapid click point changes', () => {
-      const {rerender} = renderHook(
-          ({clickPoint}) =>
-            useCameraPositionAnimation({
-              camera: mockCamera,
-              windowWidth: 1920,
-              closeUp: false,
-              closeUpPosIndex: 0,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              currentPosIndex: 0,
-              clickPoint,
-              setClickPoint: mockSetClickPoint,
-              setCloseUp: mockSetCloseUp,
-              setCameraClone: mockSetCameraClone,
-            }),
-          {
-            initialProps: {clickPoint: null as string | null},
-          },
+      const { rerender } = renderHook(
+        ({ clickPoint }) =>
+          useCameraPositionAnimation({
+            camera: mockCamera,
+            windowWidth: 1920,
+            closeUp: false,
+            closeUpPosIndex: 0,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            currentPosIndex: 0,
+            clickPoint,
+            setClickPoint: mockSetClickPoint,
+            setCloseUp: mockSetCloseUp,
+            setCameraClone: mockSetCameraClone,
+          }),
+        {
+          initialProps: { clickPoint: null as string | null },
+        },
       );
 
       // Rapid clicks
-      rerender({clickPoint: 'mesh1'});
-      rerender({clickPoint: 'mesh2'});
-      rerender({clickPoint: 'mesh3'});
+      rerender({ clickPoint: 'mesh1' });
+      rerender({ clickPoint: 'mesh2' });
+      rerender({ clickPoint: 'mesh3' });
 
       expect(mockSetClickPoint).toHaveBeenCalledTimes(3);
     });

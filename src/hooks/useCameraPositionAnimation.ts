@@ -85,10 +85,16 @@ export const useCameraPositionAnimation = ({
   // Handle close-up camera positioning
   useEffect(() => {
     if (closeUpCameraIndex !== 9) {
-      const targetPosition: CameraPositionTuple = screenWidth > 800 ?
-        CLOSE_UP_CAMERA_POSITION_ARRAY[closeUpCameraIndex] :
-        CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN[closeUpCameraIndex];
-      camera.position.copy(new Vector3(...targetPosition));
+      // Pick the appropriate positions array based on screen width
+      const positions = screenWidth > 800 ?
+        CLOSE_UP_CAMERA_POSITION_ARRAY :
+        CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN;
+
+      // Validate index is within bounds before accessing array
+      if (closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length) {
+        const targetPosition: CameraPositionTuple = positions[closeUpCameraIndex];
+        camera.position.copy(new Vector3(...targetPosition));
+      }
     }
   }, [closeUpCameraIndex, screenWidth, camera]);
 

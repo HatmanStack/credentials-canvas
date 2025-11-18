@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, RenderOptions} from '@testing-library/react';
+import { render, RenderOptions } from '@testing-library/react';
 
 /**
  * Custom render function with common providers
@@ -11,14 +11,14 @@ import {render, RenderOptions} from '@testing-library/react';
  * @returns Render result
  */
 const customRender = (
-    ui: React.ReactElement,
-    options?: Omit<RenderOptions, 'wrapper'>,
+  ui: React.ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>,
 ) => {
-  return render(ui, {...options});
+  return render(ui, { ...options });
 };
 
 // Re-export everything from React Testing Library
 export * from '@testing-library/react';
 
 // Export custom render as named export
-export {customRender as render};
+export { customRender as render };

@@ -41,6 +41,8 @@ export const ThemeSelectionOption: React.FC<ThemeSelectionOptionProps> = React.m
         className={`text-stroke-${theme.name}`}
         ref={textAnimationRef}
         style={{ width: theme.svgWidth }}
+        role="img"
+        aria-label={`${theme.displayName} theme option`}
       >
         <text y="50%" dy=".3em">
           {theme.displayName}

@@ -40,7 +40,7 @@ export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({
     // Direct URL links (external sites)
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
       incrementClickCount();
-      window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
+      window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank', 'noopener,noreferrer');
       return;
     }
 
@@ -66,7 +66,7 @@ export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({
           }
 
           if (newCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT && phoneUrl.url) {
-            window.open(phoneUrl.url, '_blank');
+            window.open(phoneUrl.url, '_blank', 'noopener,noreferrer');
           }
         }
         break;

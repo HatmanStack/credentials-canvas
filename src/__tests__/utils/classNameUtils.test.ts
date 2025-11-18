@@ -1,4 +1,4 @@
-import {cn} from 'utils/classNameUtils';
+import { cn } from 'utils/classNameUtils';
 
 describe('cn utility', () => {
   describe('basic functionality', () => {
@@ -41,10 +41,10 @@ describe('cn utility', () => {
       const isActive = true;
       const isDisabled = false;
       expect(cn(
-          'base',
-          isActive && 'active',
-          isDisabled && 'disabled',
-          isActive && !isDisabled && 'enabled',
+        'base',
+        isActive && 'active',
+        isDisabled && 'disabled',
+        isActive && !isDisabled && 'enabled',
       )).toBe('base active enabled');
     });
   });
@@ -125,15 +125,15 @@ describe('cn utility', () => {
 
   describe('objects', () => {
     it('should handle objects with boolean values', () => {
-      expect(cn({foo: true, bar: false})).toBe('foo');
+      expect(cn({ foo: true, bar: false })).toBe('foo');
     });
 
     it('should handle objects with all true values', () => {
-      expect(cn({foo: true, bar: true, baz: true})).toBe('foo bar baz');
+      expect(cn({ foo: true, bar: true, baz: true })).toBe('foo bar baz');
     });
 
     it('should handle objects with all false values', () => {
-      expect(cn({foo: false, bar: false})).toBe('');
+      expect(cn({ foo: false, bar: false })).toBe('');
     });
 
     it('should handle objects with mixed values', () => {
@@ -153,31 +153,31 @@ describe('cn utility', () => {
   describe('mixed inputs', () => {
     it('should handle strings, arrays, and objects together', () => {
       expect(cn(
-          'base',
-          ['foo', 'bar'],
-          {active: true, disabled: false},
-          'extra',
+        'base',
+        ['foo', 'bar'],
+        { active: true, disabled: false },
+        'extra',
       )).toBe('base foo bar active extra');
     });
 
     it('should handle complex mixed inputs', () => {
       expect(cn(
-          'px-2 py-1',
-          true && 'bg-blue-500',
-          ['text-white', false && 'hidden'],
-          {rounded: true, shadow: false},
-          null,
-          undefined,
-          'hover:bg-blue-600',
+        'px-2 py-1',
+        true && 'bg-blue-500',
+        ['text-white', false && 'hidden'],
+        { rounded: true, shadow: false },
+        null,
+        undefined,
+        'hover:bg-blue-600',
       )).toBe('px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600');
     });
 
     it('should handle conflicts in mixed inputs', () => {
       expect(cn(
-          'px-2',
-          ['px-4', 'py-2'],
-          {active: true},
-          'px-6',
+        'px-2',
+        ['px-4', 'py-2'],
+        { active: true },
+        'px-6',
       )).toBe('py-2 active px-6');
     });
   });
@@ -187,36 +187,36 @@ describe('cn utility', () => {
       const isActive = true;
       const isDisabled = false;
       expect(cn(
-          'px-4 py-2 rounded-lg font-semibold',
-          'transition-all duration-200',
-          isActive && 'bg-blue-500 text-white',
-          !isActive && 'bg-gray-200 text-gray-700',
-          isDisabled && 'opacity-50 cursor-not-allowed',
+        'px-4 py-2 rounded-lg font-semibold',
+        'transition-all duration-200',
+        isActive && 'bg-blue-500 text-white',
+        !isActive && 'bg-gray-200 text-gray-700',
+        isDisabled && 'opacity-50 cursor-not-allowed',
       )).toBe('px-4 py-2 rounded-lg font-semibold transition-all duration-200 bg-blue-500 text-white');
     });
 
     it('should handle responsive classes', () => {
       expect(cn(
-          'w-full',
-          'md:w-1/2',
-          'lg:w-1/3',
-          'xl:w-1/4',
+        'w-full',
+        'md:w-1/2',
+        'lg:w-1/3',
+        'xl:w-1/4',
       )).toBe('w-full md:w-1/2 lg:w-1/3 xl:w-1/4');
     });
 
     it('should handle hover and focus states', () => {
       expect(cn(
-          'bg-blue-500',
-          'hover:bg-blue-600',
-          'focus:bg-blue-700',
-          'active:bg-blue-800',
+        'bg-blue-500',
+        'hover:bg-blue-600',
+        'focus:bg-blue-700',
+        'active:bg-blue-800',
       )).toBe('bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 active:bg-blue-800');
     });
 
     it('should handle dark mode classes', () => {
       expect(cn(
-          'bg-white text-black',
-          'dark:bg-gray-900 dark:text-white',
+        'bg-white text-black',
+        'dark:bg-gray-900 dark:text-white',
       )).toBe('bg-white text-black dark:bg-gray-900 dark:text-white');
     });
   });

@@ -68,11 +68,20 @@ export const useCameraScrollBehavior = ({
   }, [currentCameraIndex]);
 
   const handleMobileScroll = useCallback(() => {
+    // Guard against invalid positions array or index
+    if (cameraPositions.length === 0) return;
+
     setScrollStarted(true);
     setCloseUp(false);
     setCloseUpCameraIndex(9);
 
     const currentIndex = mobileIndexRef.current;
+
+    // Validate current index is within bounds
+    if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
+      return;
+    }
+
     const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
     mobileScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.mobile / 2;
 
@@ -111,11 +120,20 @@ export const useCameraScrollBehavior = ({
     if (!domElement) return;
 
     const handleDesktopScroll = (_event: WheelEvent): void => {
+      // Guard against invalid positions array or index
+      if (cameraPositions.length === 0) return;
+
       setScrollStarted(true);
       setCloseUp(false);
       setCloseUpCameraIndex(9);
 
       const currentIndex = desktopIndexRef.current;
+
+      // Validate current index is within bounds
+      if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
+        return;
+      }
+
       const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
       desktopScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.desktop / 2;
 

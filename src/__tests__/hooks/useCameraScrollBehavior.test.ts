@@ -1,8 +1,8 @@
-import {renderHook, act} from '@testing-library/react';
-import {useCameraScrollBehavior} from 'hooks/useCameraScrollBehavior';
-import {createMockCamera} from 'test-helpers/threeMocks';
-import type {Camera} from 'three';
-import type {CameraPositionTuple} from 'types';
+import { renderHook, act } from '@testing-library/react';
+import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
+import { createMockCamera } from 'test-helpers/threeMocks';
+import type { Camera } from 'three';
+import type { CameraPositionTuple } from 'types';
 
 // Mock the constants
 jest.mock('constants/cameraConfiguration', () => ({
@@ -47,7 +47,7 @@ describe('useCameraScrollBehavior', () => {
 
   describe('initialization', () => {
     it('should initialize without errors', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -69,7 +69,7 @@ describe('useCameraScrollBehavior', () => {
     });
 
     it('should return handleMobileScroll function', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -112,8 +112,8 @@ describe('useCameraScrollBehavior', () => {
       );
 
       expect(addEventListenerSpy).toHaveBeenCalledWith(
-          'wheel',
-          expect.any(Function),
+        'wheel',
+        expect.any(Function),
       );
     });
 
@@ -136,7 +136,7 @@ describe('useCameraScrollBehavior', () => {
       );
 
       act(() => {
-        const wheelEvent = new WheelEvent('wheel', {deltaY: 100});
+        const wheelEvent = new WheelEvent('wheel', { deltaY: 100 });
         mockDomElement.dispatchEvent(wheelEvent);
       });
 
@@ -148,7 +148,7 @@ describe('useCameraScrollBehavior', () => {
     it('should clean up wheel event listener on unmount', () => {
       const removeEventListenerSpy = jest.spyOn(mockDomElement, 'removeEventListener');
 
-      const {unmount} = renderHook(() =>
+      const { unmount } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -168,13 +168,13 @@ describe('useCameraScrollBehavior', () => {
       unmount();
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith(
-          'wheel',
-          expect.any(Function),
+        'wheel',
+        expect.any(Function),
       );
     });
 
     it('should not attach listener when domElement is null', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -198,29 +198,29 @@ describe('useCameraScrollBehavior', () => {
 
   describe('mobile scroll behavior', () => {
     it('should trigger handleMobileScroll when mobileScroll changes', () => {
-      const {rerender} = renderHook(
-          ({mobileScroll}) =>
-            useCameraScrollBehavior({
-              currentPosIndex: 0,
-              setCurrentPosIndex: mockSetCurrentPosIndex,
-              positions: mockPositions,
-              camera: mockCamera,
-              domElement: mockDomElement,
-              setScrollStarted: mockSetScrollStarted,
-              setCloseUp: mockSetCloseUp,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              setCameraClone: mockSetCameraClone,
-              holderprogress: 0,
-              setProgress: mockSetProgress,
-              mobileScroll,
-            }),
-          {
-            initialProps: {mobileScroll: null as number | null},
-          },
+      const { rerender } = renderHook(
+        ({ mobileScroll }) =>
+          useCameraScrollBehavior({
+            currentPosIndex: 0,
+            setCurrentPosIndex: mockSetCurrentPosIndex,
+            positions: mockPositions,
+            camera: mockCamera,
+            domElement: mockDomElement,
+            setScrollStarted: mockSetScrollStarted,
+            setCloseUp: mockSetCloseUp,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            setCameraClone: mockSetCameraClone,
+            holderprogress: 0,
+            setProgress: mockSetProgress,
+            mobileScroll,
+          }),
+        {
+          initialProps: { mobileScroll: null as number | null },
+        },
       );
 
       // Trigger mobile scroll by changing mobileScroll value
-      rerender({mobileScroll: 1});
+      rerender({ mobileScroll: 1 });
 
       expect(mockSetScrollStarted).toHaveBeenCalledWith(true);
       expect(mockSetCloseUp).toHaveBeenCalledWith(false);
@@ -228,7 +228,7 @@ describe('useCameraScrollBehavior', () => {
     });
 
     it('should update camera position when handleMobileScroll is called', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -277,7 +277,7 @@ describe('useCameraScrollBehavior', () => {
 
   describe('camera index progression', () => {
     it('should update camera position on each scroll', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -303,7 +303,7 @@ describe('useCameraScrollBehavior', () => {
     });
 
     it('should handle navigation from last position', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 4, // Last position
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -331,29 +331,29 @@ describe('useCameraScrollBehavior', () => {
 
   describe('index synchronization', () => {
     it('should sync internal refs when currentPosIndex changes', () => {
-      const {rerender} = renderHook(
-          ({currentPosIndex}) =>
-            useCameraScrollBehavior({
-              currentPosIndex,
-              setCurrentPosIndex: mockSetCurrentPosIndex,
-              positions: mockPositions,
-              camera: mockCamera,
-              domElement: mockDomElement,
-              setScrollStarted: mockSetScrollStarted,
-              setCloseUp: mockSetCloseUp,
-              setCloseUpPosIndex: mockSetCloseUpPosIndex,
-              setCameraClone: mockSetCameraClone,
-              holderprogress: 0,
-              setProgress: mockSetProgress,
-              mobileScroll: null,
-            }),
-          {
-            initialProps: {currentPosIndex: 0},
-          },
+      const { rerender } = renderHook(
+        ({ currentPosIndex }) =>
+          useCameraScrollBehavior({
+            currentPosIndex,
+            setCurrentPosIndex: mockSetCurrentPosIndex,
+            positions: mockPositions,
+            camera: mockCamera,
+            domElement: mockDomElement,
+            setScrollStarted: mockSetScrollStarted,
+            setCloseUp: mockSetCloseUp,
+            setCloseUpPosIndex: mockSetCloseUpPosIndex,
+            setCameraClone: mockSetCameraClone,
+            holderprogress: 0,
+            setProgress: mockSetProgress,
+            mobileScroll: null,
+          }),
+        {
+          initialProps: { currentPosIndex: 0 },
+        },
       );
 
       // Change currentPosIndex
-      rerender({currentPosIndex: 2});
+      rerender({ currentPosIndex: 2 });
 
       // Internal refs should be synced (verified indirectly through behavior)
       expect(mockCamera).toBeDefined();
@@ -362,7 +362,7 @@ describe('useCameraScrollBehavior', () => {
 
   describe('callback stability', () => {
     it('should maintain stable handleMobileScroll reference', () => {
-      const {result, rerender} = renderHook(() =>
+      const { result, rerender } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -391,7 +391,7 @@ describe('useCameraScrollBehavior', () => {
 
   describe('edge cases', () => {
     it('should handle empty camera positions array', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -414,7 +414,7 @@ describe('useCameraScrollBehavior', () => {
     it('should handle single camera position', () => {
       const singlePosition: CameraPositionTuple[] = [[0, 0, 10]];
 
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 0,
           setCurrentPosIndex: mockSetCurrentPosIndex,
@@ -439,7 +439,7 @@ describe('useCameraScrollBehavior', () => {
     });
 
     it('should handle very large camera position index', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useCameraScrollBehavior({
           currentPosIndex: 999,
           setCurrentPosIndex: mockSetCurrentPosIndex,

@@ -24,43 +24,58 @@ type MockVector3 = {
  * @param z - Z coordinate
  * @returns Mock Vector3 object
  */
-export const createMockVector3 = (x = 0, y = 0, z = 0): MockVector3 => ({
-  x,
-  y,
-  z,
-  copy: jest.fn(function(this: any, v: any) {
-    this.x = v.x;
-    this.y = v.y;
-    this.z = v.z;
-    return this;
-  }),
-  set: jest.fn(function(this: any, x: number, y: number, z: number) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    return this;
-  }),
-  lerp: jest.fn(function(this: any, v: any, alpha: number) {
-    this.x += (v.x - this.x) * alpha;
-    this.y += (v.y - this.y) * alpha;
-    this.z += (v.z - this.z) * alpha;
-    return this;
-  }),
-  lerpVectors: jest.fn(function(
-      this: any,
-      v1: any,
-      v2: any,
-      alpha: number,
-  ) {
-    this.x = v1.x + (v2.x - v1.x) * alpha;
-    this.y = v1.y + (v2.y - v1.y) * alpha;
-    this.z = v1.z + (v2.z - v1.z) * alpha;
-    return this;
-  }),
-  clone: jest.fn(function(this: any) {
-    return createMockVector3(this.x, this.y, this.z);
-  }),
-});
+export const createMockVector3 = (x = 0, y = 0, z = 0): MockVector3 => {
+  // Create mutable vector object that methods close over
+  const vec = { x, y, z };
+
+  return {
+    get x() {
+      return vec.x;
+    },
+    get y() {
+      return vec.y;
+    },
+    get z() {
+      return vec.z;
+    },
+    set x(value: number) {
+      vec.x = value;
+    },
+    set y(value: number) {
+      vec.y = value;
+    },
+    set z(value: number) {
+      vec.z = value;
+    },
+    copy: jest.fn((v: MockVector3) => {
+      vec.x = v.x;
+      vec.y = v.y;
+      vec.z = v.z;
+      return vec as MockVector3;
+    }),
+    set: jest.fn((x: number, y: number, z: number) => {
+      vec.x = x;
+      vec.y = y;
+      vec.z = z;
+      return vec as MockVector3;
+    }),
+    lerp: jest.fn((v: MockVector3, alpha: number) => {
+      vec.x += (v.x - vec.x) * alpha;
+      vec.y += (v.y - vec.y) * alpha;
+      vec.z += (v.z - vec.z) * alpha;
+      return vec as MockVector3;
+    }),
+    lerpVectors: jest.fn((v1: MockVector3, v2: MockVector3, alpha: number) => {
+      vec.x = v1.x + (v2.x - v1.x) * alpha;
+      vec.y = v1.y + (v2.y - v1.y) * alpha;
+      vec.z = v1.z + (v2.z - v1.z) * alpha;
+      return vec as MockVector3;
+    }),
+    clone: jest.fn(() => {
+      return createMockVector3(vec.x, vec.y, vec.z);
+    }),
+  } as MockVector3;
+};
 
 /**
  * Mock Three.js Scene for testing
@@ -97,7 +112,7 @@ export const createMockMesh = (name = 'MockMesh') => ({
   scale: createMockVector3(1, 1, 1),
   visible: true,
   material: {
-    color: {set: jest.fn()},
+    color: { set: jest.fn() },
     opacity: 1,
   },
   geometry: {
@@ -116,7 +131,7 @@ export const createMockLight = (name = 'MockLight', intensity = 1) => ({
   name,
   intensity,
   position: createMockVector3(),
-  color: {set: jest.fn()},
+  color: { set: jest.fn() },
 });
 
 /**

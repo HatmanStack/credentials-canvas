@@ -148,7 +148,7 @@ export const SceneModel: React.FC = React.memo(() => {
 
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
       incrementClickCount();
-      window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
+      window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank', 'noopener,noreferrer');
     } else if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
       setClickedLightName(signName);
       incrementClickCount();
@@ -157,13 +157,15 @@ export const SceneModel: React.FC = React.memo(() => {
         if (phoneUrl.signName.includes(signName)) {
           setClickedMeshPosition(signName);
           if (isCloseUpViewActive) {
-            setClickThroughCount(prevCount => prevCount + 1);
+            // Compute next count locally to avoid stale state
+            const nextCount = clickThroughCount + 1;
+            setClickThroughCount(nextCount);
             if (
-              clickThroughCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
+              nextCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
               !phoneUrl.signName.includes('Music_Control_Box') &&
               !phoneUrl.signName.includes('Cube009_4')
             ) {
-              window.open(phoneUrl.url, '_blank');
+              window.open(phoneUrl.url, '_blank', 'noopener,noreferrer');
               setClickThroughCount(0);
             }
           }

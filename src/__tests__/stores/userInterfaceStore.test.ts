@@ -1,11 +1,11 @@
-import {renderHook, act} from '@testing-library/react';
-import {useUserInterfaceStore} from 'stores/userInterfaceStore';
-import {createMockThemeConfiguration} from 'test-helpers/storeMocks';
+import { renderHook, act } from '@testing-library/react';
+import { useUserInterfaceStore } from 'stores/userInterfaceStore';
+import { createMockThemeConfiguration } from 'test-helpers/storeMocks';
 
 describe('userInterfaceStore', () => {
   beforeEach(() => {
     // Reset store before each test
-    const {result} = renderHook(() => useUserInterfaceStore());
+    const { result } = renderHook(() => useUserInterfaceStore());
     act(() => {
       result.current.resetUserInterfaceState();
     });
@@ -13,7 +13,7 @@ describe('userInterfaceStore', () => {
 
   describe('theme configuration', () => {
     it('should set selected theme configuration', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const mockTheme = createMockThemeConfiguration('urban');
 
       expect(result.current.selectedThemeConfiguration).toBeNull();
@@ -26,7 +26,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should clear selected theme configuration with null', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const mockTheme = createMockThemeConfiguration('rural');
 
       act(() => {
@@ -43,7 +43,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should handle different theme configurations', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const urbanTheme = createMockThemeConfiguration('urban');
       const ruralTheme = createMockThemeConfiguration('rural');
 
@@ -61,7 +61,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should set title text color hue', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       expect(result.current.titleTextColorHue).toBeNull();
 
@@ -73,7 +73,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should clear title text color hue with null', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       act(() => {
         result.current.setTitleTextColorHue(90);
@@ -89,7 +89,7 @@ describe('userInterfaceStore', () => {
 
   describe('iframe visibility', () => {
     it('should set arcade iframe visibility', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Initially true by default
       expect(result.current.shouldShowArcadeIframe).toBe(true);
@@ -102,7 +102,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should toggle arcade iframe visibility', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Initially true
       expect(result.current.shouldShowArcadeIframe).toBe(true);
@@ -121,7 +121,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should set music iframe visibility', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Initially true by default
       expect(result.current.shouldShowMusicIframe).toBe(true);
@@ -134,7 +134,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should handle both iframes independently', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Both start as true
       expect(result.current.shouldShowArcadeIframe).toBe(true);
@@ -158,7 +158,7 @@ describe('userInterfaceStore', () => {
 
   describe('audio state', () => {
     it('should set audio muted state', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       expect(result.current.isAudioCurrentlyMuted).toBe(false);
 
@@ -170,7 +170,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should toggle audio mute state', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       expect(result.current.isAudioCurrentlyMuted).toBe(false);
 
@@ -188,7 +188,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should toggle audio mute multiple times', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       act(() => {
         result.current.toggleAudioMute();
@@ -202,7 +202,7 @@ describe('userInterfaceStore', () => {
 
   describe('responsive state', () => {
     it('should set current window width', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Default is window.innerWidth or 1920 (varies in test environment)
       const initialWidth = result.current.currentWindowWidth;
@@ -216,7 +216,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should update window width for mobile', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       act(() => {
         result.current.setCurrentWindowWidth(375);
@@ -226,7 +226,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should update window width for tablet', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       act(() => {
         result.current.setCurrentWindowWidth(1024);
@@ -238,7 +238,7 @@ describe('userInterfaceStore', () => {
 
   describe('lighting controls', () => {
     it('should set light intensity configuration', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const lightConfig = {
         sliderName: 'Slider_1',
         intensity: 5.0,
@@ -252,7 +252,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should update light intensity value', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const config1 = {
         sliderName: 'Slider_1',
         intensity: 1.0,
@@ -278,7 +278,7 @@ describe('userInterfaceStore', () => {
 
   describe('reset', () => {
     it('should reset all UI state to initial values', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const mockTheme = createMockThemeConfiguration('classy');
 
       // Set various states
@@ -320,7 +320,7 @@ describe('userInterfaceStore', () => {
 
   describe('state persistence', () => {
     it('should maintain theme across multiple reads', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
       const mockTheme = createMockThemeConfiguration('chill');
 
       act(() => {
@@ -333,7 +333,7 @@ describe('userInterfaceStore', () => {
     });
 
     it('should update states independently', () => {
-      const {result} = renderHook(() => useUserInterfaceStore());
+      const { result } = renderHook(() => useUserInterfaceStore());
 
       // Both iframes start as true, audio starts as false
       expect(result.current.shouldShowArcadeIframe).toBe(true);

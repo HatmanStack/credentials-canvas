@@ -19,7 +19,9 @@ export const LaunchScreen: React.FC = React.memo(() => {
   // User interface store - selective subscription
   const setSelectedThemeConfiguration = useUserInterfaceStore(state => state.setSelectedThemeConfiguration);
 
-  const textAnimationRef = useRef<SVGSVGElement>(null);
+  // Separate refs for each SVG element
+  const vibeTextRef = useRef<SVGSVGElement>(null);
+  const graphicsTextRef = useRef<SVGSVGElement>(null);
   const [selectedVibeOption, setSelectedVibeOption] = useState<string | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -33,9 +35,12 @@ export const LaunchScreen: React.FC = React.memo(() => {
   }, [selectedVibeOption]);
 
   const setAnimationName = useCallback((animationName: string): void => {
-    const element = textAnimationRef.current;
-    if (element) {
-      element.style.animationName = animationName;
+    // Apply animation to both SVG elements
+    if (vibeTextRef.current) {
+      vibeTextRef.current.style.animationName = animationName;
+    }
+    if (graphicsTextRef.current) {
+      graphicsTextRef.current.style.animationName = animationName;
     }
   }, []);
 
@@ -59,7 +64,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
     )}>
       <svg
         className="title-stroke"
-        ref={textAnimationRef}
+        ref={vibeTextRef}
         style={{ width: 265 }}
       >
         <text y="50%" dy=".3em">
@@ -76,7 +81,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
             theme={theme}
             selectedVibe={selectedVibeOption}
             onVibeSelect={handleVibeSelect}
-            textAnimationRef={textAnimationRef}
+            textAnimationRef={vibeTextRef}
           />
         ))}
       </div>
@@ -93,9 +98,9 @@ export const LaunchScreen: React.FC = React.memo(() => {
         </button>
         <svg
           className="text-stroke-graphics"
-          ref={textAnimationRef}
+          ref={graphicsTextRef}
           style={{ width: 620 }}
-          display="None"
+          display="none"
         >
           <text y="50%" dy=".6em" style={{ marginTop: 0 }}>
               LOW GRAPHICS

@@ -1,6 +1,6 @@
-import {renderHook} from '@testing-library/react';
-import {useLightingController} from 'hooks/useLightingController';
-import type {LightIntensityConfiguration} from 'types';
+import { renderHook } from '@testing-library/react';
+import { useLightingController } from 'hooks/useLightingController';
+import type { LightIntensityConfiguration } from 'types';
 
 // Mock the constants
 jest.mock('constants/lightingConfiguration', () => ({
@@ -23,9 +23,9 @@ jest.mock('constants/lightingConfiguration', () => ({
     },
   ],
   THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY: [
-    {lights: [{name: 'Light1', color: '#FF0000'}]}, // Vibe 0
-    {lights: [{name: 'Light2', color: '#00FF00'}]}, // Vibe 1
-    {lights: [{name: 'Light3', color: '#0000FF'}]}, // Vibe 2
+    { lights: [{ name: 'Light1', color: '#FF0000' }] }, // Vibe 0
+    { lights: [{ name: 'Light2', color: '#00FF00' }] }, // Vibe 1
+    { lights: [{ name: 'Light3', color: '#0000FF' }] }, // Vibe 2
   ],
 }));
 
@@ -47,7 +47,7 @@ describe('useLightingController', () => {
 
   describe('initialization', () => {
     it('should initialize with default light colors', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -56,7 +56,7 @@ describe('useLightingController', () => {
     });
 
     it('should initialize all lights with same initial color', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -64,13 +64,13 @@ describe('useLightingController', () => {
       const firstColor = colors[0];
 
       // All colors should be the same initially
-      colors.forEach((color) => {
+      colors.forEach(color => {
         expect(color).toBe(firstColor);
       });
     });
 
     it('should return point light positions', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -80,7 +80,7 @@ describe('useLightingController', () => {
     });
 
     it('should initialize without vibe-based lights', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -90,36 +90,36 @@ describe('useLightingController', () => {
 
   describe('light color changes', () => {
     it('should change light color when light is clicked', () => {
-      const {result, rerender} = renderHook(
-          ({clickLight, clickCount}) =>
-            useLightingController(clickLight, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickLight: null as string | null, clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickLight, clickCount }) =>
+          useLightingController(clickLight, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickLight: null as string | null, clickCount: 0 },
+        },
       );
 
       // Click Light1
-      rerender({clickLight: 'Light1', clickCount: 1});
+      rerender({ clickLight: 'Light1', clickCount: 1 });
 
       // Color should be set (may or may not be different due to random)
       expect(result.current.lightColors['Light1']).toBeDefined();
     });
 
     it('should change different lights independently', () => {
-      const {result, rerender} = renderHook(
-          ({clickLight, clickCount}) =>
-            useLightingController(clickLight, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickLight: null as string | null, clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickLight, clickCount }) =>
+          useLightingController(clickLight, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickLight: null as string | null, clickCount: 0 },
+        },
       );
 
       // Click Light1
-      rerender({clickLight: 'Light1', clickCount: 1});
+      rerender({ clickLight: 'Light1', clickCount: 1 });
       const light1Color = result.current.lightColors['Light1'];
 
       // Click Light2
-      rerender({clickLight: 'Light2', clickCount: 2});
+      rerender({ clickLight: 'Light2', clickCount: 2 });
       const light2Color = result.current.lightColors['Light2'];
 
       // Both colors should be defined
@@ -128,34 +128,34 @@ describe('useLightingController', () => {
     });
 
     it('should update color on multiple clicks of same light', () => {
-      const {result, rerender} = renderHook(
-          ({clickLight, clickCount}) =>
-            useLightingController(clickLight, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickLight: null as string | null, clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickLight, clickCount }) =>
+          useLightingController(clickLight, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickLight: null as string | null, clickCount: 0 },
+        },
       );
 
       // Multiple clicks on Light1
-      rerender({clickLight: 'Light1', clickCount: 1});
-      rerender({clickLight: 'Light1', clickCount: 2});
-      rerender({clickLight: 'Light1', clickCount: 3});
+      rerender({ clickLight: 'Light1', clickCount: 1 });
+      rerender({ clickLight: 'Light1', clickCount: 2 });
+      rerender({ clickLight: 'Light1', clickCount: 3 });
 
       expect(result.current.lightColors['Light1']).toBeDefined();
     });
 
     it('should not change colors when clickLight is null', () => {
-      const {result, rerender} = renderHook(
-          ({clickCount}) =>
-            useLightingController(null, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickCount }) =>
+          useLightingController(null, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickCount: 0 },
+        },
       );
 
-      const initialColors = {...result.current.lightColors};
+      const initialColors = { ...result.current.lightColors };
 
-      rerender({clickCount: 1});
+      rerender({ clickCount: 1 });
 
       expect(result.current.lightColors).toEqual(initialColors);
     });
@@ -163,8 +163,8 @@ describe('useLightingController', () => {
 
   describe('vibe-based lighting', () => {
     it('should set vibe-based lights when vibe is selected', () => {
-      const {result} = renderHook(() =>
-        useLightingController(null, 0, {id: '0'}, mockLightIntensity),
+      const { result } = renderHook(() =>
+        useLightingController(null, 0, { id: '0' }, mockLightIntensity),
       );
 
       expect(result.current.vibeBasedLights).not.toBeNull();
@@ -172,17 +172,17 @@ describe('useLightingController', () => {
     });
 
     it('should return correct vibe config for different vibes', () => {
-      const {result, rerender} = renderHook(
-          ({vibe}) =>
-            useLightingController(null, 0, vibe, mockLightIntensity),
-          {
-            initialProps: {vibe: {id: '0'}},
-          },
+      const { result, rerender } = renderHook(
+        ({ vibe }) =>
+          useLightingController(null, 0, vibe, mockLightIntensity),
+        {
+          initialProps: { vibe: { id: '0' } },
+        },
       );
 
       const vibe0Lights = result.current.vibeBasedLights;
 
-      rerender({vibe: {id: '1'}});
+      rerender({ vibe: { id: '1' } });
       const vibe1Lights = result.current.vibeBasedLights;
 
       expect(vibe0Lights).not.toBeNull();
@@ -191,15 +191,15 @@ describe('useLightingController', () => {
     });
 
     it('should return null for non-existent vibe', () => {
-      const {result} = renderHook(() =>
-        useLightingController(null, 0, {id: '999'}, mockLightIntensity),
+      const { result } = renderHook(() =>
+        useLightingController(null, 0, { id: '999' }, mockLightIntensity),
       );
 
       expect(result.current.vibeBasedLights).toBeNull();
     });
 
     it('should return null when vibe is null', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -207,17 +207,17 @@ describe('useLightingController', () => {
     });
 
     it('should update vibe-based lights when vibe changes', () => {
-      const {result, rerender} = renderHook(
-          ({vibe}) =>
-            useLightingController(null, 0, vibe, mockLightIntensity),
-          {
-            initialProps: {vibe: null as {id: string} | null},
-          },
+      const { result, rerender } = renderHook(
+        ({ vibe }) =>
+          useLightingController(null, 0, vibe, mockLightIntensity),
+        {
+          initialProps: { vibe: null as {id: string} | null },
+        },
       );
 
       expect(result.current.vibeBasedLights).toBeNull();
 
-      rerender({vibe: {id: '1'}});
+      rerender({ vibe: { id: '1' } });
 
       expect(result.current.vibeBasedLights).not.toBeNull();
     });
@@ -225,7 +225,7 @@ describe('useLightingController', () => {
 
   describe('getLightColor function', () => {
     it('should return color for existing light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -236,7 +236,7 @@ describe('useLightingController', () => {
     });
 
     it('should return initial color for non-existent light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -247,15 +247,15 @@ describe('useLightingController', () => {
     });
 
     it('should return updated color after light click', () => {
-      const {result, rerender} = renderHook(
-          ({clickLight, clickCount}) =>
-            useLightingController(clickLight, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickLight: null as string | null, clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickLight, clickCount }) =>
+          useLightingController(clickLight, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickLight: null as string | null, clickCount: 0 },
+        },
       );
 
-      rerender({clickLight: 'Light1', clickCount: 1});
+      rerender({ clickLight: 'Light1', clickCount: 1 });
 
       const updatedColor = result.current.getLightColor('Light1');
 
@@ -263,7 +263,7 @@ describe('useLightingController', () => {
     });
 
     it('should consistently return same color for same light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -276,7 +276,7 @@ describe('useLightingController', () => {
 
   describe('getLightIntensity function', () => {
     it('should return configured intensity for matching light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -286,7 +286,7 @@ describe('useLightingController', () => {
     });
 
     it('should return default intensity for non-matching light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -296,7 +296,7 @@ describe('useLightingController', () => {
     });
 
     it('should return default intensity for non-existent light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -306,12 +306,12 @@ describe('useLightingController', () => {
     });
 
     it('should update intensity when lightIntensity config changes', () => {
-      const {result, rerender} = renderHook(
-          ({lightIntensity}) =>
-            useLightingController(null, 0, null, lightIntensity),
-          {
-            initialProps: {lightIntensity: mockLightIntensity},
-          },
+      const { result, rerender } = renderHook(
+        ({ lightIntensity }) =>
+          useLightingController(null, 0, null, lightIntensity),
+        {
+          initialProps: { lightIntensity: mockLightIntensity },
+        },
       );
 
       const intensity1 = result.current.getLightIntensity('Light1');
@@ -322,14 +322,14 @@ describe('useLightingController', () => {
         intensity: 50,
       };
 
-      rerender({lightIntensity: newConfig});
+      rerender({ lightIntensity: newConfig });
 
       const intensity2 = result.current.getLightIntensity('Light1');
       expect(intensity2).toBe(50);
     });
 
     it('should consistently return same intensity for same light', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -342,7 +342,7 @@ describe('useLightingController', () => {
 
   describe('point light positions', () => {
     it('should return all point light positions', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -352,7 +352,7 @@ describe('useLightingController', () => {
     });
 
     it('should maintain stable reference for pointLightPositions', () => {
-      const {result, rerender} = renderHook(() =>
+      const { result, rerender } = renderHook(() =>
         useLightingController(null, 0, null, mockLightIntensity),
       );
 
@@ -368,24 +368,24 @@ describe('useLightingController', () => {
 
   describe('edge cases', () => {
     it('should handle rapid light clicks', () => {
-      const {result, rerender} = renderHook(
-          ({clickLight, clickCount}) =>
-            useLightingController(clickLight, clickCount, null, mockLightIntensity),
-          {
-            initialProps: {clickLight: null as string | null, clickCount: 0},
-          },
+      const { result, rerender } = renderHook(
+        ({ clickLight, clickCount }) =>
+          useLightingController(clickLight, clickCount, null, mockLightIntensity),
+        {
+          initialProps: { clickLight: null as string | null, clickCount: 0 },
+        },
       );
 
       // Rapid clicks
       for (let i = 1; i <= 10; i++) {
-        rerender({clickLight: 'Light1', clickCount: i});
+        rerender({ clickLight: 'Light1', clickCount: i });
       }
 
       expect(result.current.lightColors['Light1']).toBeDefined();
     });
 
     it('should handle zero click count', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController('Light1', 0, null, mockLightIntensity),
       );
 
@@ -393,7 +393,7 @@ describe('useLightingController', () => {
     });
 
     it('should handle negative click count', () => {
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController('Light1', -1, null, mockLightIntensity),
       );
 
@@ -406,7 +406,7 @@ describe('useLightingController', () => {
         intensity: 0,
       };
 
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, zeroIntensityConfig),
       );
 
@@ -421,7 +421,7 @@ describe('useLightingController', () => {
         intensity: 1000,
       };
 
-      const {result} = renderHook(() =>
+      const { result } = renderHook(() =>
         useLightingController(null, 0, null, highIntensityConfig),
       );
 

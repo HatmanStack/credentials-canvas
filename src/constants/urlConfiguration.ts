@@ -63,6 +63,8 @@ export const INTERACTIVE_PHONE_URL_CONFIGURATIONS: PhoneURLConfiguration[] = [
     signName: ['Phone_Looper_5', 'Phone_Looper_Text'],
     url: 'https://www.gemenielabs.com/#looper',
   },
+  // Cube009_2: Intentionally no URL - triggers close-up view only, no external link
+  // Used for decorative/interactive elements that shouldn't navigate away
   { signName: ['Cube009_2'], url: '' },
   {
     signName: ['Music_Control_Box', 'Light_Control_Box'],

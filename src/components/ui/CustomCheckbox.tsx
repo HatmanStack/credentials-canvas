@@ -48,23 +48,23 @@ export const CustomCheckbox: React.FC<CustomCheckboxProps> = React.memo(({ color
     return undefined;
   }, []);
 
-  const handleClick = useCallback((): void => {
+  const handleChange = useCallback((): void => {
     onClick();
   }, [onClick]);
 
   return (
-    <div className={`toggle-container ${color}`} onClick={handleClick}>
+    <label htmlFor={`${color}-checkbox`} className={`toggle-container ${color}`}>
       <input
         ref={checkboxRef}
         id={`${color}-checkbox`}
         className="toggle-checkbox"
         type="checkbox"
         checked={active}
-        onChange={() => {}} // Controlled component
+        onChange={handleChange} // Wire to onClick for keyboard accessibility
       />
       <div className="toggle-track">
         <div className="toggle-thumb"></div>
       </div>
-    </div>
+    </label>
   );
 });

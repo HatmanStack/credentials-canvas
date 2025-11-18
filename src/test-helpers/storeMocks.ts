@@ -3,13 +3,13 @@
  * Provides factory functions to create mock stores with jest functions
  */
 
-import {create} from 'zustand';
+import { create } from 'zustand';
 import type {
   SceneInteractionState,
   UserInterfaceState,
   ThreeJSSceneState,
 } from 'stores';
-import type {VibeThemeConfiguration, LightIntensityConfiguration} from 'types';
+import type { VibeThemeConfiguration, LightIntensityConfiguration } from 'types';
 
 /**
  * Create mock scene interaction store for testing
@@ -17,7 +17,7 @@ import type {VibeThemeConfiguration, LightIntensityConfiguration} from 'types';
  * @returns Mock scene interaction store
  */
 export const createMockSceneInteractionStore = (
-    overrides?: Partial<SceneInteractionState>,
+  overrides?: Partial<SceneInteractionState>,
 ) => {
   return create<SceneInteractionState>()((set, get) => ({
     // Default mock state
@@ -32,39 +32,39 @@ export const createMockSceneInteractionStore = (
     cameraInterpolationProgress: 0,
 
     // Mock actions with jest functions
-    setClickedMeshPosition: jest.fn((position) =>
-      set({clickedMeshPosition: position}),
+    setClickedMeshPosition: jest.fn(position =>
+      set({ clickedMeshPosition: position }),
     ),
-    setClickedLightName: jest.fn((name) =>
-      set({clickedLightName: name}),
+    setClickedLightName: jest.fn(name =>
+      set({ clickedLightName: name }),
     ),
     incrementClickCount: jest.fn(() =>
-      set((state) => ({totalClickCount: state.totalClickCount + 1})),
+      set(state => ({ totalClickCount: state.totalClickCount + 1 })),
     ),
     resetClickCount: jest.fn(() =>
-      set({totalClickCount: 0}),
+      set({ totalClickCount: 0 }),
     ),
-    setIsCloseUpViewActive: jest.fn((isActive) =>
-      set({isCloseUpViewActive: isActive}),
+    setIsCloseUpViewActive: jest.fn(isActive =>
+      set({ isCloseUpViewActive: isActive }),
     ),
-    setIsUserCurrentlyDragging: jest.fn((isDragging) =>
-      set({isUserCurrentlyDragging: isDragging}),
+    setIsUserCurrentlyDragging: jest.fn(isDragging =>
+      set({ isUserCurrentlyDragging: isDragging }),
     ),
-    setHasUserStartedScrolling: jest.fn((hasStarted) =>
-      set({hasUserStartedScrolling: hasStarted}),
+    setHasUserStartedScrolling: jest.fn(hasStarted =>
+      set({ hasUserStartedScrolling: hasStarted }),
     ),
-    setMobileScrollTriggerCount: jest.fn((count) =>
-      set({mobileScrollTriggerCount: count}),
+    setMobileScrollTriggerCount: jest.fn(count =>
+      set({ mobileScrollTriggerCount: count }),
     ),
     triggerMobileScrollNavigation: jest.fn(() => {
       const state = get();
-      set({mobileScrollTriggerCount: (state.mobileScrollTriggerCount || 0) + 1});
+      set({ mobileScrollTriggerCount: (state.mobileScrollTriggerCount || 0) + 1 });
     }),
-    setCurrentCameraPositionIndex: jest.fn((index) =>
-      set({currentCameraPositionIndex: index}),
+    setCurrentCameraPositionIndex: jest.fn(index =>
+      set({ currentCameraPositionIndex: index }),
     ),
-    setCameraInterpolationProgress: jest.fn((progress) =>
-      set({cameraInterpolationProgress: progress}),
+    setCameraInterpolationProgress: jest.fn(progress =>
+      set({ cameraInterpolationProgress: progress }),
     ),
     resetSceneInteractionState: jest.fn(() =>
       set({
@@ -91,7 +91,7 @@ export const createMockSceneInteractionStore = (
  * @returns Mock user interface store
  */
 export const createMockUserInterfaceStore = (
-    overrides?: Partial<UserInterfaceState>,
+  overrides?: Partial<UserInterfaceState>,
 ) => {
   const defaultLightConfig: LightIntensityConfiguration = {
     sliderName: 'DefaultLight',
@@ -109,30 +109,30 @@ export const createMockUserInterfaceStore = (
     currentLightIntensityConfiguration: defaultLightConfig,
 
     // Mock actions with jest functions
-    setSelectedThemeConfiguration: jest.fn((theme) =>
-      set({selectedThemeConfiguration: theme}),
+    setSelectedThemeConfiguration: jest.fn(theme =>
+      set({ selectedThemeConfiguration: theme }),
     ),
-    setTitleTextColorHue: jest.fn((hue) =>
-      set({titleTextColorHue: hue}),
+    setTitleTextColorHue: jest.fn(hue =>
+      set({ titleTextColorHue: hue }),
     ),
-    setShouldShowArcadeIframe: jest.fn((show) =>
-      set({shouldShowArcadeIframe: show}),
+    setShouldShowArcadeIframe: jest.fn(show =>
+      set({ shouldShowArcadeIframe: show }),
     ),
-    setShouldShowMusicIframe: jest.fn((show) =>
-      set({shouldShowMusicIframe: show}),
+    setShouldShowMusicIframe: jest.fn(show =>
+      set({ shouldShowMusicIframe: show }),
     ),
-    setIsAudioCurrentlyMuted: jest.fn((isMuted) =>
-      set({isAudioCurrentlyMuted: isMuted}),
+    setIsAudioCurrentlyMuted: jest.fn(isMuted =>
+      set({ isAudioCurrentlyMuted: isMuted }),
     ),
     toggleAudioMute: jest.fn(() => {
       const state = get();
-      set({isAudioCurrentlyMuted: !state.isAudioCurrentlyMuted});
+      set({ isAudioCurrentlyMuted: !state.isAudioCurrentlyMuted });
     }),
-    setCurrentWindowWidth: jest.fn((width) =>
-      set({currentWindowWidth: width}),
+    setCurrentWindowWidth: jest.fn(width =>
+      set({ currentWindowWidth: width }),
     ),
-    setCurrentLightIntensityConfiguration: jest.fn((config) =>
-      set({currentLightIntensityConfiguration: config}),
+    setCurrentLightIntensityConfiguration: jest.fn(config =>
+      set({ currentLightIntensityConfiguration: config }),
     ),
     resetUserInterfaceState: jest.fn(() =>
       set({
@@ -157,19 +157,19 @@ export const createMockUserInterfaceStore = (
  * @returns Mock Three.js scene store
  */
 export const createMockThreeJSSceneStore = (
-    overrides?: Partial<ThreeJSSceneState>,
+  overrides?: Partial<ThreeJSSceneState>,
 ) => {
-  return create<ThreeJSSceneState>()((set) => ({
+  return create<ThreeJSSceneState>()(set => ({
     // Default mock state
     threeJSSceneModel: null,
     htmlVideoPlayerElement: null,
 
     // Mock actions with jest functions
-    setThreeJSSceneModel: jest.fn((scene) =>
-      set({threeJSSceneModel: scene}),
+    setThreeJSSceneModel: jest.fn(scene =>
+      set({ threeJSSceneModel: scene }),
     ),
-    setHTMLVideoPlayerElement: jest.fn((player) =>
-      set({htmlVideoPlayerElement: player}),
+    setHTMLVideoPlayerElement: jest.fn(player =>
+      set({ htmlVideoPlayerElement: player }),
     ),
     resetThreeJSSceneState: jest.fn(() =>
       set({
@@ -189,17 +189,17 @@ export const createMockThreeJSSceneStore = (
  * @returns Mock theme configuration
  */
 export const createMockThemeConfiguration = (
-    themeName: 'urban' | 'rural' | 'classy' | 'chill' = 'urban',
+  themeName: 'urban' | 'rural' | 'classy' | 'chill' = 'urban',
 ): VibeThemeConfiguration => ({
   id: themeName === 'urban' ? '0' :
     themeName === 'rural' ? '1' :
-    themeName === 'classy' ? '2' : '3',
+      themeName === 'classy' ? '2' : '3',
   name: themeName,
   color: themeName === 'urban' ? '#E96929' :
     themeName === 'rural' ? '#80C080' :
-    themeName === 'classy' ? '#EF5555' : '#9FA8DA',
+      themeName === 'classy' ? '#EF5555' : '#9FA8DA',
   displayName: themeName.toUpperCase() as 'URBAN' | 'RURAL' | 'CLASSY' | 'CHILL',
   svgWidth: themeName === 'urban' ? 280 :
     themeName === 'rural' ? 275 :
-    themeName === 'classy' ? 320 : 240,
+      themeName === 'classy' ? 320 : 240,
 });

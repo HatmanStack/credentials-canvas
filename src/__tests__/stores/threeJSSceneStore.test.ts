@@ -1,11 +1,11 @@
-import {renderHook, act} from '@testing-library/react';
-import {useThreeJSSceneStore} from 'stores/threeJSSceneStore';
-import {createMockScene} from 'test-helpers/threeMocks';
+import { renderHook, act } from '@testing-library/react';
+import { useThreeJSSceneStore } from 'stores/threeJSSceneStore';
+import { createMockScene } from 'test-helpers/threeMocks';
 
 describe('threeJSSceneStore', () => {
   beforeEach(() => {
     // Reset store before each test
-    const {result} = renderHook(() => useThreeJSSceneStore());
+    const { result } = renderHook(() => useThreeJSSceneStore());
     act(() => {
       result.current.resetThreeJSSceneState();
     });
@@ -13,13 +13,13 @@ describe('threeJSSceneStore', () => {
 
   describe('Three.js scene model', () => {
     it('should initialize with null scene model', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
 
       expect(result.current.threeJSSceneModel).toBeNull();
     });
 
     it('should set Three.js scene model', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
 
       act(() => {
@@ -30,7 +30,7 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should clear scene model with null', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
 
       act(() => {
@@ -47,7 +47,7 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should replace existing scene model', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene1 = createMockScene();
       const mockScene2 = createMockScene();
 
@@ -68,13 +68,13 @@ describe('threeJSSceneStore', () => {
 
   describe('HTML video player element', () => {
     it('should initialize with null video player', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
 
       expect(result.current.htmlVideoPlayerElement).toBeNull();
     });
 
     it('should set video player element', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockPlayer = {
         playVideo: jest.fn(),
         pauseVideo: jest.fn(),
@@ -89,7 +89,7 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should clear video player with null', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockPlayer = {
         playVideo: jest.fn(),
         pauseVideo: jest.fn(),
@@ -111,7 +111,7 @@ describe('threeJSSceneStore', () => {
 
   describe('reset', () => {
     it('should reset all Three.js references to null', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
       const mockPlayer = {
         playVideo: jest.fn(),
@@ -140,7 +140,7 @@ describe('threeJSSceneStore', () => {
 
   describe('state persistence', () => {
     it('should maintain scene reference across multiple reads', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
 
       act(() => {
@@ -153,9 +153,9 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should update scene and video player independently', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
-      const mockPlayer = {playVideo: jest.fn()};
+      const mockPlayer = { playVideo: jest.fn() };
 
       act(() => {
         result.current.setThreeJSSceneModel(mockScene as any);
@@ -175,7 +175,7 @@ describe('threeJSSceneStore', () => {
 
   describe('nullability handling', () => {
     it('should handle null scene model gracefully', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
 
       act(() => {
         result.current.setThreeJSSceneModel(null);
@@ -186,7 +186,7 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should handle null video player gracefully', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
 
       act(() => {
         result.current.setHTMLVideoPlayerElement(null);
@@ -197,7 +197,7 @@ describe('threeJSSceneStore', () => {
     });
 
     it('should allow setting to null multiple times', () => {
-      const {result} = renderHook(() => useThreeJSSceneStore());
+      const { result } = renderHook(() => useThreeJSSceneStore());
 
       act(() => {
         result.current.setThreeJSSceneModel(null);

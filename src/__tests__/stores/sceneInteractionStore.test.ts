@@ -1,10 +1,10 @@
-import {renderHook, act} from '@testing-library/react';
-import {useSceneInteractionStore} from 'stores/sceneInteractionStore';
+import { renderHook, act } from '@testing-library/react';
+import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
 
 describe('sceneInteractionStore', () => {
   beforeEach(() => {
     // Reset store before each test
-    const {result} = renderHook(() => useSceneInteractionStore());
+    const { result } = renderHook(() => useSceneInteractionStore());
     act(() => {
       result.current.resetSceneInteractionState();
     });
@@ -12,7 +12,7 @@ describe('sceneInteractionStore', () => {
 
   describe('click interactions', () => {
     it('should increment click count when incrementClickCount called', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.totalClickCount).toBe(0);
 
@@ -24,7 +24,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should increment click count multiple times', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.incrementClickCount();
@@ -36,7 +36,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should set clicked mesh position', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
       const mockPosition = 'mesh-name-123';
 
       expect(result.current.clickedMeshPosition).toBeNull();
@@ -49,7 +49,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should clear clicked mesh position with null', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.setClickedMeshPosition('mesh-1');
@@ -65,7 +65,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should set clicked light name', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
       const mockLightName = 'PointLight1';
 
       act(() => {
@@ -76,7 +76,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should reset click count', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.incrementClickCount();
@@ -95,7 +95,7 @@ describe('sceneInteractionStore', () => {
 
   describe('camera interactions', () => {
     it('should set current camera position index', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.currentCameraPositionIndex).toBe(0);
 
@@ -107,7 +107,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should set camera interpolation progress', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.cameraInterpolationProgress).toBe(0);
 
@@ -119,7 +119,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should update camera interpolation progress to 1.0', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.setCameraInterpolationProgress(1.0);
@@ -131,7 +131,7 @@ describe('sceneInteractionStore', () => {
 
   describe('scroll interactions', () => {
     it('should set has user started scrolling flag', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.hasUserStartedScrolling).toBe(false);
 
@@ -143,7 +143,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should set mobile scroll trigger count', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.mobileScrollTriggerCount).toBeNull();
 
@@ -155,7 +155,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should trigger mobile scroll navigation from null', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.mobileScrollTriggerCount).toBeNull();
 
@@ -167,7 +167,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should increment mobile scroll navigation count', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.triggerMobileScrollNavigation();
@@ -181,7 +181,7 @@ describe('sceneInteractionStore', () => {
 
   describe('view state', () => {
     it('should set close up view active state', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.isCloseUpViewActive).toBe(false);
 
@@ -193,7 +193,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should toggle close up view state', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.setIsCloseUpViewActive(true);
@@ -209,7 +209,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should set dragging state', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       expect(result.current.isUserCurrentlyDragging).toBe(false);
 
@@ -223,7 +223,7 @@ describe('sceneInteractionStore', () => {
 
   describe('reset', () => {
     it('should reset all state to initial values', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       // Set various states
       act(() => {
@@ -264,7 +264,7 @@ describe('sceneInteractionStore', () => {
 
   describe('state persistence', () => {
     it('should maintain state across multiple reads', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.setCurrentCameraPositionIndex(2);
@@ -276,7 +276,7 @@ describe('sceneInteractionStore', () => {
     });
 
     it('should update state independently', () => {
-      const {result} = renderHook(() => useSceneInteractionStore());
+      const { result } = renderHook(() => useSceneInteractionStore());
 
       act(() => {
         result.current.setClickedMeshPosition('mesh-1');
