@@ -9,6 +9,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ThemeSelectionOption } from './ThemeSelectionOption';
 import { AVAILABLE_THEME_CONFIGURATIONS } from 'constants/themeConfiguration';
 import { useUserInterfaceStore } from 'stores';
+import {cn} from 'utils/classNameUtils';
 import '../../css/launch.css';
 
 /**
@@ -52,16 +53,10 @@ export const LaunchScreen: React.FC = React.memo(() => {
   }, [selectedVibeOption, setSelectedThemeConfiguration, setAnimationName]);
 
   return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          margin: '2em',
-        }}
-      >
+    <div className={cn(
+      "flex flex-col justify-center items-center",
+      "m-8"
+    )}>
         <svg
           className="title-stroke"
           ref={textAnimationRef}
@@ -71,14 +66,10 @@ export const LaunchScreen: React.FC = React.memo(() => {
             VIBE
           </text>
         </svg>
-        <div
-          className="checkbox-container"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
+        <div className={cn(
+          "checkbox-container",
+          "flex flex-row justify-center"
+        )}>
           {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
             <ThemeSelectionOption
               key={theme.id}
@@ -89,15 +80,10 @@ export const LaunchScreen: React.FC = React.memo(() => {
             />
           ))}
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: 0,
-          }}
-        >
+        <div className={cn(
+          "flex flex-col justify-center items-center",
+          "m-0"
+        )}>
           <button
             className="reset"
             ref={resetButtonRef}
@@ -117,20 +103,16 @@ export const LaunchScreen: React.FC = React.memo(() => {
           </svg>
           <a
             href="https://www.cg-portfolio.com"
-            style={{
-              color: 'white',
-              textDecoration: 'none',
-              marginTop: 100,
-              marginBottom: 50,
-              transition: 'transform 0.3s ease-in-out',
-            }}
-            onMouseEnter={e => ((e.target as HTMLAnchorElement).style.transform = 'scale(2)')}
-            onMouseLeave={e => ((e.target as HTMLAnchorElement).style.transform = 'scale(1)')}
+            className={cn(
+              "text-white no-underline",
+              "mt-24 mb-12",
+              "transition-transform duration-300 ease-in-out",
+              "hover:scale-200"
+            )}
           >
             Traditional Portfolio
           </a>
         </div>
       </div>
-    </>
   );
 });
