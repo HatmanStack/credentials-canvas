@@ -68,7 +68,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
       </svg>
       <div className={cn(
         'checkbox-container',
-        'flex flex-row justify-center'
+        'flex flex-row flex-wrap justify-center'
       )}>
         {AVAILABLE_THEME_CONFIGURATIONS.map(theme => (
           <ThemeSelectionOption

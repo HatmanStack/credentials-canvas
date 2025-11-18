@@ -11,11 +11,6 @@
   --hover-color: #b68672;
 }
 
-.checkbox-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 /* Below 1200px, checkboxes take half the width (2 per row) */
 @media (max-width: 1200px) {
   .checkbox-container > div {
@@ -31,19 +26,6 @@
   .checkbox-container > div {
     width: 100%;
   }
-}
-
-body {
-  gap: 1rem;
-  font-family: "Lato", sans-serif;
-  background-color: #efefef;
-}
-
-.text-container {
-  display: flex;
-  justify-content: center;
-  block-size: min(10rem, 23vw);
-  min-inline-size: 22.5rem;
 }
 
 .text-stroke-rural,
