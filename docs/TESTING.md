@@ -52,6 +52,10 @@ Tests are organized by type in the `src/__tests__/` directory:
 
 ```
 src/__tests__/
+├── hooks/                  # Custom hook tests
+│   ├── useCameraScrollBehavior.test.ts
+│   ├── useCameraPositionAnimation.test.ts
+│   └── useLightingController.test.ts
 ├── stores/                 # Zustand store tests
 │   ├── sceneInteractionStore.test.ts
 │   ├── userInterfaceStore.test.ts
@@ -68,7 +72,14 @@ src/__tests__/
 
 ### ✅ Currently Tested
 
-- **Zustand Stores** (>90% coverage)
+- **Custom Hooks** (>82% coverage)
+  - useCameraScrollBehavior - Desktop/mobile scroll behavior
+  - useCameraPositionAnimation - Camera animations and positioning
+  - useLightingController - Light colors and intensities
+  - State management and side effects
+  - Edge cases and error handling
+
+- **Zustand Stores** (100% coverage)
   - All state updates
   - All actions
   - Reset functionality
@@ -82,11 +93,10 @@ src/__tests__/
 ### ❌ Not Tested (By Design)
 
 - **React Components** - Too coupled to Three.js/WebGL, requires complex mocking
-- **Custom Hooks** - Deferred for future implementation
 - **Integration Tests** - Out of scope for Phase 4
 - **E2E Tests** - Requires separate tool (Playwright/Cypress)
 
-> **Note:** The decision to focus on unit tests for business logic is documented in Phase-0. Component and integration tests can be added in future phases.
+> **Note:** The decision to focus on unit tests for business logic (hooks, stores, utils) is documented in Phase-0. Component and integration tests can be added in future phases.
 
 ## Writing Tests
 
@@ -198,9 +208,9 @@ const mockScene = createMockScene();
 
 | Category | Target Coverage | Current Status |
 |----------|----------------|----------------|
-| Stores | >90% | ✅ Achieved |
-| Utils | 100% | ✅ Achieved |
-| Hooks | >80% | ⏭️ Future work |
+| Stores | >90% | ✅ 100% Achieved |
+| Utils | 100% | ✅ 100% Achieved |
+| Hooks | >80% | ✅ 82% Achieved |
 | Components | N/A | ❌ Not tested by design |
 
 ## Coverage Reports
