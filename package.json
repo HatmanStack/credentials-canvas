@@ -4,7 +4,7 @@
   "description": "This is a website for Gemenie Labs",
   "keywords": [],
   "homepage": "https://www.cg-portfolio.site",
-  "main": "src/index.js",
+  "main": "src/index.tsx",
   "dependencies": {
     "@react-spring/three": "^9.7.3",
     "@react-spring/web": "^9.7.3",
@@ -23,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx"
   },
   "browserslist": [
     ">0.2%",
