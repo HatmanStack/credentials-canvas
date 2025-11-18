@@ -7,7 +7,7 @@
 
 import React from 'react';
 import type { ThreeEvent } from '@react-three/fiber';
-import { useInteraction } from 'contexts';
+import { useSceneInteractionStore } from 'stores';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from 'constants/urlConfiguration';
 import { INTERACTIVE_LIGHT_MESH_NAMES, CLOSE_UP_CLICK_THRESHOLD_COUNT } from 'constants/meshConfiguration';
 
@@ -28,31 +28,35 @@ export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({
   meshRef,
   ...props
 }) => {
-  const { isCloseUpView, setClickPoint, setClickLight, setClickCount, clickCount } = useInteraction();
+  // Scene interaction store - selective subscriptions
+  const isCloseUpViewActive = useSceneInteractionStore(state => state.isCloseUpViewActive);
+  const setClickedMeshPosition = useSceneInteractionStore(state => state.setClickedMeshPosition);
+  const setClickedLightName = useSceneInteractionStore(state => state.setClickedLightName);
+  const incrementClickCount = useSceneInteractionStore(state => state.incrementClickCount);
 
   const handleClick = (event: ThreeEvent<MouseEvent>): void => {
     const signName = event.object.name;
 
     // Direct URL links (external sites)
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
-      setClickCount(clickCount + 1);
+      incrementClickCount();
       window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
       return;
     }
 
     // Light controls
     if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
-      setClickLight(signName);
-      setClickCount(clickCount + 1);
+      setClickedLightName(signName);
+      incrementClickCount();
       return;
     }
 
     // Phone/interactive elements with camera positioning
     for (const phoneUrl of INTERACTIVE_PHONE_URL_CONFIGURATIONS) {
       if (phoneUrl.signName.includes(signName)) {
-        setClickPoint(signName);
+        setClickedMeshPosition(signName);
 
-        if (isCloseUpView) {
+        if (isCloseUpViewActive) {
           // Handle multiple clicks in close-up mode
           const currentCount = (meshRef?.current?.userData?.clickCount as number) || 0;
           const newCount = currentCount + 1;

@@ -11,7 +11,7 @@ import {
   RandomizedLight,
   Environment as EnvironmentImpl,
 } from '@react-three/drei';
-import { useInteraction, useUI } from 'contexts';
+import { useSceneInteractionStore, useUserInterfaceStore } from 'stores';
 import {
   LIGHT_COLOR_WHEEL,
   LIGHT_INTENSITY_INITIAL_VALUE,
@@ -23,8 +23,13 @@ import {
  * Scene environment component with dynamic lighting
  */
 export const SceneEnvironment: React.FC = React.memo(() => {
-  const { clickLight, clickCount } = useInteraction();
-  const { selectedVibe, lightIntensity } = useUI();
+  // Scene interaction store - selective subscriptions
+  const clickedLightName = useSceneInteractionStore(state => state.clickedLightName);
+  const totalClickCount = useSceneInteractionStore(state => state.totalClickCount);
+
+  // User interface store - selective subscriptions
+  const selectedThemeConfiguration = useUserInterfaceStore(state => state.selectedThemeConfiguration);
+  const currentLightIntensityConfiguration = useUserInterfaceStore(state => state.currentLightIntensityConfiguration);
 
   // Memoize initial color to prevent random regeneration
   const initialColor = useMemo(() =>
@@ -51,8 +56,8 @@ export const SceneEnvironment: React.FC = React.memo(() => {
 
   // Update light intensities based on slider control
   useEffect(() => {
-    const sliderName = lightIntensity.sliderName;
-    const intensity = lightIntensity.intensity;
+    const sliderName = currentLightIntensityConfiguration.sliderName;
+    const intensity = currentLightIntensityConfiguration.intensity;
     const oldRange = 0.563 - 0.503;
     const normalizedIntensity =
       ((intensity - 0.503) / oldRange) * LIGHT_INTENSITY_INITIAL_VALUE;
@@ -68,13 +73,13 @@ export const SceneEnvironment: React.FC = React.memo(() => {
       }
       return newIntensities;
     });
-  }, [lightIntensity]);
+  }, [currentLightIntensityConfiguration]);
 
   // Update light colors on click
   useEffect(() => {
     setLightColors(prevColors => {
       const newColors = { ...prevColors };
-      if (clickLight === 'Button_Light_4') {
+      if (clickedLightName === 'Button_Light_4') {
         const newColor =
           LIGHT_COLOR_WHEEL[Math.floor(Math.random() * LIGHT_COLOR_WHEEL.length)];
         Object.keys(newColors).forEach(name => {
@@ -83,7 +88,7 @@ export const SceneEnvironment: React.FC = React.memo(() => {
       } else {
         POINT_LIGHT_POSITION_CONFIGURATIONS.forEach(light => {
           light.signName.forEach(name => {
-            if (name === clickLight) {
+            if (name === clickedLightName) {
               newColors[name] =
                 LIGHT_COLOR_WHEEL[
                   Math.floor(Math.random() * LIGHT_COLOR_WHEEL.length)
@@ -94,12 +99,12 @@ export const SceneEnvironment: React.FC = React.memo(() => {
       }
       return newColors;
     });
-  }, [clickLight, clickCount]);
+  }, [clickedLightName, totalClickCount]);
 
   // Update light colors based on theme/vibe selection
   useEffect(() => {
-    if (selectedVibe !== null) {
-      const vibeIndex = parseInt(selectedVibe.id, 10);
+    if (selectedThemeConfiguration !== null) {
+      const vibeIndex = parseInt(selectedThemeConfiguration.id, 10);
       const vibeColors = THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY[vibeIndex];
 
       if (vibeColors) {
@@ -117,7 +122,7 @@ export const SceneEnvironment: React.FC = React.memo(() => {
         });
       }
     }
-  }, [selectedVibe]);
+  }, [selectedThemeConfiguration]);
 
   // Memoized directional lights
   const directionalLights = useMemo(() => (
