@@ -266,6 +266,39 @@ The `test:ci` script is optimized for CI environments:
 - `--coverage`: Generate coverage reports
 - `--maxWorkers=2`: Limit parallelization for CI stability
 
+## Pre-commit Hooks
+
+### Decision: Not Implemented (By Design)
+
+**Status:** Pre-commit hooks are **not enabled** for this project.
+
+**Rationale:**
+
+1. **Development Speed** - Tests run in ~14s, which would slow down each commit
+2. **CI/CD Coverage** - GitHub Actions runs full test suite on push anyway
+3. **Developer Freedom** - Allows WIP commits without test burden
+4. **Optional Testing** - Developers can run `npm test` manually when ready
+
+**Alternative Approach:**
+
+- Rely on CI/CD for enforcement
+- Use `npm run test:ci` in GitHub Actions
+- Document test expectations in this guide
+- Trust developers to run tests before pushing
+
+**Future Consideration:**
+
+If the team wants to add pre-commit hooks later, consider:
+- Using `husky` for git hook management
+- Running only `npm run lint` (fast) pre-commit
+- Running full tests only pre-push (less frequent)
+- Making hooks optional with `--no-verify` escape hatch
+
+This decision can be revisited if:
+- Test suite becomes faster (<5s)
+- Team consensus changes
+- Quality issues arise from untested commits
+
 ## Common Patterns
 
 ### Reset Store State Between Tests
