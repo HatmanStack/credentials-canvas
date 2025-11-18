@@ -8,7 +8,6 @@
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import type { Vector3 } from 'three';
 
 /**
  * Interaction state interface

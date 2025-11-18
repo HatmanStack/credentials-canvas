@@ -32,6 +32,7 @@ export const CustomCheckbox: React.FC<CustomCheckboxProps> = React.memo(({ color
   const checkboxRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    return undefined;
     const detectToggleOnce = (e: Event): void => {
       (e.target as HTMLInputElement).classList.add('toggled-once');
     };

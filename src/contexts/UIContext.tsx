@@ -19,7 +19,7 @@ export interface UIContextState {
   showMusicIframe: boolean;
   isAudioMuted: boolean;
   selectedVibe: VibeThemeConfiguration | null;
-  gltfModel: THREE.Scene | null;
+  gltfModel: any;
   videoPlayer: HTMLVideoElement | null;
   screenWidth: number;
   lightIntensity: LightIntensityConfiguration;

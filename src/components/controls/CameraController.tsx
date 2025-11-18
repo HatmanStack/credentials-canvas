@@ -9,7 +9,6 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { extend, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Vector3 } from 'three';
-import type { Camera } from 'three';
 import { useInteraction, useUI } from 'contexts';
 import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
 import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';

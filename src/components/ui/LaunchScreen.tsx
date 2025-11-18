@@ -10,7 +10,6 @@ import { ThemeSelectionOption } from './ThemeSelectionOption';
 import { AVAILABLE_THEME_CONFIGURATIONS } from 'constants/themeConfiguration';
 import { useUI } from 'contexts';
 import '../../css/launch.css';
-import type { VibeThemeConfiguration } from 'types';
 
 /**
  * Launch Screen component for theme selection

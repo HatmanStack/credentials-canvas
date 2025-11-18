@@ -7,7 +7,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
-import { useThree } from '@react-three/fiber';
 import type { ThreeEvent } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useGLTF } from '@react-three/drei';
@@ -16,8 +15,6 @@ import { useInteraction, useUI } from 'contexts';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from 'constants/urlConfiguration';
 import {
   INTERACTIVE_LIGHT_MESH_NAMES,
-  VIDEO_TEXTURE_MESH_NAMES,
-  VIDEO_TEXTURE_FILE_PATHS,
   PHONE_VIDEO_CONFIGURATIONS,
   CLOSE_UP_CLICK_THRESHOLD_COUNT,
   GLTF_MODEL_FILE_PATH
