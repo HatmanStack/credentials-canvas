@@ -21,6 +21,8 @@ import { GLTF_MODEL_FILE_PATH } from 'constants/meshConfiguration';
 import handGif from './assets/hand.gif';
 import volumeUp from './assets/volume_up.svg';
 import mute from './assets/volume_mute.svg';
+import arrowIcon from './assets/arrow.svg';
+import {cn} from 'utils/classNameUtils';
 
 // Preload GLTF model
 useGLTF.preload(GLTF_MODEL_FILE_PATH);
@@ -163,21 +165,12 @@ const AppContent: React.FC = () => {
   // Memoized button styles
   const navigationButtonStyle = useMemo((): React.CSSProperties => ({
     opacity: loadingProgress < 100 ? 0 : 1,
-    marginLeft: 20,
-    marginBottom: 20,
+    backgroundImage: `url(${arrowIcon})`,
   }), [loadingProgress]);
 
   const muteButtonStyle = useMemo((): React.CSSProperties => ({
     opacity: loadingProgress < 100 ? 0 : 1,
-    cursor: 'pointer',
-    width: '40px',
-    height: '40px',
     backgroundImage: `url(${isAudioCurrentlyMuted ? mute : volumeUp})`,
-    backgroundColor: isAudioCurrentlyMuted ? 'var(--rest-color)' : 'var(--active-color)',
-    marginTop: 20,
-    marginRight: 20,
-    border: 'none',
-    padding: 0
   }), [loadingProgress, isAudioCurrentlyMuted]);
 
   return (
@@ -193,14 +186,37 @@ const AppContent: React.FC = () => {
               <SceneEnvironment />
             </Canvas>
             <button
-              className="navigate"
+              className={cn(
+                "w-12 h-12 rounded-full",
+                "absolute bottom-0 left-0",
+                "ml-5 mb-5",
+                "border-0 p-0",
+                "bg-rest-color",
+                "bg-no-repeat bg-center",
+                "bg-[length:75%]",
+                "z-10",
+                "active:scale-95 active:bg-active-color",
+                "transition-transform duration-200"
+              )}
               ref={navigationButtonRef}
               style={navigationButtonStyle}
               onMouseDown={handleNavigationClick}
               onTouchStart={handleNavigationClick}
             />
             <button
-              className="mute"
+              className={cn(
+                "w-10 h-10 rounded-full",
+                "absolute top-0 right-0",
+                "mt-5 mr-5",
+                "border-0 p-0",
+                "cursor-pointer",
+                "bg-no-repeat bg-center",
+                "bg-[length:75%]",
+                "z-10",
+                "transition-transform duration-200",
+                "active:scale-95",
+                isAudioCurrentlyMuted ? "bg-rest-color" : "bg-active-color"
+              )}
               ref={muteButtonRef}
               style={muteButtonStyle}
               onClick={handleMuteToggle}
