@@ -34,7 +34,7 @@ export interface UIContextActions {
   setIframe2: (value: boolean) => void;
   setIsMuted: (value: boolean) => void;
   setVibe: (value: VibeThemeConfiguration | null) => void;
-  setGLTF: (value: THREE.Scene | null) => void;
+  setGLTF: (value: THREE.Group | THREE.Scene | null) => void;
   setPlayer: (value: HTMLVideoElement | null) => void;
   setWindowWidth: (value: number) => void;
   setLightIntensity: (value: LightIntensityConfiguration) => void;
@@ -111,7 +111,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     setAppState(prev => ({ ...prev, selectedVibe: value }));
   }, []);
 
-  const setGLTF = useCallback((value: THREE.Scene | null): void => {
+  const setGLTF = useCallback((value: THREE.Group | THREE.Scene | null): void => {
     setAppState(prev => ({ ...prev, gltfModel: value }));
   }, []);
 

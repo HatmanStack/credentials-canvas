@@ -4,7 +4,7 @@
  */
 
 import type * as THREE from 'three';
-import type { ThemeColorConfiguration, LightIntensityConfiguration, VibeThemeConfiguration } from './componentTypes';
+import type { LightIntensityConfiguration, VibeThemeConfiguration } from './componentTypes';
 
 /**
  * Scene interaction store state

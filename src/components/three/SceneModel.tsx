@@ -61,7 +61,7 @@ function useGLTFLoaderWithDRACO(path: string) {
  * Main scene model component
  */
 export const SceneModel: React.FC = React.memo(() => {
-  const { isCloseUpView, setClickPoint, setClickLight, setClickCount } = useInteraction();
+  const { isCloseUpView, setClickPoint, setClickLight, setClickCount, clickCount } = useInteraction();
   const { setGLTF } = useUI();
   const [clickThroughCount, setClickThroughCount] = useState<number>(0);
 
@@ -137,11 +137,11 @@ export const SceneModel: React.FC = React.memo(() => {
     const signName = event.object.name;
 
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
-      setClickCount((prevCount: number) => prevCount + 1);
+      setClickCount(clickCount + 1);
       window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
     } else if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
       setClickLight(signName);
-      setClickCount((prevCount: number) => prevCount + 1);
+      setClickCount(clickCount + 1);
     } else {
       for (const phoneUrl of INTERACTIVE_PHONE_URL_CONFIGURATIONS) {
         if (phoneUrl.signName.includes(signName)) {

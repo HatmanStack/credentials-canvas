@@ -19,8 +19,8 @@ import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
 class OrbitControls extends ThreeOrbitControls {
   currentPosIndex: number;
 
-  constructor(...args: any[]) {
-    super(...args);
+  constructor(object: any, domElement: any) {
+    super(object, domElement);
     this.currentPosIndex = 0;
   }
 
@@ -60,7 +60,7 @@ export const CameraController: React.FC = React.memo(() => {
   const controls = useRef<OrbitControls | null>(null);
 
   // Custom hooks for camera behavior
-  const { handleMobileScroll } = useCameraScrollBehavior({
+  useCameraScrollBehavior({
     currentPosIndex: currentCameraIndex,
     setCurrentPosIndex,
     positions: cameraPositions,

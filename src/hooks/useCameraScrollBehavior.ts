@@ -51,13 +51,8 @@ export const useCameraScrollBehavior = ({
   setCloseUp,
   setCloseUpPosIndex: setCloseUpCameraIndex,
   setCameraClone: setUsePrimaryCameraPosition,
-  holderprogress: cameraProgress,
-  setProgress: setCameraProgress,
   mobileScroll: mobileScrollCount
 }: UseCameraScrollBehaviorParameters): UseCameraScrollBehaviorReturn => {
-  const currentCameraPosition = useRef<Vector3>(new Vector3());
-  const nextCameraPosition = useRef<Vector3>(new Vector3());
-  const interpolatedPosition = useRef<Vector3>(new Vector3());
 
   // Local refs for each scroll type
   const mobileIndexRef = useRef<number>(currentCameraIndex);

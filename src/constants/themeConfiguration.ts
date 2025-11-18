@@ -3,12 +3,10 @@
  */
 
 import type {
-  ThemeColorConfiguration,
   ThemeColorConfigurationMap,
   VibeThemeConfiguration,
   BreakpointConfiguration,
-  AssetConfiguration,
-  ThemeIdentifier
+  AssetConfiguration
 } from 'types';
 
 /**

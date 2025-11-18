@@ -32,7 +32,6 @@ export const CustomCheckbox: React.FC<CustomCheckboxProps> = React.memo(({ color
   const checkboxRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    return undefined;
     const detectToggleOnce = (e: Event): void => {
       (e.target as HTMLInputElement).classList.add('toggled-once');
     };
@@ -42,9 +41,12 @@ export const CustomCheckbox: React.FC<CustomCheckboxProps> = React.memo(({ color
       checkbox.addEventListener('click', detectToggleOnce, { once: true });
 
       return () => {
-        checkbox.removeEventListener('click', detectToggleOnce);
+        if (checkbox) {
+          checkbox.removeEventListener('click', detectToggleOnce);
+        }
       };
     }
+    return undefined;
   }, []);
 
   const handleClick = useCallback((): void => {

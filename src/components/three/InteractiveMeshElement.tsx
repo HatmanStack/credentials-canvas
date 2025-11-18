@@ -28,14 +28,14 @@ export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({
   meshRef,
   ...props
 }) => {
-  const { isCloseUpView, setClickPoint, setClickLight, setClickCount } = useInteraction();
+  const { isCloseUpView, setClickPoint, setClickLight, setClickCount, clickCount } = useInteraction();
 
   const handleClick = (event: ThreeEvent<MouseEvent>): void => {
     const signName = event.object.name;
 
     // Direct URL links (external sites)
     if (MESH_NAME_TO_URL_MAPPING[signName]) {
-      setClickCount((prevCount: number) => prevCount + 1);
+      setClickCount(clickCount + 1);
       window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank');
       return;
     }
@@ -43,7 +43,7 @@ export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({
     // Light controls
     if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
       setClickLight(signName);
-      setClickCount((prevCount: number) => prevCount + 1);
+      setClickCount(clickCount + 1);
       return;
     }
 

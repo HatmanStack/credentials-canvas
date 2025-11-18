@@ -15,17 +15,6 @@ import {
 import type { PointLightPositionConfiguration, VibeLightColorConfiguration } from 'constants/lightingConfiguration';
 import type { LightIntensityConfiguration } from 'types';
 
-// Temporary types for Context (will be replaced in Phase 2)
-interface InteractionContextValue {
-  clickLight: string | null;
-  clickCount: number;
-}
-
-interface UIContextValue {
-  selectedVibe: { id: string } | null;
-  lightIntensity: LightIntensityConfiguration;
-}
-
 /**
  * Return type for useLightingController hook
  */
