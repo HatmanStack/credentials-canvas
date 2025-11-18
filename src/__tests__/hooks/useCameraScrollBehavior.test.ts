@@ -1,6 +1,6 @@
 import {renderHook, act} from '@testing-library/react';
 import {useCameraScrollBehavior} from 'hooks/useCameraScrollBehavior';
-import {createMockCamera, createMockVector3} from '__tests__/mocks/threeMocks';
+import {createMockCamera} from 'test-helpers/threeMocks';
 import type {Camera} from 'three';
 import type {CameraPositionTuple} from 'types';
 

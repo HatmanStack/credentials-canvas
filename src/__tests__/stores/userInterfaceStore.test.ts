@@ -1,6 +1,6 @@
 import {renderHook, act} from '@testing-library/react';
 import {useUserInterfaceStore} from 'stores/userInterfaceStore';
-import {createMockThemeConfiguration} from '__tests__/mocks/storeMocks';
+import {createMockThemeConfiguration} from 'test-helpers/storeMocks';
 
 describe('userInterfaceStore', () => {
   beforeEach(() => {

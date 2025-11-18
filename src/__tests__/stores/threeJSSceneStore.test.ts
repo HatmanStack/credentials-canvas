@@ -1,6 +1,6 @@
 import {renderHook, act} from '@testing-library/react';
 import {useThreeJSSceneStore} from 'stores/threeJSSceneStore';
-import {createMockScene} from '__tests__/mocks/threeMocks';
+import {createMockScene} from 'test-helpers/threeMocks';
 
 describe('threeJSSceneStore', () => {
   beforeEach(() => {

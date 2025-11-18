@@ -1,4 +1,4 @@
-import {renderHook, act} from '@testing-library/react';
+import {renderHook} from '@testing-library/react';
 import {useLightingController} from 'hooks/useLightingController';
 import type {LightIntensityConfiguration} from 'types';
 
@@ -97,8 +97,6 @@ describe('useLightingController', () => {
             initialProps: {clickLight: null as string | null, clickCount: 0},
           },
       );
-
-      const initialColor = result.current.lightColors['Light1'];
 
       // Click Light1
       rerender({clickLight: 'Light1', clickCount: 1});
@@ -256,8 +254,6 @@ describe('useLightingController', () => {
             initialProps: {clickLight: null as string | null, clickCount: 0},
           },
       );
-
-      const initialColor = result.current.getLightColor('Light1');
 
       rerender({clickLight: 'Light1', clickCount: 1});
 

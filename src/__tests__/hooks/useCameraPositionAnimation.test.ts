@@ -1,6 +1,6 @@
-import {renderHook, act, waitFor} from '@testing-library/react';
+import {renderHook} from '@testing-library/react';
 import {useCameraPositionAnimation} from 'hooks/useCameraPositionAnimation';
-import {createMockCamera} from '__tests__/mocks/threeMocks';
+import {createMockCamera} from 'test-helpers/threeMocks';
 import type {Camera} from 'three';
 import {Vector3} from 'three';
 

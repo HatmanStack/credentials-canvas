@@ -10,6 +10,7 @@ module.exports = {
     '^types/(.*)$': '<rootDir>/src/types/$1',
     '^constants/(.*)$': '<rootDir>/src/constants/$1',
     '^utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^test-helpers/(.*)$': '<rootDir>/src/test-helpers/$1',
     // Handle CSS imports
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
@@ -20,7 +21,7 @@ module.exports = {
   // Test environment
   testEnvironment: 'jsdom',
 
-  // Test file patterns - only match .test.ts(x) files
+  // Test file patterns - match .test.ts(x) files
   testMatch: [
     '**/__tests__/**/*.test.ts',
     '**/__tests__/**/*.test.tsx',
@@ -29,8 +30,6 @@ module.exports = {
   // Ignore test utilities and mocks
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/__tests__/mocks/.*\\.ts$',
-    '/__tests__/utils/testUtils\\.tsx$',
   ],
 
   // Coverage collection configuration
