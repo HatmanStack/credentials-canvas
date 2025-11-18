@@ -19,6 +19,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type * as THREE from 'three';
+import type { YouTubePlayer } from 'types/youtubeTypes';
 
 /**
  * Three.js Scene State Interface
@@ -30,15 +31,15 @@ export interface ThreeJSSceneState {
   /** The loaded GLTF scene model (THREE.Group or THREE.Scene) */
   threeJSSceneModel: THREE.Group | THREE.Scene | null;
 
-  /** HTML video player element used for video textures */
-  htmlVideoPlayerElement: HTMLVideoElement | null;
+  /** YouTube IFrame player for video control */
+  htmlVideoPlayerElement: YouTubePlayer | null;
 
   // Actions
   /** Set the Three.js scene model reference */
   setThreeJSSceneModel: (scene: THREE.Group | THREE.Scene | null) => void;
 
-  /** Set the HTML video player element reference */
-  setHTMLVideoPlayerElement: (player: HTMLVideoElement | null) => void;
+  /** Set the YouTube IFrame player reference */
+  setHTMLVideoPlayerElement: (player: YouTubePlayer | null) => void;
 
   // Reset action
   /** Clear all Three.js object references */

@@ -5,6 +5,7 @@
 
 import type * as THREE from 'three';
 import type { LightIntensityConfiguration, VibeThemeConfiguration } from './componentTypes';
+import type { YouTubePlayer } from './youtubeTypes';
 
 /**
  * Scene interaction store state
@@ -102,11 +103,11 @@ export interface UserInterfaceState {
 export interface ThreeJSSceneState {
   // Three.js objects
   threeJSSceneModel: THREE.Group | THREE.Scene | null;
-  htmlVideoPlayerElement: HTMLVideoElement | null;
+  htmlVideoPlayerElement: YouTubePlayer | null;
 
   // Actions
   setThreeJSSceneModel: (scene: THREE.Group | THREE.Scene | null) => void;
-  setHTMLVideoPlayerElement: (player: HTMLVideoElement | null) => void;
+  setHTMLVideoPlayerElement: (player: YouTubePlayer | null) => void;
 
   // Reset action
   resetThreeJSSceneState: () => void;

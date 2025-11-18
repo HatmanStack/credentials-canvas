@@ -117,11 +117,11 @@ const AppContent: React.FC = () => {
   // Handle mute toggle
   const handleMuteToggle = useCallback((): void => {
     if (htmlVideoPlayerElement) {
-      if ((htmlVideoPlayerElement as any).isMuted()) {
-        (htmlVideoPlayerElement as any).unMute();
+      if (htmlVideoPlayerElement.isMuted()) {
+        htmlVideoPlayerElement.unMute();
         setIsAudioCurrentlyMuted(false);
       } else {
-        (htmlVideoPlayerElement as any).mute();
+        htmlVideoPlayerElement.mute();
         setIsAudioCurrentlyMuted(true);
       }
     }

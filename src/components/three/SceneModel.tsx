@@ -32,6 +32,8 @@ gltfLoader.setDRACOLoader(dracoLoader);
  * Custom hook to load GLTF with DRACO compression
  */
 function useGLTFLoaderWithDRACO(path: string) {
+  // Type assertion needed: useGLTF expects UseDraco but we're providing GLTFLoader
+  // with DRACO preconfigured. This is intentional to use custom DRACO paths.
   const gltf = useGLTF(path, gltfLoader as any);
 
   // Clean up when component unmounts

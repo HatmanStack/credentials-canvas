@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { extend, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Vector3 } from 'three';
+import type { Camera } from 'three';
 import { useSceneInteractionStore, useUserInterfaceStore } from 'stores';
 import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
 import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
@@ -19,7 +20,7 @@ import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
 class OrbitControls extends ThreeOrbitControls {
   currentPosIndex: number;
 
-  constructor(object: any, domElement: any) {
+  constructor(object: Camera, domElement: HTMLElement) {
     super(object, domElement);
     this.currentPosIndex = 0;
   }

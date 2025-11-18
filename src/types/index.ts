@@ -41,3 +41,8 @@ export type {
   UserInterfaceState,
   ThreeJSSceneState,
 } from './storeTypes';
+
+// YouTube player types
+export type {
+  YouTubePlayer,
+} from './youtubeTypes';
