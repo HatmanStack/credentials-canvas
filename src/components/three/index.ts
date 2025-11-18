@@ -1,2 +1,8 @@
-// Barrel exports for Three.js components
-// Components will be exported here as they are migrated
+/**
+ * Barrel exports for Three.js components
+ */
+
+export { SceneModel } from './SceneModel';
+export { SceneEnvironment } from './SceneEnvironment';
+export { InteractiveMeshElement } from './InteractiveMeshElement';
+export type { InteractiveMeshElementProps } from './InteractiveMeshElement';
