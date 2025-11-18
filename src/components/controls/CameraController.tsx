@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { extend, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Vector3 } from 'three';
-import { useInteraction, useUI } from 'contexts';
+import { useSceneInteractionStore, useUserInterfaceStore } from 'stores';
 import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
 import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
 
@@ -35,11 +35,24 @@ extend({ OrbitControls });
  * Camera controller component
  */
 export const CameraController: React.FC = React.memo(() => {
-  const {
-    mobileScrollCount, clickPoint, setClickPoint, setCloseUp, isDragging, isCloseUpView,
-    setScrollStarted, currentCameraIndex, setCurrentPosIndex, cameraProgress, setCameraProgress
-  } = useInteraction();
-  const { screenWidth, setIframe1, setIframe2 } = useUI();
+  // Scene interaction store - selective subscriptions
+  const mobileScrollTriggerCount = useSceneInteractionStore(state => state.mobileScrollTriggerCount);
+  const clickedMeshPosition = useSceneInteractionStore(state => state.clickedMeshPosition);
+  const setClickedMeshPosition = useSceneInteractionStore(state => state.setClickedMeshPosition);
+  const setIsCloseUpViewActive = useSceneInteractionStore(state => state.setIsCloseUpViewActive);
+  const isUserCurrentlyDragging = useSceneInteractionStore(state => state.isUserCurrentlyDragging);
+  const isCloseUpViewActive = useSceneInteractionStore(state => state.isCloseUpViewActive);
+  const setHasUserStartedScrolling = useSceneInteractionStore(state => state.setHasUserStartedScrolling);
+  const currentCameraPositionIndex = useSceneInteractionStore(state => state.currentCameraPositionIndex);
+  const setCurrentCameraPositionIndex = useSceneInteractionStore(state => state.setCurrentCameraPositionIndex);
+  const cameraInterpolationProgress = useSceneInteractionStore(state => state.cameraInterpolationProgress);
+  const setCameraInterpolationProgress = useSceneInteractionStore(state => state.setCameraInterpolationProgress);
+
+  // User interface store - selective subscriptions
+  const currentWindowWidth = useUserInterfaceStore(state => state.currentWindowWidth);
+  const setShouldShowArcadeIframe = useUserInterfaceStore(state => state.setShouldShowArcadeIframe);
+  const setShouldShowMusicIframe = useUserInterfaceStore(state => state.setShouldShowMusicIframe);
+
   const [closeUpCameraIndex, setCloseUpCameraIndex] = useState<number>(0);
   const [usePrimaryCameraPosition, setUsePrimaryCameraPosition] = useState<Vector3 | boolean>(true);
   const [shouldResetCamera, setShouldResetCamera] = useState<boolean>(true);
@@ -61,30 +74,30 @@ export const CameraController: React.FC = React.memo(() => {
 
   // Custom hooks for camera behavior
   useCameraScrollBehavior({
-    currentPosIndex: currentCameraIndex,
-    setCurrentPosIndex,
+    currentPosIndex: currentCameraPositionIndex,
+    setCurrentPosIndex: setCurrentCameraPositionIndex,
     positions: cameraPositions,
     camera,
     domElement,
-    setScrollStarted,
-    setCloseUp,
+    setScrollStarted: setHasUserStartedScrolling,
+    setCloseUp: setIsCloseUpViewActive,
     setCloseUpPosIndex: setCloseUpCameraIndex,
     setCameraClone: setUsePrimaryCameraPosition,
-    holderprogress: cameraProgress,
-    setProgress: setCameraProgress,
-    mobileScroll: mobileScrollCount
+    holderprogress: cameraInterpolationProgress,
+    setProgress: setCameraInterpolationProgress,
+    mobileScroll: mobileScrollTriggerCount
   });
 
   const { rotationPoint } = useCameraPositionAnimation({
     camera,
-    windowWidth: screenWidth,
-    closeUp: isCloseUpView,
+    windowWidth: currentWindowWidth,
+    closeUp: isCloseUpViewActive,
     closeUpPosIndex: closeUpCameraIndex,
     setCloseUpPosIndex: setCloseUpCameraIndex,
-    currentPosIndex: currentCameraIndex,
-    clickPoint,
-    setClickPoint,
-    setCloseUp,
+    currentPosIndex: currentCameraPositionIndex,
+    clickPoint: clickedMeshPosition,
+    setClickPoint: setClickedMeshPosition,
+    setCloseUp: setIsCloseUpViewActive,
     setCameraClone: setUsePrimaryCameraPosition
   });
 
@@ -105,40 +118,40 @@ export const CameraController: React.FC = React.memo(() => {
         camera.position.y > 0 &&
         camera.position.z > 0.25
       ) {
-        setIframe1(true);
+        setShouldShowArcadeIframe(true);
       } else {
-        setIframe1(false);
+        setShouldShowArcadeIframe(false);
       }
 
       if (
         camera.position.y > 0 &&
         camera.position.z > 4.3
       ) {
-        setIframe2(true);
+        setShouldShowMusicIframe(true);
       } else {
-        setIframe2(false);
+        setShouldShowMusicIframe(false);
       }
       if (camera.position.y > 3) {
-        setIframe2(false);
+        setShouldShowMusicIframe(false);
       }
       if (
         camera.position.y > 1.2 &&
         camera.position.x > -1.5 &&
         camera.position.z < 5.2
       ) {
-        setIframe2(false);
+        setShouldShowMusicIframe(false);
       }
     }
   });
 
   // Handle drag state changes
   useEffect(() => {
-    if (controls.current && isDragging) {
+    if (controls.current && isUserCurrentlyDragging) {
       controls.current.update();
-      controls.current.enabled = !isDragging;
+      controls.current.enabled = !isUserCurrentlyDragging;
       controls.current.update();
     }
-  }, [isDragging]);
+  }, [isUserCurrentlyDragging]);
 
   // Initialize OrbitControls
   useEffect(() => {
@@ -153,9 +166,9 @@ export const CameraController: React.FC = React.memo(() => {
   // Toggle controls based on drag state
   useEffect(() => {
     if (controls.current) {
-      controls.current.enabled = !isDragging;
+      controls.current.enabled = !isUserCurrentlyDragging;
     }
-  }, [isDragging]);
+  }, [isUserCurrentlyDragging]);
 
   return null;
 });
