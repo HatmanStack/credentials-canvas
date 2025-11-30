@@ -85,10 +85,10 @@ export default defineConfig({
 ```
 
 **Verification Checklist:**
-- [ ] Vitest config added to vite.config.ts
-- [ ] `tests/setup.ts` created with browser mocks
-- [ ] Package.json includes vitest and related deps
-- [ ] `npm run test` command works (may fail until tests migrated)
+- [x] Vitest config added to vite.config.ts
+- [x] `tests/setup.ts` created with browser mocks
+- [x] Package.json includes vitest and related deps
+- [x] `npm run test` command works (may fail until tests migrated)
 
 **Testing Instructions:**
 - Run `cd frontend && npx vitest --version` to verify installation
@@ -141,12 +141,12 @@ const mockFn = vi.fn();
 ```
 
 **Verification Checklist:**
-- [ ] `tests/helpers/storeMocks.ts` exists
-- [ ] `tests/helpers/testUtils.tsx` exists
-- [ ] `tests/helpers/threeMocks.ts` exists
-- [ ] All `jest.*` references replaced with `vi.*`
-- [ ] Path aliases resolve correctly
-- [ ] `frontend/src/test-helpers/` removed
+- [x] `tests/helpers/storeMocks.ts` exists
+- [x] `tests/helpers/testUtils.tsx` exists
+- [x] `tests/helpers/threeMocks.ts` exists
+- [x] All `jest.*` references replaced with `vi.*`
+- [x] Path aliases resolve correctly
+- [x] `frontend/src/test-helpers/` removed
 
 **Testing Instructions:**
 - TypeScript compilation of helper files (verified in Task 3)
@@ -202,11 +202,11 @@ Remove empty test-helpers directory
 7. `classNameUtils.test.ts`
 
 **Verification Checklist:**
-- [ ] All 7 test files moved to `tests/frontend/`
-- [ ] All imports updated to Vitest
-- [ ] All Jest APIs replaced with Vitest equivalents
-- [ ] `frontend/src/__tests__/` removed
-- [ ] `npm run test -- --run` passes all tests
+- [x] All 7 test files moved to `tests/frontend/`
+- [x] All imports updated to Vitest
+- [x] All Jest APIs replaced with Vitest equivalents
+- [x] `frontend/src/__tests__/` removed
+- [x] `npm run test -- --run` passes all tests
 
 **Testing Instructions:**
 - Run `npm run test -- --run` from root
@@ -260,11 +260,11 @@ Replace jest.* with vi.* throughout
 7. `frontend/src/` root files (App.tsx, main.tsx)
 
 **Verification Checklist:**
-- [ ] No `//` comments remain (except eslint/ts directives)
-- [ ] No `/* */` comments remain
-- [ ] No `/** */` JSDoc comments remain
-- [ ] TypeScript compilation still passes
-- [ ] Application still runs correctly
+- [x] No `//` comments remain (except eslint/ts directives)
+- [x] No `/* */` comments remain
+- [x] No `/** */` JSDoc comments remain
+- [x] TypeScript compilation still passes
+- [x] Application still runs correctly
 
 **Testing Instructions:**
 - Run `npm run type-check` after each directory batch
@@ -306,9 +306,9 @@ Verify TypeScript compilation and runtime behavior
 **Note:** Based on initial scan, the codebase appears clean (0 console/debugger statements found). This task verifies and documents that state.
 
 **Verification Checklist:**
-- [ ] `grep -r "console\.(log|debug|info)" frontend/src/` returns no results
-- [ ] `grep -r "debugger" frontend/src/` returns no results
-- [ ] Application runs without console output (except genuine errors)
+- [x] `grep -r "console\.(log|debug|info)" frontend/src/` returns no results
+- [x] `grep -r "debugger" frontend/src/` returns no results
+- [x] Application runs without console output (except genuine errors)
 
 **Testing Instructions:**
 - Run grep commands to verify
@@ -393,11 +393,11 @@ jobs:
 ```
 
 **Verification Checklist:**
-- [ ] `.github/workflows/ci.yml` exists
-- [ ] Workflow syntax is valid (use actionlint or GitHub's validator)
-- [ ] Node.js version is 24
-- [ ] Three jobs defined: frontend-lint, frontend-tests, status-check
-- [ ] Triggers configured for main and develop
+- [x] `.github/workflows/ci.yml` exists
+- [x] Workflow syntax is valid (use actionlint or GitHub's validator)
+- [x] Node.js version is 24
+- [x] Three jobs defined: frontend-lint, frontend-tests, status-check
+- [x] Triggers configured for main and develop
 
 **Testing Instructions:**
 - Validate YAML syntax: `npx yaml-lint .github/workflows/ci.yml`
@@ -455,12 +455,12 @@ Trigger on push/PR to main and develop
 - Ensure docs/plans/ directory is preserved
 
 **Verification Checklist:**
-- [ ] `docs/README.md` exists with comprehensive content
-- [ ] Root `README.md` simplified to overview format
-- [ ] `docs/TESTING.md` deleted
-- [ ] `docs/TAILWIND_PATTERNS.md` deleted
-- [ ] `docs/plans/` preserved (not deleted)
-- [ ] All internal links work correctly
+- [x] `docs/README.md` exists with comprehensive content
+- [x] Root `README.md` simplified to overview format
+- [x] `docs/TESTING.md` deleted
+- [x] `docs/TAILWIND_PATTERNS.md` deleted
+- [x] `docs/plans/` preserved (not deleted)
+- [x] All internal links work correctly
 
 **Testing Instructions:**
 - Review documentation for accuracy
@@ -517,12 +517,12 @@ Update testing docs for Vitest migration
 ```
 
 **Verification Checklist:**
-- [ ] `npm run dev` starts Vite dev server
-- [ ] `npm run build` creates production build
-- [ ] `npm run test -- --run` runs all tests
-- [ ] `npm run lint` runs ESLint
-- [ ] `npm run type-check` runs tsc
-- [ ] `npm run check` runs lint + tests
+- [x] `npm run dev` starts Vite dev server
+- [x] `npm run build` creates production build
+- [x] `npm run test -- --run` runs all tests
+- [x] `npm run lint` runs ESLint
+- [x] `npm run type-check` runs tsc
+- [x] `npm run check` runs lint + tests
 
 **Testing Instructions:**
 - Execute each script and verify it works
@@ -578,14 +578,14 @@ npm run check
 ```
 
 **Verification Checklist:**
-- [ ] No temporary files remain
-- [ ] .gitignore updated for Vite/Vitest patterns
-- [ ] `npm run type-check` exits 0
-- [ ] `npm run lint` exits 0 (or only acceptable warnings)
-- [ ] `npm run test -- --run` all tests pass
-- [ ] `npm run build` exits 0
-- [ ] `npm run check` exits 0
-- [ ] Application runs correctly with `npm run dev`
+- [x] No temporary files remain
+- [x] .gitignore updated for Vite/Vitest patterns
+- [x] `npm run type-check` exits 0
+- [x] `npm run lint` exits 0 (or only acceptable warnings)
+- [x] `npm run test -- --run` all tests pass
+- [x] `npm run build` exits 0
+- [x] `npm run check` exits 0
+- [x] Application runs correctly with `npm run dev`
 
 **Testing Instructions:**
 - Run full verification suite above
