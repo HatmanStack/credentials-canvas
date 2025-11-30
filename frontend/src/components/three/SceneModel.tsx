@@ -1,10 +1,3 @@
-/**
- * Scene Model Component
- *
- * Loads and displays the main GLTF 3D model with DRACO compression.
- * Handles video texture application and mesh click interactions.
- */
-
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
@@ -20,7 +13,6 @@ import {
   GLTF_MODEL_FILE_PATH
 } from '@/constants/meshConfiguration';
 
-// Configure DRACO loader
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderConfig({ type: 'js' });
 dracoLoader.setDecoderPath('/draco/javascript/');
@@ -28,16 +20,9 @@ dracoLoader.setDecoderPath('/draco/javascript/');
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-/**
- * Custom hook to load GLTF with DRACO compression
- */
 function useGLTFLoaderWithDRACO(path: string) {
-  // Type assertion needed: useGLTF expects UseDraco but we're providing GLTFLoader
-  // with DRACO preconfigured. This is intentional to use custom DRACO paths.
-  // Using unknown as intermediate for safe type assertion
   const gltf = useGLTF(path, gltfLoader as unknown as boolean);
 
-  // Clean up when component unmounts
   useEffect(() => {
     return () => {
       if (gltf) {
@@ -60,17 +45,12 @@ function useGLTFLoaderWithDRACO(path: string) {
   return gltf;
 }
 
-/**
- * Main scene model component
- */
 export const SceneModel: React.FC = React.memo(() => {
-  // Scene interaction store - selective subscriptions
   const isCloseUpViewActive = useSceneInteractionStore(state => state.isCloseUpViewActive);
   const setClickedMeshPosition = useSceneInteractionStore(state => state.setClickedMeshPosition);
   const setClickedLightName = useSceneInteractionStore(state => state.setClickedLightName);
   const incrementClickCount = useSceneInteractionStore(state => state.incrementClickCount);
 
-  // Three.js scene store
   const setThreeJSSceneModel = useThreeJSSceneStore(state => state.setThreeJSSceneModel);
 
   const [clickThroughCount, setClickThroughCount] = useState<number>(0);
@@ -78,17 +58,14 @@ export const SceneModel: React.FC = React.memo(() => {
   const filePath = GLTF_MODEL_FILE_PATH;
   const gltf = useGLTFLoaderWithDRACO(filePath);
 
-  // Create refs for video elements and their textures
   const videoRefs = useRef<Record<string, HTMLVideoElement>>({});
   const videoTextureRefs = useRef<Record<string, THREE.VideoTexture>>({});
 
-  // Setup video textures when model loads
   useEffect(() => {
     if (gltf) {
       gltf.scene.traverse(node => {
         const mesh = node as THREE.Mesh;
 
-        // Apply video textures to matching meshes
         for (let i = 0; i < PHONE_VIDEO_CONFIGURATIONS.length; i++) {
           const config = PHONE_VIDEO_CONFIGURATIONS[i];
 
@@ -116,7 +93,6 @@ export const SceneModel: React.FC = React.memo(() => {
             videoTextureRefs.current[config.name] = videoTexture;
           }
 
-          // Handle glass transparency for Base mesh
           if (mesh.name === 'Base') {
             const circle = mesh.children.find(
               child => child.name === 'Circle_1'
@@ -135,18 +111,18 @@ export const SceneModel: React.FC = React.memo(() => {
       setThreeJSSceneModel(gltf.scene);
     }
 
-    // Cleanup video elements and textures
+    const currentVideoRefs = videoRefs.current;
+    const currentTextureRefs = videoTextureRefs.current;
+
     return () => {
-      Object.values(videoRefs.current).forEach(video => {
+      Object.values(currentVideoRefs).forEach(video => {
         if (video && !video.paused) {
           video.pause();
         }
       });
-      // Dispose video textures to prevent WebGL memory leak
-      Object.values(videoTextureRefs.current).forEach(texture => {
+      Object.values(currentTextureRefs).forEach(texture => {
         texture.dispose();
       });
-      videoTextureRefs.current = {};
     };
   }, [gltf, setThreeJSSceneModel]);
 
@@ -164,7 +140,6 @@ export const SceneModel: React.FC = React.memo(() => {
         if (phoneUrl.signName.includes(signName)) {
           setClickedMeshPosition(signName);
           if (isCloseUpViewActive) {
-            // Compute next count locally to avoid stale state
             const nextCount = clickThroughCount + 1;
             setClickThroughCount(nextCount);
             if (

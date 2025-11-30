@@ -1,10 +1,3 @@
-/**
- * Launch Screen Component
- *
- * Displays the initial theme selection interface where users choose their
- * "vibe" (theme) before entering the 3D scene.
- */
-
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ThemeSelectionOption } from './ThemeSelectionOption';
 import { AVAILABLE_THEME_CONFIGURATIONS } from '@/constants/themeConfiguration';
@@ -12,20 +5,14 @@ import { useUserInterfaceStore } from '@/stores';
 import { cn } from '@/utils/classNameUtils';
 import '@/css/launch.css';
 
-/**
- * Launch Screen component for theme selection
- */
 export const LaunchScreen: React.FC = React.memo(() => {
-  // User interface store - selective subscription
   const setSelectedThemeConfiguration = useUserInterfaceStore(state => state.setSelectedThemeConfiguration);
 
-  // Separate refs for each SVG element
   const vibeTextRef = useRef<SVGSVGElement>(null);
   const graphicsTextRef = useRef<SVGSVGElement>(null);
   const [selectedVibeOption, setSelectedVibeOption] = useState<string | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Update CSS custom property for hover color based on selected theme
   useEffect(() => {
     if (selectedVibeOption !== null && resetButtonRef.current) {
       const selectedTheme = AVAILABLE_THEME_CONFIGURATIONS.find(theme => theme.id === selectedVibeOption);
@@ -35,7 +22,6 @@ export const LaunchScreen: React.FC = React.memo(() => {
   }, [selectedVibeOption]);
 
   const setAnimationName = useCallback((animationName: string): void => {
-    // Apply animation to both SVG elements
     if (vibeTextRef.current) {
       vibeTextRef.current.style.animationName = animationName;
     }

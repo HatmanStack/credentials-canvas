@@ -1,21 +1,9 @@
-/**
- * Custom hook for camera scroll behavior and navigation
- *
- * Handles both desktop wheel scroll and mobile navigation for camera movement
- * through predefined positions in the 3D scene.
- *
- * TODO: Phase 2 - Replace Context hooks with Zustand selectors
- */
-
 import { useEffect, useRef, useCallback } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
 import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from '@/constants/cameraConfiguration';
 import type { CameraPositionTuple } from '@/types';
 
-/**
- * Parameters for useCameraScrollBehavior hook
- */
 export interface UseCameraScrollBehaviorParameters {
   currentPosIndex: number;
   setCurrentPosIndex: (index: number) => void;
@@ -31,16 +19,10 @@ export interface UseCameraScrollBehaviorParameters {
   mobileScroll: number | null;
 }
 
-/**
- * Return type for useCameraScrollBehavior hook
- */
 export interface UseCameraScrollBehaviorReturn {
   handleMobileScroll: () => void;
 }
 
-/**
- * Hook for managing camera scroll behavior
- */
 export const useCameraScrollBehavior = ({
   currentPosIndex: currentCameraIndex,
   setCurrentPosIndex: setCurrentCameraIndex,
@@ -53,13 +35,11 @@ export const useCameraScrollBehavior = ({
   setCameraClone: setUsePrimaryCameraPosition,
   mobileScroll: mobileScrollCount
 }: UseCameraScrollBehaviorParameters): UseCameraScrollBehaviorReturn => {
-  // Local refs for each scroll type
   const mobileIndexRef = useRef<number>(currentCameraIndex);
   const desktopIndexRef = useRef<number>(currentCameraIndex);
   const desktopScrollProgress = useRef<number>(0);
   const mobileScrollProgress = useRef<number>(0);
 
-  // Sync local refs when context currentCameraIndex changes
   useEffect(() => {
     mobileIndexRef.current = currentCameraIndex;
     desktopIndexRef.current = currentCameraIndex;
@@ -68,7 +48,6 @@ export const useCameraScrollBehavior = ({
   }, [currentCameraIndex]);
 
   const handleMobileScroll = useCallback(() => {
-    // Guard against invalid positions array or index
     if (cameraPositions.length === 0) return;
 
     setScrollStarted(true);
@@ -77,7 +56,6 @@ export const useCameraScrollBehavior = ({
 
     const currentIndex = mobileIndexRef.current;
 
-    // Validate current index is within bounds
     if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
       return;
     }
@@ -108,19 +86,16 @@ export const useCameraScrollBehavior = ({
     setCloseUpCameraIndex, setUsePrimaryCameraPosition, setCurrentCameraIndex
   ]);
 
-  // Handle mobile scroll trigger
   useEffect(() => {
     if (mobileScrollCount) {
       handleMobileScroll();
     }
   }, [mobileScrollCount, handleMobileScroll]);
 
-  // Handle desktop scroll
   useEffect(() => {
     if (!domElement) return;
 
     const handleDesktopScroll = (_event: WheelEvent): void => {
-      // Guard against invalid positions array or index
       if (cameraPositions.length === 0) return;
 
       setScrollStarted(true);
@@ -129,7 +104,6 @@ export const useCameraScrollBehavior = ({
 
       const currentIndex = desktopIndexRef.current;
 
-      // Validate current index is within bounds
       if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
         return;
       }

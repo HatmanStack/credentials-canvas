@@ -1,12 +1,3 @@
-/**
- * Root App Component
- *
- * Main application component that coordinates all sub-components and manages
- * the application state through context providers.
- *
- * Inspired by https://jesse-zhou.com/
- */
-
 import React, { Suspense, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useProgress, useGLTF } from '@react-three/drei';
@@ -24,20 +15,13 @@ import mute from '@/assets/volume_mute.svg';
 import arrowIcon from '@/assets/arrow.svg';
 import { cn } from '@/utils/classNameUtils';
 
-// Preload GLTF model
 useGLTF.preload(GLTF_MODEL_FILE_PATH);
 
-/**
- * Props for TitleEffect component
- */
 interface TitleEffectProps {
   text: string;
   startColorHue: number | null;
 }
 
-/**
- * Animated title component with gradient effect
- */
 const TitleEffect: React.FC<TitleEffectProps> = React.memo(({ text, startColorHue }) => {
   const totalLetters = text.length;
   const hue = startColorHue || 0;
@@ -67,15 +51,10 @@ const TitleEffect: React.FC<TitleEffectProps> = React.memo(({ text, startColorHu
   );
 });
 
-/**
- * App content component
- */
 const AppContent: React.FC = () => {
-  // Scene interaction store - selective subscriptions
   const mobileScrollTriggerCount = useSceneInteractionStore(state => state.mobileScrollTriggerCount);
   const setMobileScrollTriggerCount = useSceneInteractionStore(state => state.setMobileScrollTriggerCount);
 
-  // User interface store - selective subscriptions
   const selectedThemeConfiguration = useUserInterfaceStore(state => state.selectedThemeConfiguration);
   const titleTextColorHue = useUserInterfaceStore(state => state.titleTextColorHue);
   const isAudioCurrentlyMuted = useUserInterfaceStore(state => state.isAudioCurrentlyMuted);
@@ -83,13 +62,11 @@ const AppContent: React.FC = () => {
   const setIsAudioCurrentlyMuted = useUserInterfaceStore(state => state.setIsAudioCurrentlyMuted);
   const setTitleTextColorHue = useUserInterfaceStore(state => state.setTitleTextColorHue);
 
-  // Three.js scene store - selective subscription
   const htmlVideoPlayerElement = useThreeJSSceneStore(state => state.htmlVideoPlayerElement);
 
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const muteButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Update theme colors when theme changes
   useEffect(() => {
     if (selectedThemeConfiguration !== null && navigationButtonRef.current && muteButtonRef.current) {
       const vibeId = selectedThemeConfiguration.id;
@@ -103,7 +80,6 @@ const AppContent: React.FC = () => {
     }
   }, [selectedThemeConfiguration, setTitleTextColorHue]);
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = (): void => {
       setCurrentWindowWidth(window.innerWidth);
@@ -114,7 +90,6 @@ const AppContent: React.FC = () => {
     };
   }, [setCurrentWindowWidth]);
 
-  // Handle mute toggle
   const handleMuteToggle = useCallback((): void => {
     if (htmlVideoPlayerElement) {
       if (htmlVideoPlayerElement.isMuted()) {
@@ -129,7 +104,6 @@ const AppContent: React.FC = () => {
 
   const { progress: loadingProgress } = useProgress();
 
-  // Loading screen component
   const LoadingScreen = useMemo(() => () => (
     <>
       <link rel="manifest" href="/manifest.json" />
@@ -157,12 +131,10 @@ const AppContent: React.FC = () => {
     </>
   ), [loadingProgress, titleTextColorHue]);
 
-  // Handle mobile navigation
   const handleNavigationClick = useCallback((): void => {
     setMobileScrollTriggerCount((mobileScrollTriggerCount || 0) + 1);
   }, [setMobileScrollTriggerCount, mobileScrollTriggerCount]);
 
-  // Memoized button styles
   const navigationButtonStyle = useMemo((): React.CSSProperties => ({
     opacity: loadingProgress < 100 ? 0 : 1,
     backgroundImage: `url(${arrowIcon})`,
@@ -230,9 +202,6 @@ const AppContent: React.FC = () => {
   );
 };
 
-/**
- * Root App component
- */
 export default function App(): React.ReactElement {
   return <AppContent />;
 }

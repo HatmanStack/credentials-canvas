@@ -1,10 +1,3 @@
-/**
- * Scene Environment Component
- *
- * Sets up lighting, shadows, and environment for the 3D scene.
- * Manages point lights, directional lights, and theme-based lighting colors.
- */
-
 import React, { useMemo, useState, useEffect } from 'react';
 import {
   AccumulativeShadows,
@@ -19,19 +12,13 @@ import {
   THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY
 } from '@/constants/lightingConfiguration';
 
-/**
- * Scene environment component with dynamic lighting
- */
 export const SceneEnvironment: React.FC = React.memo(() => {
-  // Scene interaction store - selective subscriptions
   const clickedLightName = useSceneInteractionStore(state => state.clickedLightName);
   const totalClickCount = useSceneInteractionStore(state => state.totalClickCount);
 
-  // User interface store - selective subscriptions
   const selectedThemeConfiguration = useUserInterfaceStore(state => state.selectedThemeConfiguration);
   const currentLightIntensityConfiguration = useUserInterfaceStore(state => state.currentLightIntensityConfiguration);
 
-  // Memoize initial color to prevent random regeneration
   const initialColor = useMemo(() =>
     LIGHT_COLOR_WHEEL[Math.floor(Math.random() * LIGHT_COLOR_WHEEL.length)], []
   );
@@ -54,7 +41,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     }, {} as Record<string, number>)
   );
 
-  // Update light intensities based on slider control
   useEffect(() => {
     const sliderName = currentLightIntensityConfiguration.sliderName;
     const intensity = currentLightIntensityConfiguration.intensity;
@@ -75,7 +61,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     });
   }, [currentLightIntensityConfiguration]);
 
-  // Update light colors on click
   useEffect(() => {
     setLightColors(prevColors => {
       const newColors = { ...prevColors };
@@ -101,7 +86,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     });
   }, [clickedLightName, totalClickCount]);
 
-  // Update light colors based on theme/vibe selection
   useEffect(() => {
     if (selectedThemeConfiguration !== null) {
       const vibeIndex = parseInt(selectedThemeConfiguration.id, 10);
@@ -124,7 +108,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     }
   }, [selectedThemeConfiguration]);
 
-  // Memoized directional lights
   const directionalLights = useMemo(() => (
     <>
       <directionalLight
@@ -140,7 +123,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     </>
   ), []);
 
-  // Memoized point lights
   const pointLights = useMemo(() =>
     POINT_LIGHT_POSITION_CONFIGURATIONS.map((light, index) => {
       let intensity = light.sliderName ? (lightIntensities[light.sliderName] || 10) : 10;
@@ -158,7 +140,6 @@ export const SceneEnvironment: React.FC = React.memo(() => {
     }), [lightIntensities, lightColors]
   );
 
-  // Memoized shadows
   const shadows = useMemo(() => (
     <AccumulativeShadows
       frames={60}

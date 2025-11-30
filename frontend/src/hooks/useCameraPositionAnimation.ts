@@ -1,12 +1,3 @@
-/**
- * Custom hook for camera position animation
- *
- * Handles camera rotation targets, close-up view animations, and initial
- * camera movement animations when the scene loads.
- *
- * TODO: Phase 2 - Replace Context dependencies with Zustand
- */
-
 import { useEffect, useState, useCallback } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
@@ -20,9 +11,6 @@ import {
 } from '@/constants/cameraConfiguration';
 import type { CameraPositionTuple } from '@/types';
 
-/**
- * Parameters for useCameraPositionAnimation hook
- */
 export interface UseCameraPositionAnimationParameters {
   camera: Camera;
   windowWidth: number;
@@ -36,16 +24,10 @@ export interface UseCameraPositionAnimationParameters {
   setCameraClone: (position: Vector3 | boolean) => void;
 }
 
-/**
- * Return type for useCameraPositionAnimation hook
- */
 export interface UseCameraPositionAnimationReturn {
   rotationPoint: Vector3;
 }
 
-/**
- * Hook for managing camera position animations
- */
 export const useCameraPositionAnimation = ({
   camera,
   windowWidth: screenWidth,
@@ -60,7 +42,6 @@ export const useCameraPositionAnimation = ({
 }: UseCameraPositionAnimationParameters): UseCameraPositionAnimationReturn => {
   const [cameraRotationTarget, setCameraRotationTarget] = useState<Vector3>(new Vector3());
 
-  // Update rotation target based on camera state
   useEffect(() => {
     let newRotationTarget: Vector3;
     if (isCloseUpView) {
@@ -73,7 +54,6 @@ export const useCameraPositionAnimation = ({
     setCameraRotationTarget(newRotationTarget);
   }, [isCloseUpView, closeUpCameraIndex, currentCameraIndex]);
 
-  // Handle click point navigation
   useEffect(() => {
     if (clickPoint) {
       setCloseUp(true);
@@ -83,15 +63,12 @@ export const useCameraPositionAnimation = ({
     }
   }, [clickPoint, setCloseUp, setCloseUpCameraIndex, setClickPoint]);
 
-  // Handle close-up camera positioning
   useEffect(() => {
     if (closeUpCameraIndex !== NO_CLOSE_UP_INDEX) {
-      // Pick the appropriate positions array based on screen width
       const positions = screenWidth > 800 ?
         CLOSE_UP_CAMERA_POSITION_ARRAY :
         CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN;
 
-      // Validate index is within bounds before accessing array
       if (closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length) {
         const targetPosition: CameraPositionTuple = positions[closeUpCameraIndex];
         camera.position.copy(new Vector3(...targetPosition));
@@ -99,7 +76,6 @@ export const useCameraPositionAnimation = ({
     }
   }, [closeUpCameraIndex, screenWidth, camera]);
 
-  // Initial camera animation on mount
   const animateInitialCameraMovement = useCallback((
     cameraToAnimate: Camera,
     targetPoint: Vector3,
@@ -129,7 +105,6 @@ export const useCameraPositionAnimation = ({
     requestAnimationFrame(animateFrame);
   }, [setUsePrimaryCameraPosition]);
 
-  // Initial animation setup
   useEffect(() => {
     const targetPoint = new Vector3(...CAMERA_ROTATION_POSITION_ARRAY[0]);
     const arcCenter = new Vector3(10, 15, 15);

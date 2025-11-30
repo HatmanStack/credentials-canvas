@@ -1,10 +1,3 @@
-/**
- * Camera Controller Component
- *
- * Manages camera position, rotation, and user controls (orbit, scroll, drag).
- * Coordinates with camera scroll and animation hooks for smooth navigation.
- */
-
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { extend, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -14,9 +7,6 @@ import { useSceneInteractionStore, useUserInterfaceStore } from '@/stores';
 import { useCameraScrollBehavior } from '@/hooks/useCameraScrollBehavior';
 import { useCameraPositionAnimation } from '@/hooks/useCameraPositionAnimation';
 
-/**
- * Extended OrbitControls class with camera index tracking
- */
 class OrbitControls extends ThreeOrbitControls {
   currentPosIndex: number;
 
@@ -32,11 +22,7 @@ class OrbitControls extends ThreeOrbitControls {
 
 extend({ OrbitControls });
 
-/**
- * Camera controller component
- */
 export const CameraController: React.FC = React.memo(() => {
-  // Scene interaction store - selective subscriptions
   const mobileScrollTriggerCount = useSceneInteractionStore(state => state.mobileScrollTriggerCount);
   const clickedMeshPosition = useSceneInteractionStore(state => state.clickedMeshPosition);
   const setClickedMeshPosition = useSceneInteractionStore(state => state.setClickedMeshPosition);
@@ -49,7 +35,6 @@ export const CameraController: React.FC = React.memo(() => {
   const cameraInterpolationProgress = useSceneInteractionStore(state => state.cameraInterpolationProgress);
   const setCameraInterpolationProgress = useSceneInteractionStore(state => state.setCameraInterpolationProgress);
 
-  // User interface store - selective subscriptions
   const currentWindowWidth = useUserInterfaceStore(state => state.currentWindowWidth);
   const setShouldShowArcadeIframe = useUserInterfaceStore(state => state.setShouldShowArcadeIframe);
   const setShouldShowMusicIframe = useUserInterfaceStore(state => state.setShouldShowMusicIframe);
@@ -58,7 +43,6 @@ export const CameraController: React.FC = React.memo(() => {
   const [usePrimaryCameraPosition, setUsePrimaryCameraPosition] = useState<Vector3 | boolean>(true);
   const [shouldResetCamera, setShouldResetCamera] = useState<boolean>(true);
 
-  // Memoized camera positions
   const cameraPositions = useMemo<[number, number, number][]>(() => [
     usePrimaryCameraPosition === true ? [1, 1, 13] : [10, 1, 13],
     [4, 1, 2],
@@ -73,7 +57,6 @@ export const CameraController: React.FC = React.memo(() => {
   } = useThree();
   const controls = useRef<OrbitControls | null>(null);
 
-  // Custom hooks for camera behavior
   useCameraScrollBehavior({
     currentPosIndex: currentCameraPositionIndex,
     setCurrentPosIndex: setCurrentCameraPositionIndex,
@@ -102,7 +85,6 @@ export const CameraController: React.FC = React.memo(() => {
     setCameraClone: setUsePrimaryCameraPosition
   });
 
-  // Update camera controls and iframe visibility each frame
   useFrame(() => {
     if (controls.current) {
       if (shouldResetCamera) {
@@ -113,7 +95,6 @@ export const CameraController: React.FC = React.memo(() => {
       controls.current.target.copy(rotationPoint);
       controls.current.update();
 
-      // Update iframe visibility based on camera position
       if (
         camera.position.x > 1.78 &&
         camera.position.y > 0 &&
@@ -145,7 +126,6 @@ export const CameraController: React.FC = React.memo(() => {
     }
   });
 
-  // Handle drag state changes
   useEffect(() => {
     if (controls.current && isUserCurrentlyDragging) {
       controls.current.update();
@@ -154,7 +134,6 @@ export const CameraController: React.FC = React.memo(() => {
     }
   }, [isUserCurrentlyDragging]);
 
-  // Initialize OrbitControls
   useEffect(() => {
     controls.current = new OrbitControls(camera, domElement);
     return () => {
@@ -164,7 +143,6 @@ export const CameraController: React.FC = React.memo(() => {
     };
   }, [camera, domElement]);
 
-  // Toggle controls based on drag state
   useEffect(() => {
     if (controls.current) {
       controls.current.enabled = !isUserCurrentlyDragging;
