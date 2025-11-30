@@ -2,19 +2,19 @@
   "name": "credentials-canvas",
   "version": "0.1.0",
   "private": true,
-  "description": "This is a website for Gemenie Labs",
+  "description": "Interactive 3D Portfolio Experience",
   "homepage": "https://www.cg-portfolio.site",
-  "scripts": {
-    "start": "npm run dev --workspace=frontend",
-    "dev": "npm run dev --workspace=frontend",
-    "build": "npm run build --workspace=frontend",
-    "preview": "npm run preview --workspace=frontend",
-    "test": "npm run test --workspace=frontend",
-    "lint": "npm run lint --workspace=frontend",
-    "type-check": "npm run type-check --workspace=frontend",
-    "check": "npm run lint && npm run test -- --run"
-  },
   "workspaces": [
     "frontend"
-  ]
+  ],
+  "scripts": {
+    "start": "cd frontend && npx vite",
+    "dev": "cd frontend && npx vite",
+    "build": "cd frontend && npx tsc && npx vite build",
+    "preview": "cd frontend && npx vite preview",
+    "test": "cd frontend && npx vitest",
+    "lint": "cd frontend && npx eslint src",
+    "type-check": "cd frontend && npx tsc --noEmit",
+    "check": "cd frontend && npx eslint src && npx vitest --run"
+  }
 }
