@@ -2,7 +2,7 @@
  * Animation and UI element configuration data
  */
 
-import type { CameraPositionTuple } from 'types';
+import type { CameraPositionTuple } from '@/types';
 
 /**
  * Vibe-specific iframe URL configuration

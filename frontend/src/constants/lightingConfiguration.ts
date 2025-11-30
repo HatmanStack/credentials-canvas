@@ -2,7 +2,7 @@
  * Lighting configuration data
  */
 
-import type { CameraPositionTuple } from 'types';
+import type { CameraPositionTuple } from '@/types';
 
 /**
  * Point light position configuration with associated controls

@@ -2,7 +2,7 @@
  * URL mappings for interactive elements
  */
 
-import type { MeshNameToURLMapping } from 'types';
+import type { MeshNameToURLMapping } from '@/types';
 
 /**
  * Phone URL configuration interface

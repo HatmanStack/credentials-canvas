@@ -7,10 +7,10 @@ import type {
   VibeThemeConfiguration,
   BreakpointConfiguration,
   AssetConfiguration
-} from 'types';
-import handGif from '../assets/hand.gif';
-import volumeUp from '../assets/volume_up.svg';
-import volumeMute from '../assets/volume_mute.svg';
+} from '@/types';
+import handGif from '@/assets/hand.gif';
+import volumeUp from '@/assets/volume_up.svg';
+import volumeMute from '@/assets/volume_mute.svg';
 
 /**
  * Theme color configuration map for all available themes

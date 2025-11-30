@@ -6,9 +6,9 @@
 
 import { useEffect } from 'react';
 import useSound from 'use-sound';
-import { useSceneInteractionStore, useUserInterfaceStore } from 'stores';
-import buttonClickSound from '../../assets/click.mp3';
-import segaSound from '../../assets/sega.mp3';
+import { useSceneInteractionStore, useUserInterfaceStore } from '@/stores';
+import buttonClickSound from '@/assets/click.mp3';
+import segaSound from '@/assets/sega.mp3';
 
 /**
  * Audio controller component

@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useRef, useCallback } from 'react';
-import type { ThemeName } from 'types';
+import type { ThemeName } from '@/types';
 
 /**
  * Props for CustomCheckbox component

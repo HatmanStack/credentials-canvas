@@ -20,7 +20,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { VibeThemeConfiguration, LightIntensityConfiguration } from 'types';
+import type { VibeThemeConfiguration, LightIntensityConfiguration } from '@/types';
 
 /**
  * User Interface State Interface

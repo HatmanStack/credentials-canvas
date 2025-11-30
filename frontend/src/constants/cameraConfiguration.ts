@@ -2,7 +2,7 @@
  * Camera control configuration
  */
 
-import type { CameraPositionTuple, CameraScrollConfiguration, MeshNameToPositionIndexMap } from 'types';
+import type { CameraPositionTuple, CameraScrollConfiguration, MeshNameToPositionIndexMap } from '@/types';
 
 /**
  * Main camera rotation points for scene navigation
