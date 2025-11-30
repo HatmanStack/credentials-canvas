@@ -753,63 +753,54 @@ If Phase-1 fails:
 
 ---
 
-## Review Feedback (Iteration 1)
+## Review Feedback (Iteration 1) - RESOLVED
 
-### Task 2: Move Source Files - Incomplete
+All issues from initial review have been addressed.
 
-> **Consider:** Running `ls -la src/` at the project root shows `setupTests.ts`, `test-helpers/`, and `__tests__/` still present. While the plan notes these should be moved in Phase-2 to `tests/`, the plan also says under Task 2 "Original `src/` directory removed" in the verification checklist.
->
-> **Think about:** Should the root `src/` directory be completely removed after moving the main source files, even if test files remain temporarily? Or should the test files be moved to `tests/` first so the directory can be deleted cleanly?
->
-> **Reflect:** The current state has both `src/` (with tests) and `frontend/src/` (with app code), which could cause confusion. What's the clearest path forward?
+---
 
-### Task 7: Update All Import Paths - CRA Artifacts Remain
-
-> **Consider:** Looking at `frontend/src/constants/meshConfiguration.ts:41-46`, you see `require('../assets/Vocabulary.mp4')` and similar CRA-style `require()` imports. ESLint reports 6 errors: "A `require()` style import is forbidden".
->
-> **Think about:** In Vite, how should video assets be imported? Would ES module `import` syntax work for mp4 files, or should they use a different pattern like URL imports or direct paths?
->
-> **Reflect:** Also notice line 67: `process.env.PUBLIC_URL + '/compressed_model.glb'` - this is a CRA environment variable. What's the Vite equivalent for referencing files in the `public/` directory?
-
-### Task 7: Update All Import Paths - Shader Imports
-
-> **Consider:** The plan specifies GLSL shader handling. Have you verified how `frontend/src/shaders/fragment.glsl` and `vertex.glsl` are imported? Does the current setup work with `assetsInclude: ['**/*.glsl']` in vite.config.ts?
->
-> **Reflect:** How are shaders imported in the Three.js components? Do they use `import shader from './shader.glsl'` or a different pattern?
-
-### Task 12: Clean Up Legacy Files - Root Configs
-
-> **Consider:** The plan says to remove root `jest.config.js` and `.eslintrc.json`. Running Glob searches shows these only exist in `node_modules/` now.
->
-> **Reflect:** Were these files removed, or did they never exist at root level originally? Verify the cleanup task was completed.
-
-### Build Status
-
-> **Note:** `npm run build` succeeds but shows a warning about chunk size (1,209 KB). This is informational, not blocking, but consider code-splitting in future optimization.
-
-### Lint Status - Blocking Issues
-
-> **Consider:** `npm run lint` fails with 6 errors and 2 warnings. The errors are all from `require()` imports in `meshConfiguration.ts`.
->
-> **Think about:** The plan's Phase Verification section states lint "should run without config errors" - but these are actual code errors, not config errors. Should lint pass completely before marking Phase-1 done, or should this be deferred?
->
-> **Reflect:** The 2 warnings (`@typescript-eslint/no-explicit-any` and `react-hooks/exhaustive-deps`) are style/quality warnings. Are these acceptable to defer to Phase-2 sanitization?
+## Review Feedback (Iteration 2) - FINAL
 
 ### Verification Summary
 
 | Check | Status | Notes |
 |-------|--------|-------|
-| Directory structure | ⚠️ Partial | `src/` with test files still at root |
-| `npm run build` | ✅ Pass | Builds successfully |
+| Directory structure | ✅ Pass | `src/` removed, `frontend/src/` correct |
+| `npm run build` | ✅ Pass | Builds successfully (27.13s) |
 | `npm run type-check` | ✅ Pass | TypeScript compiles |
-| `npm run lint` | ❌ Fail | 6 errors from `require()` imports |
+| `npm run lint` | ✅ Pass | 0 errors, 2 warnings (acceptable) |
 | Vite config | ✅ Good | Correct structure |
 | Package.json | ✅ Good | Workspace setup correct |
 | Commits | ✅ Good | Follow conventional format |
 
-### Action Required
+### Fixes Verified
 
-Before approval, address:
-1. Fix the 6 `require()` imports in `meshConfiguration.ts` to use Vite-compatible syntax
-2. Fix `process.env.PUBLIC_URL` reference to Vite equivalent
-3. Decide: Remove `src/` directory now (move test files first) or explicitly document it stays until Phase-2
+1. **`require()` imports fixed** - `meshConfiguration.ts` now uses ES module imports:
+   ```typescript
+   import VocabularyVideo from '@/assets/Vocabulary.mp4';
+   ```
+
+2. **`process.env.PUBLIC_URL` fixed** - Now uses Vite-compatible path:
+   ```typescript
+   export const GLTF_MODEL_FILE_PATH: string = '/compressed_model.glb';
+   ```
+
+3. **Root `src/` directory removed** - Test files moved appropriately
+
+### Remaining Warnings (Deferred to Phase-2)
+
+- `@typescript-eslint/no-explicit-any` in InteractiveMeshElement.tsx:20
+- `react-hooks/exhaustive-deps` in SceneModel.tsx:140
+
+These are code quality warnings, not errors, and are acceptable to address in Phase-2 sanitization.
+
+### Tool Evidence
+
+```
+npm run lint: 0 errors, 2 warnings
+npm run build: ✓ built in 27.13s
+npm run type-check: exits 0
+git log: fix(vite): address reviewer feedback for Phase-1
+```
+
+**APPROVED**

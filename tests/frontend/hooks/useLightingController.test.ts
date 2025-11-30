@@ -1,14 +1,14 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useLightingController } from 'hooks/useLightingController';
 import type { LightIntensityConfiguration } from 'types';
 
-// Mock the constants
-jest.mock('constants/lightingConfiguration', () => ({
+vi.mock('constants/lightingConfiguration', () => ({
   LIGHT_COLOR_WHEEL: [
-    '#FF0000', // Red
-    '#00FF00', // Green
-    '#0000FF', // Blue
-    '#FFFF00', // Yellow
+    '#FF0000',
+    '#00FF00',
+    '#0000FF',
+    '#FFFF00',
   ],
   POINT_LIGHT_POSITION_CONFIGURATIONS: [
     {
@@ -23,9 +23,9 @@ jest.mock('constants/lightingConfiguration', () => ({
     },
   ],
   THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY: [
-    { lights: [{ name: 'Light1', color: '#FF0000' }] }, // Vibe 0
-    { lights: [{ name: 'Light2', color: '#00FF00' }] }, // Vibe 1
-    { lights: [{ name: 'Light3', color: '#0000FF' }] }, // Vibe 2
+    { lights: [{ name: 'Light1', color: '#FF0000' }] },
+    { lights: [{ name: 'Light2', color: '#00FF00' }] },
+    { lights: [{ name: 'Light3', color: '#0000FF' }] },
   ],
 }));
 
@@ -37,12 +37,11 @@ describe('useLightingController', () => {
       sliderName: 'Slider_1',
       intensity: 25,
     };
-    // Reset random to make tests deterministic
-    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('initialization', () => {
@@ -63,7 +62,6 @@ describe('useLightingController', () => {
       const colors = Object.values(result.current.lightColors);
       const firstColor = colors[0];
 
-      // All colors should be the same initially
       colors.forEach(color => {
         expect(color).toBe(firstColor);
       });
@@ -98,10 +96,8 @@ describe('useLightingController', () => {
         },
       );
 
-      // Click Light1
       rerender({ clickLight: 'Light1', clickCount: 1 });
 
-      // Color should be set (may or may not be different due to random)
       expect(result.current.lightColors['Light1']).toBeDefined();
     });
 
@@ -114,15 +110,12 @@ describe('useLightingController', () => {
         },
       );
 
-      // Click Light1
       rerender({ clickLight: 'Light1', clickCount: 1 });
       const light1Color = result.current.lightColors['Light1'];
 
-      // Click Light2
       rerender({ clickLight: 'Light2', clickCount: 2 });
       const light2Color = result.current.lightColors['Light2'];
 
-      // Both colors should be defined
       expect(light1Color).toBeDefined();
       expect(light2Color).toBeDefined();
     });
@@ -136,7 +129,6 @@ describe('useLightingController', () => {
         },
       );
 
-      // Multiple clicks on Light1
       rerender({ clickLight: 'Light1', clickCount: 1 });
       rerender({ clickLight: 'Light1', clickCount: 2 });
       rerender({ clickLight: 'Light1', clickCount: 3 });
@@ -282,7 +274,7 @@ describe('useLightingController', () => {
 
       const intensity = result.current.getLightIntensity('Light1');
 
-      expect(intensity).toBe(25); // From mockLightIntensity
+      expect(intensity).toBe(25);
     });
 
     it('should return default intensity for non-matching light', () => {
@@ -292,7 +284,7 @@ describe('useLightingController', () => {
 
       const intensity = result.current.getLightIntensity('Light3');
 
-      expect(intensity).toBe(30); // Default intensity
+      expect(intensity).toBe(30);
     });
 
     it('should return default intensity for non-existent light', () => {
@@ -302,7 +294,7 @@ describe('useLightingController', () => {
 
       const intensity = result.current.getLightIntensity('NonExistentLight');
 
-      expect(intensity).toBe(30); // Default intensity
+      expect(intensity).toBe(30);
     });
 
     it('should update intensity when lightIntensity config changes', () => {
@@ -376,7 +368,6 @@ describe('useLightingController', () => {
         },
       );
 
-      // Rapid clicks
       for (let i = 1; i <= 10; i++) {
         rerender({ clickLight: 'Light1', clickCount: i });
       }

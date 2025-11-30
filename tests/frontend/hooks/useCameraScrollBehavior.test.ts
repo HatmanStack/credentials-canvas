@@ -1,37 +1,45 @@
+import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
 import { createMockCamera } from 'test-helpers/threeMocks';
 import type { Camera } from 'three';
 import type { CameraPositionTuple } from 'types';
 
-// Mock the constants
-jest.mock('constants/cameraConfiguration', () => ({
+vi.mock('constants/cameraConfiguration', () => ({
   CAMERA_SCROLL_CONFIGURATION: {
     mobile: 0.2,
     desktop: 0.1,
   },
+  NO_CLOSE_UP_INDEX: 9,
+  CAMERA_ROTATION_POSITION_ARRAY: [
+    [0, 0, 10],
+    [5, 0, 10],
+    [10, 0, 10],
+    [15, 0, 10],
+    [20, 0, 10],
+  ],
 }));
 
 describe('useCameraScrollBehavior', () => {
   let mockCamera: Camera;
   let mockDomElement: HTMLElement;
-  let mockSetCurrentPosIndex: jest.Mock;
-  let mockSetScrollStarted: jest.Mock;
-  let mockSetCloseUp: jest.Mock;
-  let mockSetCloseUpPosIndex: jest.Mock;
-  let mockSetCameraClone: jest.Mock;
-  let mockSetProgress: jest.Mock;
+  let mockSetCurrentPosIndex: Mock;
+  let mockSetScrollStarted: Mock;
+  let mockSetCloseUp: Mock;
+  let mockSetCloseUpPosIndex: Mock;
+  let mockSetCameraClone: Mock;
+  let mockSetProgress: Mock;
   let mockPositions: CameraPositionTuple[];
 
   beforeEach(() => {
     mockCamera = createMockCamera() as unknown as Camera;
     mockDomElement = document.createElement('div');
-    mockSetCurrentPosIndex = jest.fn();
-    mockSetScrollStarted = jest.fn();
-    mockSetCloseUp = jest.fn();
-    mockSetCloseUpPosIndex = jest.fn();
-    mockSetCameraClone = jest.fn();
-    mockSetProgress = jest.fn();
+    mockSetCurrentPosIndex = vi.fn();
+    mockSetScrollStarted = vi.fn();
+    mockSetCloseUp = vi.fn();
+    mockSetCloseUpPosIndex = vi.fn();
+    mockSetCameraClone = vi.fn();
+    mockSetProgress = vi.fn();
     mockPositions = [
       [0, 0, 10],
       [5, 0, 10],
@@ -42,7 +50,7 @@ describe('useCameraScrollBehavior', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('initialization', () => {
@@ -92,7 +100,7 @@ describe('useCameraScrollBehavior', () => {
 
   describe('desktop scroll behavior', () => {
     it('should attach wheel event listener to dom element', () => {
-      const addEventListenerSpy = jest.spyOn(mockDomElement, 'addEventListener');
+      const addEventListenerSpy = vi.spyOn(mockDomElement, 'addEventListener');
 
       renderHook(() =>
         useCameraScrollBehavior({
@@ -146,7 +154,7 @@ describe('useCameraScrollBehavior', () => {
     });
 
     it('should clean up wheel event listener on unmount', () => {
-      const removeEventListenerSpy = jest.spyOn(mockDomElement, 'removeEventListener');
+      const removeEventListenerSpy = vi.spyOn(mockDomElement, 'removeEventListener');
 
       const { unmount } = renderHook(() =>
         useCameraScrollBehavior({
@@ -192,7 +200,6 @@ describe('useCameraScrollBehavior', () => {
       );
 
       expect(result.current).toBeDefined();
-      // No error should be thrown
     });
   });
 
@@ -219,7 +226,6 @@ describe('useCameraScrollBehavior', () => {
         },
       );
 
-      // Trigger mobile scroll by changing mobileScroll value
       rerender({ mobileScroll: 1 });
 
       expect(mockSetScrollStarted).toHaveBeenCalledWith(true);
@@ -270,7 +276,6 @@ describe('useCameraScrollBehavior', () => {
         }),
       );
 
-      // No calls should be made
       expect(mockSetScrollStarted).not.toHaveBeenCalled();
     });
   });
@@ -298,14 +303,13 @@ describe('useCameraScrollBehavior', () => {
         result.current.handleMobileScroll();
       });
 
-      // Camera position should be updated
       expect(mockCamera.position.copy).toHaveBeenCalled();
     });
 
     it('should handle navigation from last position', () => {
       const { result } = renderHook(() =>
         useCameraScrollBehavior({
-          currentPosIndex: 4, // Last position
+          currentPosIndex: 4,
           setCurrentPosIndex: mockSetCurrentPosIndex,
           positions: mockPositions,
           camera: mockCamera,
@@ -324,7 +328,6 @@ describe('useCameraScrollBehavior', () => {
         result.current.handleMobileScroll();
       });
 
-      // Should update camera position (demonstrates wrapping logic works)
       expect(mockCamera.position.copy).toHaveBeenCalled();
     });
   });
@@ -352,10 +355,8 @@ describe('useCameraScrollBehavior', () => {
         },
       );
 
-      // Change currentPosIndex
       rerender({ currentPosIndex: 2 });
 
-      // Internal refs should be synced (verified indirectly through behavior)
       expect(mockCamera).toBeDefined();
     });
   });
@@ -456,7 +457,6 @@ describe('useCameraScrollBehavior', () => {
         }),
       );
 
-      // Should not crash
       expect(result.current).toBeDefined();
     });
   });

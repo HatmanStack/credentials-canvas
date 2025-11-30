@@ -1,4 +1,5 @@
-import { cn } from 'utils/classNameUtils';
+import { describe, it, expect } from 'vitest';
+import { cn } from '@utils/classNameUtils';
 
 describe('cn utility', () => {
   describe('basic functionality', () => {
@@ -240,7 +241,6 @@ describe('cn utility', () => {
     });
 
     it('should handle duplicate classes', () => {
-      // Note: cn doesn't deduplicate non-Tailwind classes
       expect(cn('foo', 'bar', 'foo')).toBe('foo bar foo');
     });
   });

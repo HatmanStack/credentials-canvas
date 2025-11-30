@@ -1,10 +1,10 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useUserInterfaceStore } from 'stores/userInterfaceStore';
 import { createMockThemeConfiguration } from 'test-helpers/storeMocks';
 
 describe('userInterfaceStore', () => {
   beforeEach(() => {
-    // Reset store before each test
     const { result } = renderHook(() => useUserInterfaceStore());
     act(() => {
       result.current.resetUserInterfaceState();
@@ -91,7 +91,6 @@ describe('userInterfaceStore', () => {
     it('should set arcade iframe visibility', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Initially true by default
       expect(result.current.shouldShowArcadeIframe).toBe(true);
 
       act(() => {
@@ -104,7 +103,6 @@ describe('userInterfaceStore', () => {
     it('should toggle arcade iframe visibility', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Initially true
       expect(result.current.shouldShowArcadeIframe).toBe(true);
 
       act(() => {
@@ -123,7 +121,6 @@ describe('userInterfaceStore', () => {
     it('should set music iframe visibility', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Initially true by default
       expect(result.current.shouldShowMusicIframe).toBe(true);
 
       act(() => {
@@ -136,7 +133,6 @@ describe('userInterfaceStore', () => {
     it('should handle both iframes independently', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Both start as true
       expect(result.current.shouldShowArcadeIframe).toBe(true);
       expect(result.current.shouldShowMusicIframe).toBe(true);
 
@@ -204,7 +200,6 @@ describe('userInterfaceStore', () => {
     it('should set current window width', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Default is window.innerWidth or 1920 (varies in test environment)
       const initialWidth = result.current.currentWindowWidth;
       expect(typeof initialWidth).toBe('number');
 
@@ -281,7 +276,6 @@ describe('userInterfaceStore', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
       const mockTheme = createMockThemeConfiguration('classy');
 
-      // Set various states
       act(() => {
         result.current.setSelectedThemeConfiguration(mockTheme);
         result.current.setTitleTextColorHue(270);
@@ -295,24 +289,20 @@ describe('userInterfaceStore', () => {
         });
       });
 
-      // Verify states changed
       expect(result.current.selectedThemeConfiguration).toEqual(mockTheme);
       expect(result.current.shouldShowArcadeIframe).toBe(false);
       expect(result.current.isAudioCurrentlyMuted).toBe(true);
       expect(result.current.currentWindowWidth).toBe(480);
 
-      // Reset
       act(() => {
         result.current.resetUserInterfaceState();
       });
 
-      // Verify all reset to initial values
       expect(result.current.selectedThemeConfiguration).toBeNull();
       expect(result.current.titleTextColorHue).toBeNull();
-      expect(result.current.shouldShowArcadeIframe).toBe(true); // Default is true
-      expect(result.current.shouldShowMusicIframe).toBe(true); // Default is true
+      expect(result.current.shouldShowArcadeIframe).toBe(true);
+      expect(result.current.shouldShowMusicIframe).toBe(true);
       expect(result.current.isAudioCurrentlyMuted).toBe(false);
-      // Window width is dynamic, just check it's a number
       expect(typeof result.current.currentWindowWidth).toBe('number');
       expect(result.current.currentLightIntensityConfiguration.sliderName).toBe('Slider_4');
     });
@@ -335,7 +325,6 @@ describe('userInterfaceStore', () => {
     it('should update states independently', () => {
       const { result } = renderHook(() => useUserInterfaceStore());
 
-      // Both iframes start as true, audio starts as false
       expect(result.current.shouldShowArcadeIframe).toBe(true);
       expect(result.current.shouldShowMusicIframe).toBe(true);
       expect(result.current.isAudioCurrentlyMuted).toBe(false);

@@ -1,10 +1,10 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useThreeJSSceneStore } from 'stores/threeJSSceneStore';
 import { createMockScene } from 'test-helpers/threeMocks';
 
 describe('threeJSSceneStore', () => {
   beforeEach(() => {
-    // Reset store before each test
     const { result } = renderHook(() => useThreeJSSceneStore());
     act(() => {
       result.current.resetThreeJSSceneState();
@@ -76,9 +76,9 @@ describe('threeJSSceneStore', () => {
     it('should set video player element', () => {
       const { result } = renderHook(() => useThreeJSSceneStore());
       const mockPlayer = {
-        playVideo: jest.fn(),
-        pauseVideo: jest.fn(),
-        seekTo: jest.fn(),
+        playVideo: vi.fn(),
+        pauseVideo: vi.fn(),
+        seekTo: vi.fn(),
       };
 
       act(() => {
@@ -91,8 +91,8 @@ describe('threeJSSceneStore', () => {
     it('should clear video player with null', () => {
       const { result } = renderHook(() => useThreeJSSceneStore());
       const mockPlayer = {
-        playVideo: jest.fn(),
-        pauseVideo: jest.fn(),
+        playVideo: vi.fn(),
+        pauseVideo: vi.fn(),
       };
 
       act(() => {
@@ -114,25 +114,21 @@ describe('threeJSSceneStore', () => {
       const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
       const mockPlayer = {
-        playVideo: jest.fn(),
+        playVideo: vi.fn(),
       };
 
-      // Set both references
       act(() => {
         result.current.setThreeJSSceneModel(mockScene as any);
         result.current.setHTMLVideoPlayerElement(mockPlayer as any);
       });
 
-      // Verify both are set
       expect(result.current.threeJSSceneModel).toBe(mockScene);
       expect(result.current.htmlVideoPlayerElement).toBe(mockPlayer);
 
-      // Reset
       act(() => {
         result.current.resetThreeJSSceneState();
       });
 
-      // Verify both are null
       expect(result.current.threeJSSceneModel).toBeNull();
       expect(result.current.htmlVideoPlayerElement).toBeNull();
     });
@@ -155,7 +151,7 @@ describe('threeJSSceneStore', () => {
     it('should update scene and video player independently', () => {
       const { result } = renderHook(() => useThreeJSSceneStore());
       const mockScene = createMockScene();
-      const mockPlayer = { playVideo: jest.fn() };
+      const mockPlayer = { playVideo: vi.fn() };
 
       act(() => {
         result.current.setThreeJSSceneModel(mockScene as any);

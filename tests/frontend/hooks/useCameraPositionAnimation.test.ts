@@ -1,11 +1,11 @@
+import { describe, it, expect, beforeEach, beforeAll, vi, type Mock } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useCameraPositionAnimation } from 'hooks/useCameraPositionAnimation';
 import { createMockCamera } from 'test-helpers/threeMocks';
 import type { Camera } from 'three';
 import { Vector3 } from 'three';
 
-// Mock the constants
-jest.mock('constants/cameraConfiguration', () => ({
+vi.mock('constants/cameraConfiguration', () => ({
   CAMERA_ROTATION_POSITION_ARRAY: [
     [0, 0, 10],
     [5, 0, 10],
@@ -31,30 +31,31 @@ jest.mock('constants/cameraConfiguration', () => ({
     'mesh2': 1,
     'mesh3': 2,
   },
+  NO_CLOSE_UP_INDEX: 9,
 }));
 
-// Mock requestAnimationFrame
 beforeAll(() => {
-  global.requestAnimationFrame = jest.fn(cb => {
-    cb(Date.now());
-    return 0;
+  let frameId = 0;
+  global.requestAnimationFrame = vi.fn(() => {
+    return ++frameId;
   });
+  global.cancelAnimationFrame = vi.fn();
 });
 
 describe('useCameraPositionAnimation', () => {
   let mockCamera: Camera;
-  let mockSetCloseUpPosIndex: jest.Mock;
-  let mockSetClickPoint: jest.Mock;
-  let mockSetCloseUp: jest.Mock;
-  let mockSetCameraClone: jest.Mock;
+  let mockSetCloseUpPosIndex: Mock;
+  let mockSetClickPoint: Mock;
+  let mockSetCloseUp: Mock;
+  let mockSetCameraClone: Mock;
 
   beforeEach(() => {
     mockCamera = createMockCamera() as unknown as Camera;
-    mockSetCloseUpPosIndex = jest.fn();
-    mockSetClickPoint = jest.fn();
-    mockSetCloseUp = jest.fn();
-    mockSetCameraClone = jest.fn();
-    jest.clearAllMocks();
+    mockSetCloseUpPosIndex = vi.fn();
+    mockSetClickPoint = vi.fn();
+    mockSetCloseUp = vi.fn();
+    mockSetCameraClone = vi.fn();
+    vi.clearAllMocks();
   });
 
   describe('initialization', () => {
@@ -93,7 +94,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should return a valid rotation point
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
     });
   });
@@ -122,7 +122,6 @@ describe('useCameraPositionAnimation', () => {
       const initialRotation = result.current.rotationPoint;
       expect(initialRotation).toBeInstanceOf(Vector3);
 
-      // Change camera index
       rerender({ currentPosIndex: 1 });
 
       const updatedRotation = result.current.rotationPoint;
@@ -149,7 +148,6 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      // Enter close-up mode
       rerender({ closeUp: true, closeUpPosIndex: 1 });
 
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
@@ -161,7 +159,7 @@ describe('useCameraPositionAnimation', () => {
           camera: mockCamera,
           windowWidth: 1920,
           closeUp: true,
-          closeUpPosIndex: 2, // Last valid index in mock
+          closeUpPosIndex: 2,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           currentPosIndex: 0,
           clickPoint: null,
@@ -171,7 +169,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should not crash and return valid rotation point
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
     });
 
@@ -183,7 +180,7 @@ describe('useCameraPositionAnimation', () => {
           closeUp: false,
           closeUpPosIndex: 0,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
-          currentPosIndex: 999, // Out of bounds
+          currentPosIndex: 999,
           clickPoint: null,
           setClickPoint: mockSetClickPoint,
           setCloseUp: mockSetCloseUp,
@@ -191,7 +188,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should not crash and return valid rotation point
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
     });
   });
@@ -217,7 +213,6 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      // Trigger click on a mesh
       rerender({ clickPoint: 'mesh1' });
 
       expect(mockSetCloseUp).toHaveBeenCalledWith(true);
@@ -291,7 +286,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should not trigger close-up (except initial animation calls)
       const closeUpCalls = mockSetCloseUp.mock.calls.filter(
         call => call[0] === true,
       );
@@ -304,7 +298,7 @@ describe('useCameraPositionAnimation', () => {
       renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
-          windowWidth: 1920, // Large screen
+          windowWidth: 1920,
           closeUp: true,
           closeUpPosIndex: 1,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
@@ -323,7 +317,7 @@ describe('useCameraPositionAnimation', () => {
       renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
-          windowWidth: 600, // Small screen
+          windowWidth: 600,
           closeUp: true,
           closeUpPosIndex: 1,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
@@ -358,23 +352,22 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      const desktopCalls = (mockCamera.position.copy as jest.Mock).mock.calls.length;
+      const desktopCalls = (mockCamera.position.copy as Mock).mock.calls.length;
 
       rerender({ windowWidth: 600 });
 
-      // Should have made additional calls for mobile
-      expect((mockCamera.position.copy as jest.Mock).mock.calls.length).toBeGreaterThan(desktopCalls);
+      expect((mockCamera.position.copy as Mock).mock.calls.length).toBeGreaterThan(desktopCalls);
     });
 
     it('should not update position when closeUpPosIndex is 9', () => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
 
       renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
           windowWidth: 1920,
           closeUp: true,
-          closeUpPosIndex: 9, // Special index
+          closeUpPosIndex: 9,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           currentPosIndex: 0,
           clickPoint: null,
@@ -384,8 +377,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Position copy might be called by initial animation but not by close-up logic
-      // Test passes if no error occurs
       expect(true).toBe(true);
     });
 
@@ -409,11 +400,11 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      const initialCalls = (mockCamera.position.copy as jest.Mock).mock.calls.length;
+      const initialCalls = (mockCamera.position.copy as Mock).mock.calls.length;
 
       rerender({ closeUpPosIndex: 1 });
 
-      expect((mockCamera.position.copy as jest.Mock).mock.calls.length).toBeGreaterThan(initialCalls);
+      expect((mockCamera.position.copy as Mock).mock.calls.length).toBeGreaterThan(initialCalls);
     });
   });
 
@@ -438,7 +429,6 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      // Change to mobile width
       rerender({ windowWidth: 375 });
 
       expect(mockCamera.position.copy).toHaveBeenCalled();
@@ -448,7 +438,7 @@ describe('useCameraPositionAnimation', () => {
       renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
-          windowWidth: 800, // Exactly at breakpoint
+          windowWidth: 800,
           closeUp: true,
           closeUpPosIndex: 1,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
@@ -469,7 +459,7 @@ describe('useCameraPositionAnimation', () => {
       const { result } = renderHook(() =>
         useCameraPositionAnimation({
           camera: mockCamera,
-          windowWidth: 0, // Edge case
+          windowWidth: 0,
           closeUp: true,
           closeUpPosIndex: 0,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
@@ -481,7 +471,6 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should not crash
       expect(result.current.rotationPoint).toBeInstanceOf(Vector3);
     });
 
@@ -505,7 +494,6 @@ describe('useCameraPositionAnimation', () => {
         },
       );
 
-      // Rapid clicks
       rerender({ clickPoint: 'mesh1' });
       rerender({ clickPoint: 'mesh2' });
       rerender({ clickPoint: 'mesh3' });
