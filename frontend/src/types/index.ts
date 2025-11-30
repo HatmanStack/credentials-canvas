@@ -1,8 +1,3 @@
-/**
- * Barrel exports for all type definitions
- */
-
-// Three.js types
 export type {
   ThreeJSSceneModel,
   ThreeJSVector3Position,
@@ -13,7 +8,6 @@ export type {
   GLTFResult,
 } from './threeJSTypes';
 
-// Camera types
 export type {
   CameraScrollConfiguration,
   MeshNameToPositionIndexMap,
@@ -22,7 +16,6 @@ export type {
   CloseUpCameraPositions,
 } from './cameraTypes';
 
-// Component types
 export type {
   ThemeIdentifier,
   ThemeName,
@@ -35,14 +28,12 @@ export type {
   BreakpointConfiguration,
 } from './componentTypes';
 
-// Store types (for Phase 2)
 export type {
   SceneInteractionState,
   UserInterfaceState,
   ThreeJSSceneState,
 } from './storeTypes';
 
-// YouTube player types
 export type {
   YouTubePlayer,
 } from './youtubeTypes';

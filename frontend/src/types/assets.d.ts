@@ -1,7 +1,3 @@
-/**
- * Asset type declarations
- */
-
 declare module '*.gif' {
   const content: string;
   export default content;
