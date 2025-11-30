@@ -1,8 +1,3 @@
-/**
- * Barrel exports for all configuration constants
- */
-
-// Camera configuration
 export {
   CAMERA_ROTATION_POSITION_ARRAY,
   CLOSE_UP_CAMERA_POSITION_ARRAY,
@@ -13,7 +8,6 @@ export {
   NO_CLOSE_UP_INDEX,
 } from './cameraConfiguration';
 
-// Lighting configuration
 export {
   LIGHT_COLOR_WHEEL,
   LIGHT_INTENSITY_INITIAL_VALUE,
@@ -26,7 +20,6 @@ export type {
   VibeLightColorConfiguration,
 } from './lightingConfiguration';
 
-// Mesh configuration
 export {
   INTERACTIVE_LIGHT_MESH_NAMES,
   PHONE_VIDEO_CONFIGURATIONS,
@@ -40,7 +33,6 @@ export type {
   PhoneVideoConfiguration,
 } from './meshConfiguration';
 
-// URL configuration
 export {
   MESH_NAME_TO_URL_MAPPING,
   INTERACTIVE_PHONE_URL_CONFIGURATIONS,
@@ -50,7 +42,6 @@ export type {
   PhoneURLConfiguration,
 } from './urlConfiguration';
 
-// Animation configuration
 export {
   INTERACTIVE_SLIDER_MESH_NAMES,
   INSTRUCTION_TEXT_MESH_NAMES,
@@ -68,7 +59,6 @@ export type {
   VibeIframeURLConfiguration,
 } from './animationConfiguration';
 
-// Theme configuration
 export {
   THEME_COLOR_CONFIGURATION_MAP,
   AVAILABLE_THEME_CONFIGURATIONS,

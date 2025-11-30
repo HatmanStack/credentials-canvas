@@ -1,12 +1,5 @@
-/**
- * Camera control configuration
- */
-
 import type { CameraPositionTuple, CameraScrollConfiguration, MeshNameToPositionIndexMap } from '@/types';
 
-/**
- * Main camera rotation points for scene navigation
- */
 export const CAMERA_ROTATION_POSITION_ARRAY: CameraPositionTuple[] = [
   [5.1, 0.1, 2],
   [1.3, 0.4, 3.9],
@@ -15,9 +8,6 @@ export const CAMERA_ROTATION_POSITION_ARRAY: CameraPositionTuple[] = [
   [0, 0, 0],
 ];
 
-/**
- * Close-up camera positions for interactive elements (desktop)
- */
 export const CLOSE_UP_CAMERA_POSITION_ARRAY: CameraPositionTuple[] = [
   [0, 0.5, 4.07],
   [-0.6, 0.3, 4.1],
@@ -30,9 +20,6 @@ export const CLOSE_UP_CAMERA_POSITION_ARRAY: CameraPositionTuple[] = [
   [0.6, 0.3, 4.2],
 ];
 
-/**
- * Close-up camera positions for interactive elements (small screen/mobile)
- */
 export const CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN: CameraPositionTuple[] = [
   [0, 0.5, 4.07],
   [-0.6, 0.6, 4.1],
@@ -45,15 +32,8 @@ export const CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN: CameraPositionTuple[] 
   [0.6, 0.3, 4.2],
 ];
 
-/**
- * Sentinel value indicating no close-up view is active
- * This index is out of bounds for CLOSE_UP_CAMERA_POSITION_ARRAY (0-8)
- */
 export const NO_CLOSE_UP_INDEX = 9;
 
-/**
- * Close-up camera rotation values
- */
 export const CLOSE_UP_CAMERA_ROTATION_ARRAY: CameraPositionTuple[] = [
   [-0.2, 0.3, 3.4],
   [-0.6, -1, 4.1],
@@ -67,9 +47,6 @@ export const CLOSE_UP_CAMERA_ROTATION_ARRAY: CameraPositionTuple[] = [
   [0, 0, 0],
 ];
 
-/**
- * Mapping of mesh names to close-up camera position indices
- */
 export const MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP: MeshNameToPositionIndexMap = {
   Phone_Stocks: 0,
   Phone_Looper_5: 1,
@@ -89,9 +66,6 @@ export const MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP: MeshNameToPositionIndexMap 
   Phone_Stocks_Text: 8,
 };
 
-/**
- * Camera scroll animation speed constants for different devices
- */
 export const CAMERA_SCROLL_CONFIGURATION: CameraScrollConfiguration = {
   desktop: 0.3,
   mobile: 0.8,

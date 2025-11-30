@@ -1,28 +1,15 @@
-/**
- * Animation and UI element configuration data
- */
-
 import type { CameraPositionTuple } from '@/types';
 
-/**
- * Vibe-specific iframe URL configuration
- */
 export interface VibeIframeURLConfiguration {
   iframe1: string;
   iframe2: string;
   srcID: string;
 }
 
-/**
- * Interactive slider mesh names
- */
 export const INTERACTIVE_SLIDER_MESH_NAMES: string[] = [
   'Slider_4',
 ];
 
-/**
- * Instruction text mesh names
- */
 export const INSTRUCTION_TEXT_MESH_NAMES: string[] = [
   'text_navigate',
   'text_rotate',
@@ -31,10 +18,6 @@ export const INSTRUCTION_TEXT_MESH_NAMES: string[] = [
   'text_click',
 ];
 
-/**
- * Theme-specific iframe URL configurations
- * Index corresponds to theme ID (0: urban, 1: rural, 2: classy, 3: chill)
- */
 export const THEME_IFRAME_URL_CONFIGURATIONS: VibeIframeURLConfiguration[] = [
   {
     iframe1: 'https://freepacman.org/',
@@ -62,9 +45,6 @@ export const THEME_IFRAME_URL_CONFIGURATIONS: VibeIframeURLConfiguration[] = [
   },
 ];
 
-/**
- * Phone text node mesh names
- */
 export const PHONE_TEXT_NODE_MESH_NAMES: string[] = [
   'Phone_Looper_Text',
   'Phone_Vocabulary_Text',
@@ -74,9 +54,6 @@ export const PHONE_TEXT_NODE_MESH_NAMES: string[] = [
   'Phone_Stocks_Text',
 ];
 
-/**
- * Phone mesh names (main phone objects)
- */
 export const PHONE_MESH_NAMES: string[] = [
   'Phone_Looper_5',
   'Phone_Vocabulary_5',
@@ -86,26 +63,14 @@ export const PHONE_MESH_NAMES: string[] = [
   'Phone_Stocks_5',
 ];
 
-/**
- * Slider rotation values
- */
 export const SLIDER_ROTATION_VALUES: CameraPositionTuple = [7.36, 0, 0];
 
-/**
- * Slider scale values
- */
 export const SLIDER_SCALE_VALUES: CameraPositionTuple = [0.4, 0.4, 0.4];
 
-/**
- * Slider position array
- */
 export const SLIDER_POSITION_ARRAY: CameraPositionTuple[] = [
   [0.9305, 0.538, 3.986],
 ];
 
-/**
- * Text element position array
- */
 export const TEXT_ELEMENT_POSITION_ARRAY: CameraPositionTuple[] = [
   [-0.668423, 0.008689, 4.06791],
   [5.53658, -0.1, 2.3211],
@@ -115,9 +80,6 @@ export const TEXT_ELEMENT_POSITION_ARRAY: CameraPositionTuple[] = [
   [0.77, 0.015, 4.1],
 ];
 
-/**
- * Text element rotation array
- */
 export const TEXT_ELEMENT_ROTATION_ARRAY: CameraPositionTuple[] = [
   [0, 44.7, 0],
   [0, 44.612, 0],

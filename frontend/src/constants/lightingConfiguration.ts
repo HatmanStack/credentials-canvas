@@ -1,30 +1,17 @@
-/**
- * Lighting configuration data
- */
-
 import type { CameraPositionTuple } from '@/types';
 
-/**
- * Point light position configuration with associated controls
- */
 export interface PointLightPositionConfiguration {
   position: CameraPositionTuple;
   signName: string[];
   sliderName?: string;
 }
 
-/**
- * Vibe-specific light color configuration
- */
 export interface VibeLightColorConfiguration {
   lightColor1: string;
   lightColor2: string;
   lightColor3: string;
 }
 
-/**
- * Color wheel for light color selection
- */
 export const LIGHT_COLOR_WHEEL: string[] = [
   '#FFD700', '#FDFD96', '#FFFF00', '#FFFFE0', '#FFFACD', '#FAFAD2', '#FFEFD5', '#FFE4B5', '#FFDAB9', '#EEE8AA',
   '#F0E68C', '#BDB76B', '#E6E6FA', '#D8BFD8', '#DDA0DD', '#EE82EE', '#FF00FF', '#DA70D6', '#FFC0CB', '#FFB6C1',
@@ -36,14 +23,8 @@ export const LIGHT_COLOR_WHEEL: string[] = [
   '#FF7F50', '#FF8C00', '#FFA500',
 ];
 
-/**
- * Initial light intensity value
- */
 export const LIGHT_INTENSITY_INITIAL_VALUE: number = 30;
 
-/**
- * Point light positions and their associated control elements
- */
 export const POINT_LIGHT_POSITION_CONFIGURATIONS: PointLightPositionConfiguration[] = [
   { position: [10.5, 2.8, 9.35], signName: ['lamppost'] },
   {
@@ -78,10 +59,6 @@ export const POINT_LIGHT_POSITION_CONFIGURATIONS: PointLightPositionConfiguratio
   },
 ];
 
-/**
- * Theme-specific light color configurations
- * Index corresponds to theme ID (0: urban, 1: rural, 2: classy, 3: chill)
- */
 export const THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY: VibeLightColorConfiguration[] = [
   { lightColor1: '#B68672', lightColor2: '#9E9149', lightColor3: '#E96929' },
   { lightColor1: '#869582', lightColor2: '#72979D', lightColor3: '#80C080' },
