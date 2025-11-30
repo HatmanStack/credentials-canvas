@@ -1,9 +1,18 @@
 node_modules
 yarn.lock
 package-lock.json
+
+# Build outputs
 build/
+dist/
 coverage/
+
+# IDE
+.vscode/
+
+# Model files
 public/compressed.glb
 public/compressed_model.glb
-.vscode/
+
+# Claude local config
 CLAUDE.md
