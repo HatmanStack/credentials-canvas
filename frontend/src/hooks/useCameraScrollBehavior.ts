@@ -10,8 +10,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
-import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from 'constants/cameraConfiguration';
-import type { CameraPositionTuple } from 'types';
+import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from '@/constants/cameraConfiguration';
+import type { CameraPositionTuple } from '@/types';
 
 /**
  * Parameters for useCameraScrollBehavior hook

@@ -11,19 +11,19 @@ import type { ThreeEvent } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useGLTF } from '@react-three/drei';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { useSceneInteractionStore, useThreeJSSceneStore } from 'stores';
-import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from 'constants/urlConfiguration';
+import { useSceneInteractionStore, useThreeJSSceneStore } from '@/stores';
+import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from '@/constants/urlConfiguration';
 import {
   INTERACTIVE_LIGHT_MESH_NAMES,
   PHONE_VIDEO_CONFIGURATIONS,
   CLOSE_UP_CLICK_THRESHOLD_COUNT,
   GLTF_MODEL_FILE_PATH
-} from 'constants/meshConfiguration';
+} from '@/constants/meshConfiguration';
 
 // Configure DRACO loader
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderConfig({ type: 'js' });
-dracoLoader.setDecoderPath(process.env.PUBLIC_URL + '/draco/javascript/');
+dracoLoader.setDecoderPath('/draco/javascript/');
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);

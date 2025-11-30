@@ -10,19 +10,19 @@
 import React, { Suspense, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useProgress, useGLTF } from '@react-three/drei';
-import { SceneEnvironment } from 'components/three/SceneEnvironment';
-import { SceneModel } from 'components/three/SceneModel';
-import { CameraController } from 'components/controls/CameraController';
-import { AudioController } from 'components/controls/AudioController';
-import { LaunchScreen } from 'components/ui/LaunchScreen';
-import { useSceneInteractionStore, useUserInterfaceStore, useThreeJSSceneStore } from 'stores';
-import { THEME_COLOR_CONFIGURATION_MAP } from 'constants/themeConfiguration';
-import { GLTF_MODEL_FILE_PATH } from 'constants/meshConfiguration';
-import handGif from './assets/hand.gif';
-import volumeUp from './assets/volume_up.svg';
-import mute from './assets/volume_mute.svg';
-import arrowIcon from './assets/arrow.svg';
-import { cn } from 'utils/classNameUtils';
+import { SceneEnvironment } from '@/components/three/SceneEnvironment';
+import { SceneModel } from '@/components/three/SceneModel';
+import { CameraController } from '@/components/controls/CameraController';
+import { AudioController } from '@/components/controls/AudioController';
+import { LaunchScreen } from '@/components/ui/LaunchScreen';
+import { useSceneInteractionStore, useUserInterfaceStore, useThreeJSSceneStore } from '@/stores';
+import { THEME_COLOR_CONFIGURATION_MAP } from '@/constants/themeConfiguration';
+import { GLTF_MODEL_FILE_PATH } from '@/constants/meshConfiguration';
+import handGif from '@/assets/hand.gif';
+import volumeUp from '@/assets/volume_up.svg';
+import mute from '@/assets/volume_mute.svg';
+import arrowIcon from '@/assets/arrow.svg';
+import { cn } from '@/utils/classNameUtils';
 
 // Preload GLTF model
 useGLTF.preload(GLTF_MODEL_FILE_PATH);

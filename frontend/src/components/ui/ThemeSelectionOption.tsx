@@ -6,8 +6,8 @@
 
 import React, { useCallback } from 'react';
 import { CustomCheckbox } from './CustomCheckbox';
-import { cn } from 'utils/classNameUtils';
-import type { VibeThemeConfiguration } from 'types';
+import { cn } from '@/utils/classNameUtils';
+import type { VibeThemeConfiguration } from '@/types';
 
 /**
  * Props for ThemeSelectionOption component

@@ -7,10 +7,10 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ThemeSelectionOption } from './ThemeSelectionOption';
-import { AVAILABLE_THEME_CONFIGURATIONS } from 'constants/themeConfiguration';
-import { useUserInterfaceStore } from 'stores';
-import { cn } from 'utils/classNameUtils';
-import '../../css/launch.css';
+import { AVAILABLE_THEME_CONFIGURATIONS } from '@/constants/themeConfiguration';
+import { useUserInterfaceStore } from '@/stores';
+import { cn } from '@/utils/classNameUtils';
+import '@/css/launch.css';
 
 /**
  * Launch Screen component for theme selection

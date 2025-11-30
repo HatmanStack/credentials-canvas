@@ -11,13 +11,13 @@ import {
   RandomizedLight,
   Environment as EnvironmentImpl,
 } from '@react-three/drei';
-import { useSceneInteractionStore, useUserInterfaceStore } from 'stores';
+import { useSceneInteractionStore, useUserInterfaceStore } from '@/stores';
 import {
   LIGHT_COLOR_WHEEL,
   LIGHT_INTENSITY_INITIAL_VALUE,
   POINT_LIGHT_POSITION_CONFIGURATIONS,
   THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY
-} from 'constants/lightingConfiguration';
+} from '@/constants/lightingConfiguration';
 
 /**
  * Scene environment component with dynamic lighting

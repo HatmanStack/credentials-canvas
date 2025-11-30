@@ -19,7 +19,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import type * as THREE from 'three';
-import type { YouTubePlayer } from 'types/youtubeTypes';
+import type { YouTubePlayer } from '@/types/youtubeTypes';
 
 /**
  * Three.js Scene State Interface

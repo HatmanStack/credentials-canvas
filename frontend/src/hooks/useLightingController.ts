@@ -11,9 +11,9 @@ import {
   LIGHT_COLOR_WHEEL,
   POINT_LIGHT_POSITION_CONFIGURATIONS,
   THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY
-} from 'constants/lightingConfiguration';
-import type { PointLightPositionConfiguration, VibeLightColorConfiguration } from 'constants/lightingConfiguration';
-import type { LightIntensityConfiguration } from 'types';
+} from '@/constants/lightingConfiguration';
+import type { PointLightPositionConfiguration, VibeLightColorConfiguration } from '@/constants/lightingConfiguration';
+import type { LightIntensityConfiguration } from '@/types';
 
 /**
  * Return type for useLightingController hook

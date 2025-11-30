@@ -17,8 +17,8 @@ import {
   CLOSE_UP_CAMERA_ROTATION_ARRAY,
   MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
   NO_CLOSE_UP_INDEX
-} from 'constants/cameraConfiguration';
-import type { CameraPositionTuple } from 'types';
+} from '@/constants/cameraConfiguration';
+import type { CameraPositionTuple } from '@/types';
 
 /**
  * Parameters for useCameraPositionAnimation hook
