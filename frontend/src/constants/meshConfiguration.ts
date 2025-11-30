@@ -2,6 +2,13 @@
  * Mesh and asset configuration data
  */
 
+import VocabularyVideo from '@/assets/Vocabulary.mp4';
+import MoviesVideo from '@/assets/Movies.mp4';
+import LooperVideo from '@/assets/Looper.mp4';
+import TrachtenbergVideo from '@/assets/Trachtenberg.mp4';
+import ItalianVideo from '@/assets/Italian.mp4';
+import StocksVideo from '@/assets/Stocks.mp4';
+
 /**
  * Phone video configuration
  */
@@ -38,12 +45,12 @@ export const INTERACTIVE_LIGHT_MESH_NAMES: string[] = [
  * Unified phone configurations with video paths and text nodes
  */
 export const PHONE_VIDEO_CONFIGURATIONS: PhoneVideoConfiguration[] = [
-  { name: 'Phone_Vocabulary_5', video: require('../assets/Vocabulary.mp4'), textNode: 'Phone_Vocabulary_Text' },
-  { name: 'Phone_Movies_5', video: require('../assets/Movies.mp4'), textNode: 'Phone_Movies_Text' },
-  { name: 'Phone_Looper_5', video: require('../assets/Looper.mp4'), textNode: 'Phone_Looper_Text' },
-  { name: 'Phone_Trachtenberg_5', video: require('../assets/Trachtenberg.mp4'), textNode: 'Phone_Trachtenberg_Text' },
-  { name: 'Phone_Italian_5', video: require('../assets/Italian.mp4'), textNode: 'Phone_Italian_Text' },
-  { name: 'Phone_Stocks_5', video: require('../assets/Stocks.mp4'), textNode: 'Phone_Stocks_Text' },
+  { name: 'Phone_Vocabulary_5', video: VocabularyVideo, textNode: 'Phone_Vocabulary_Text' },
+  { name: 'Phone_Movies_5', video: MoviesVideo, textNode: 'Phone_Movies_Text' },
+  { name: 'Phone_Looper_5', video: LooperVideo, textNode: 'Phone_Looper_Text' },
+  { name: 'Phone_Trachtenberg_5', video: TrachtenbergVideo, textNode: 'Phone_Trachtenberg_Text' },
+  { name: 'Phone_Italian_5', video: ItalianVideo, textNode: 'Phone_Italian_Text' },
+  { name: 'Phone_Stocks_5', video: StocksVideo, textNode: 'Phone_Stocks_Text' },
 ];
 
 /**
@@ -63,5 +70,6 @@ export const CLOSE_UP_CLICK_THRESHOLD_COUNT: number = 2;
 
 /**
  * GLTF model file path
+ * In Vite, files in public/ are served at root path
  */
-export const GLTF_MODEL_FILE_PATH: string = process.env.PUBLIC_URL + '/compressed_model.glb';
+export const GLTF_MODEL_FILE_PATH: string = '/compressed_model.glb';
