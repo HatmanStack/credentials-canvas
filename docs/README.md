@@ -48,7 +48,7 @@ Credentials Canvas is an immersive 3D portfolio experience built with Three.js a
 
 ### Directory Structure
 
-```
+```text
 credentials-canvas/
 ├── frontend/
 │   ├── src/
@@ -159,7 +159,7 @@ npm run test -- --coverage  # With coverage report
 
 ### Test Structure
 
-```
+```text
 tests/
 ├── frontend/
 │   ├── hooks/           # Custom hook tests

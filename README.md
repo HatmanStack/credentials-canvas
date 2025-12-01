@@ -35,7 +35,7 @@ Credentials Canvas is an immersive 3D portfolio that showcases projects in an in
 
 ## Structure
 
-```
+```text
 credentials-canvas/
 ├── frontend/           # React + Three.js application
 │   ├── src/
