@@ -70,7 +70,7 @@ credentials-canvas/
 │   │   └── helpers/         # Test utilities
 │   └── public/              # Static assets
 └── docs/
-    └── plans/               # Implementation plans
+    └── README.md               # Long Form README
 ```
 
 ### State Management
