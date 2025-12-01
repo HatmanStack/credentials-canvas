@@ -18,7 +18,7 @@ export default defineConfig({
       'types': resolve(__dirname, 'src/types'),
       'hooks': resolve(__dirname, 'src/hooks'),
       'constants': resolve(__dirname, 'src/constants'),
-      'test-helpers': resolve(__dirname, '../tests/helpers'),
+      'test-helpers': resolve(__dirname, 'tests/helpers'),
     },
   },
   assetsInclude: ['**/*.glsl'],
@@ -27,4 +27,10 @@ export default defineConfig({
     outDir: 'dist',
   },
   publicDir: 'public',
+  test: {
+    include: ['tests/**/*.test.{ts,tsx}'],
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['tests/helpers/setup.ts'],
+  },
 });

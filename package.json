@@ -9,8 +9,8 @@
     "dev": "cd frontend && npx vite",
     "build": "cd frontend && npx tsc && npx vite build",
     "preview": "cd frontend && npx vite preview",
-    "test": "vitest",
+    "test": "cd frontend && npx vitest",
     "lint": "cd frontend && npx eslint src && npx tsc --noEmit",
-    "check": "npm run lint && vitest --run"
+    "check": "npm run lint && cd frontend && npx vitest --run"
   }
 }
