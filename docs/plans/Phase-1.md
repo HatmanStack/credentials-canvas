@@ -1,1570 +1,806 @@
-# Phase 1: TypeScript Setup & File Structure Refactoring
+# Phase-1: CRA to Vite Migration & Directory Restructure
 
 ## Phase Goal
 
-Transform the JavaScript codebase into a fully-typed TypeScript application with modern project structure. This phase establishes the foundation for all subsequent phases by migrating to TypeScript, reorganizing files into a layer-based architecture, and implementing explicit naming conventions.
+Migrate the project from Create React App to Vite and restructure the file system into the target monorepo layout. This phase establishes the new directory structure, configures Vite, updates all import paths, and ensures the application builds and runs correctly.
 
 **Success Criteria:**
-- All `.js` files converted to `.ts` or `.tsx`
-- TypeScript compiles without errors (`tsc --noEmit` passes)
-- All components organized by layer (three/, controls/, ui/)
-- All files follow naming conventions (PascalCase components, camelCase utilities)
-- Application runs and functions identically to pre-refactor state
-- Build completes successfully
+- Application builds successfully with Vite
+- Application runs in development mode without errors
+- All imports resolve correctly
+- Directory structure matches target layout
+- TypeScript compilation passes
 
-**Estimated Tokens:** ~85,000
+**Estimated Tokens:** ~45,000
 
 ---
 
 ## Prerequisites
 
-### Must Be Complete Before Starting
-- Read Phase-0.md completely
-- Git branch `claude/design-feature-naming-refactor-01SwsoFYJoanSP88r5nfjhMG` checked out
-- Clean git state (no uncommitted changes)
-- Dependencies installed and working (`npm install` succeeded)
-- Application runs successfully (`npm start` works)
-
-### Verify Environment
-```bash
-# Check Node/npm versions
-node --version  # Should be >= 18.0.0
-npm --version   # Should be >= 9.0.0
-
-# Verify clean state
-git status  # Should show clean working directory
-
-# Verify app works before changes
-npm start  # Should compile and launch
-```
+- Phase-0 documentation read and understood
+- Node.js v24 LTS installed
+- Clean git working directory
+- Current application runs successfully with CRA (baseline verification)
 
 ---
 
 ## Tasks
 
-### Task 1: Install TypeScript Dependencies
+### Task 1: Create Target Directory Structure
 
-**Goal:** Install TypeScript compiler and type definitions for all dependencies.
+**Goal:** Create the new monorepo directory layout with all required folders.
 
-**Files to Modify/Create:**
-- `package.json` - Add devDependencies
-- `package-lock.json` - Update dependency tree
-
-**Prerequisites:**
-- Clean npm state
-- No running dev server
+**Files to Create:**
+- `frontend/` directory
+- `frontend/src/` directory
+- `frontend/public/` directory
+- `tests/` directory
+- `tests/frontend/` directory
+- `tests/frontend/hooks/` directory
+- `tests/frontend/stores/` directory
+- `tests/frontend/utils/` directory
+- `tests/helpers/` directory
+- `.github/workflows/` directory
 
 **Implementation Steps:**
-
-1. Install TypeScript and core type definitions:
-   - Install `typescript` as devDependency
-   - Install `@types/react` and `@types/react-dom` for React types
-   - Install `@types/node` for Node.js types
-   - Install `@types/three` for Three.js types
-   - Use exact versions compatible with your React version (18.2.0)
-
-2. Install TypeScript ESLint plugins:
-   - Install `@typescript-eslint/eslint-plugin`
-   - Install `@typescript-eslint/parser`
-   - These enable ESLint to understand TypeScript syntax
-
-3. Verify installation:
-   - Check that `typescript` appears in `package.json` devDependencies
-   - Confirm type definition packages installed
-   - Run `npx tsc --version` to verify TypeScript CLI works
+- Create the directory tree structure matching the target layout defined in Phase-0
+- Create empty `.gitkeep` files in directories that would otherwise be empty during the transition
+- Verify all directories are created with correct permissions
 
 **Verification Checklist:**
-- [ ] `package.json` includes TypeScript dependencies
-- [ ] `node_modules` contains `typescript` directory
-- [ ] `npx tsc --version` outputs version number
-- [ ] No installation errors in terminal
-- [ ] `package-lock.json` updated
+- [ ] `frontend/src/` directory exists
+- [ ] `frontend/public/` directory exists
+- [ ] `tests/frontend/hooks/` directory exists
+- [ ] `tests/frontend/stores/` directory exists
+- [ ] `tests/frontend/utils/` directory exists
+- [ ] `tests/helpers/` directory exists
+- [ ] `.github/workflows/` directory exists
 
 **Testing Instructions:**
-- Run `npm install` to ensure clean install works
-- Run `npx tsc --version` should output TypeScript version
-- No unit tests needed for this task
+- No tests required; verify with `find` or `tree` command
 
 **Commit Message Template:**
 ```
-chore(deps): install TypeScript and type definitions
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Add typescript ^5.3.0 as devDependency
-- Add @types/react, @types/react-dom, @types/node
-- Add @types/three for Three.js type support
-- Add @typescript-eslint plugins for code quality
+chore(structure): create target monorepo directory layout
+
+Create frontend/, tests/, and .github/ directory structure
+Add placeholder .gitkeep files for empty directories
 ```
-
-**Estimated Tokens:** ~1,000
 
 ---
 
-### Task 2: Create TypeScript Configuration
+### Task 2: Move Source Files to Frontend Directory
 
-**Goal:** Configure TypeScript with strict settings optimized for React and Three.js development.
+**Goal:** Relocate all source code from `src/` to `frontend/src/` while preserving the internal structure.
 
-**Files to Modify/Create:**
-- `tsconfig.json` - New file, TypeScript compiler configuration
+**Files to Move:**
+- `src/` → `frontend/src/`
+- `public/` → `frontend/public/`
 
-**Prerequisites:**
-- Task 1 complete (TypeScript installed)
+**Files to NOT Move (handle separately):**
+- `src/__tests__/` - Moves to `tests/frontend/` (Task 6)
+- `src/test-helpers/` - Moves to `tests/helpers/` (Task 6)
+- `src/setupTests.ts` - Moves to `tests/setup.ts` (Task 6)
 
 **Implementation Steps:**
-
-1. Create `tsconfig.json` in project root:
-   - Set `target` to ES2020 for modern JavaScript features
-   - Set `lib` to include DOM and ES2020 for browser compatibility
-   - Set `jsx` to "react-jsx" for React 18 JSX transform
-   - Set `module` to ESNext for modern module syntax
-   - Set `moduleResolution` to "bundler" for modern bundler compatibility
-
-2. Configure strict type checking:
-   - Enable `strict` mode for maximum type safety
-   - Enable `noUnusedLocals` to catch unused variables
-   - Enable `noUnusedParameters` to catch unused function params
-   - Enable `noFallthroughCasesInSwitch` to prevent switch bugs
-   - Enable `noImplicitReturns` to ensure all code paths return
-
-3. Configure module resolution:
-   - Set `baseUrl` to "src" for absolute imports
-   - Configure `paths` mapping for clean imports:
-     - `components/*` → `src/components/*`
-     - `hooks/*` → `src/hooks/*`
-     - `stores/*` → `src/stores/*` (for future Zustand stores)
-     - `types/*` → `src/types/*`
-     - `constants/*` → `src/constants/*`
-     - `utils/*` → `src/utils/*`
-
-4. Configure compiler options:
-   - Set `esModuleInterop` to true for better CommonJS interop
-   - Set `skipLibCheck` to true to skip type checking of declaration files
-   - Set `allowSyntheticDefaultImports` to true for default imports
-   - Set `resolveJsonModule` to true to import JSON files
-   - Set `isolatedModules` to true for better build tool compatibility
-
-5. Configure include/exclude:
-   - Include: `["src"]` to compile all source files
-   - Exclude: `["node_modules", "build", "public"]` to skip non-source
+- Use `git mv` to preserve history when moving files
+- Move `src/` contents to `frontend/src/` excluding test-related directories
+- Move `public/` contents to `frontend/public/`
+- Preserve the internal directory structure (components/, hooks/, stores/, etc.)
+- Handle the draco/ subdirectory in public/ correctly
 
 **Verification Checklist:**
-- [ ] `tsconfig.json` exists in project root
-- [ ] `npx tsc --noEmit` runs without errors (may have errors from untyped files, that's OK for now)
-- [ ] Configuration includes all path mappings
+- [ ] `frontend/src/App.tsx` exists
+- [ ] `frontend/src/index.tsx` exists (will be renamed in Task 4)
+- [ ] `frontend/src/components/` directory populated
+- [ ] `frontend/src/hooks/` directory populated
+- [ ] `frontend/src/stores/` directory populated
+- [ ] `frontend/src/constants/` directory populated
+- [ ] `frontend/src/types/` directory populated
+- [ ] `frontend/src/utils/` directory populated
+- [ ] `frontend/src/shaders/` directory populated
+- [ ] `frontend/src/assets/` directory populated
+- [ ] `frontend/src/css/` directory populated
+- [ ] `frontend/src/styles/` directory populated
+- [ ] `frontend/public/index.html` exists
+- [ ] `frontend/public/draco/` directory populated
+- [ ] Original `src/` directory removed
+- [ ] Original `public/` directory removed
+
+**Testing Instructions:**
+- No tests required; verify file counts match before/after move
+- Count files in source before: `find src -type f | wc -l`
+- Count files in destination after: `find frontend/src -type f | wc -l`
+
+**Commit Message Template:**
+```
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
+
+refactor(structure): move source files to frontend directory
+
+Move src/ to frontend/src/
+Move public/ to frontend/public/
+Preserve internal directory structure and git history
+```
+
+---
+
+### Task 3: Initialize Vite Configuration
+
+**Goal:** Create a working Vite configuration that can build the React application.
+
+**Files to Create:**
+- `frontend/vite.config.ts`
+- `frontend/index.html` (transformed from public/index.html)
+
+**Files to Modify:**
+- `frontend/public/index.html` → `frontend/index.html` (move and modify)
+
+**Implementation Steps:**
+- Create `vite.config.ts` with React plugin configuration
+- Configure path aliases to match the existing tsconfig.json paths
+- Configure the build output directory
+- Configure the public directory for static assets
+- Transform `index.html` from CRA format to Vite format:
+  - Move from `public/` to `frontend/` root
+  - Remove `%PUBLIC_URL%` references
+  - Add `<script type="module" src="/src/main.tsx"></script>` before closing `</body>`
+- Configure asset handling for GLSL shaders, audio, and video files
+- Set up GLSL shader imports using vite-plugin-glsl or raw imports
+
+**Vite Config Requirements:**
+- React plugin with Fast Refresh
+- Path aliases matching tsconfig.json
+- GLSL shader handling (raw string imports)
+- Static asset handling (mp3, mp4, svg, gif)
+- Build target: ES2020
+- Output directory: `dist/`
+
+**Verification Checklist:**
+- [ ] `frontend/vite.config.ts` exists and is valid TypeScript
+- [ ] `frontend/index.html` exists at frontend root (not in public/)
+- [ ] Vite config includes React plugin
+- [ ] Path aliases configured for all existing paths
+- [ ] GLSL import handling configured
+
+**Testing Instructions:**
+- Run `npx vite --version` to verify Vite is accessible
+- Configuration validation happens in Task 5
+
+**Commit Message Template:**
+```
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
+
+feat(vite): add Vite configuration for React build
+
+Create vite.config.ts with React plugin
+Configure path aliases matching tsconfig
+Set up GLSL shader and asset handling
+Transform index.html for Vite entry point
+```
+
+---
+
+### Task 4: Update Package Configuration
+
+**Goal:** Create frontend package.json with Vite scripts and update root package.json for workspace orchestration.
+
+**Files to Create:**
+- `frontend/package.json`
+
+**Files to Modify:**
+- `package.json` (root)
+
+**Implementation Steps:**
+- Create `frontend/package.json` with:
+  - Dependencies moved from root package.json
+  - Vite-specific scripts (dev, build, preview)
+  - Vitest scripts (added in Phase-2, placeholder here)
+  - Lint script using ESLint
+  - Type-check script using tsc
+- Update root `package.json` with:
+  - Workspace configuration pointing to `frontend/`
+  - Orchestration scripts that delegate to frontend
+  - Remove CRA-specific dependencies and scripts
+  - Keep only root-level dev tooling if needed
+- Rename entry point reference: `src/index.tsx` → `src/main.tsx` (Vite convention)
+
+**Root package.json Scripts:**
+```json
+{
+  "scripts": {
+    "start": "npm run dev --workspace=frontend",
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "preview": "npm run preview --workspace=frontend",
+    "test": "npm run test --workspace=frontend",
+    "lint": "npm run lint --workspace=frontend",
+    "type-check": "npm run type-check --workspace=frontend",
+    "check": "npm run lint && npm run test -- --run"
+  },
+  "workspaces": ["frontend"]
+}
+```
+
+**Frontend package.json Scripts:**
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
+
+**Verification Checklist:**
+- [ ] `frontend/package.json` exists with correct structure
+- [ ] Root `package.json` has workspace configuration
+- [ ] Root `package.json` has orchestration scripts
+- [ ] react-scripts dependency removed
+- [ ] Vite and related dependencies added
+- [ ] Entry point renamed from index.tsx to main.tsx in references
+
+**Testing Instructions:**
+- Validate JSON syntax: `node -e "require('./frontend/package.json')"`
+- Validate root JSON: `node -e "require('./package.json')"`
+
+**Commit Message Template:**
+```
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
+
+chore(vite): configure package.json for Vite and workspaces
+
+Create frontend/package.json with Vite scripts
+Update root package.json with workspace configuration
+Remove CRA dependencies, add Vite toolchain
+```
+
+---
+
+### Task 5: Rename Entry Point and Update Imports
+
+**Goal:** Rename the React entry point file and update the application bootstrap code for Vite compatibility.
+
+**Files to Modify:**
+- `frontend/src/index.tsx` → `frontend/src/main.tsx` (rename)
+- `frontend/src/main.tsx` (update content)
+
+**Implementation Steps:**
+- Rename `frontend/src/index.tsx` to `frontend/src/main.tsx`
+- Update the entry point code for Vite:
+  - Remove CRA-specific imports (reportWebVitals, etc.)
+  - Ensure React 18 createRoot API is used
+  - Update CSS import paths if needed
+- Verify the import in `frontend/index.html` points to `/src/main.tsx`
+
+**Entry Point Pattern:**
+```typescript
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './styles/tailwind.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+```
+
+**Verification Checklist:**
+- [ ] `frontend/src/main.tsx` exists
+- [ ] `frontend/src/index.tsx` no longer exists
+- [ ] main.tsx uses createRoot from react-dom/client
+- [ ] CSS imports are correct paths
+- [ ] index.html references `/src/main.tsx`
+
+**Testing Instructions:**
+- TypeScript compilation check in Task 8
+
+**Commit Message Template:**
+```
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
+
+refactor(vite): rename entry point to main.tsx
+
+Rename index.tsx to main.tsx (Vite convention)
+Update entry point code for Vite compatibility
+Remove CRA-specific imports
+```
+
+---
+
+### Task 6: Update TypeScript Configuration
+
+**Goal:** Update tsconfig.json for Vite compatibility and new directory structure.
+
+**Files to Create:**
+- `frontend/tsconfig.json`
+- `frontend/tsconfig.node.json` (for Vite config)
+
+**Files to Delete:**
+- Root `tsconfig.json` (after content migrated)
+
+**Implementation Steps:**
+- Create `frontend/tsconfig.json` with:
+  - Module: ESNext
+  - ModuleResolution: bundler (Vite-compatible)
+  - Target: ES2020
+  - JSX: react-jsx
+  - Strict mode enabled
+  - Path aliases matching vite.config.ts
+  - Include paths for `src/`
+  - Exclude node_modules and dist
+- Create `frontend/tsconfig.node.json` for Vite config file:
+  - Module: ESNext
+  - ModuleResolution: bundler
+  - Include only vite.config.ts
+- Remove root tsconfig.json (all TypeScript is in frontend)
+
+**Path Alias Configuration:**
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@stores/*": ["src/stores/*"],
+      "@constants/*": ["src/constants/*"],
+      "@types/*": ["src/types/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  }
+}
+```
+
+**Verification Checklist:**
+- [ ] `frontend/tsconfig.json` exists
+- [ ] `frontend/tsconfig.node.json` exists
+- [ ] Root `tsconfig.json` removed
+- [ ] ModuleResolution set to "bundler"
+- [ ] Path aliases configured correctly
 - [ ] Strict mode enabled
-- [ ] JSON is valid (no syntax errors)
 
 **Testing Instructions:**
-- Run `npx tsc --showConfig` to verify configuration loads
-- Run `npx tsc --noEmit` (errors expected from JS files, but should parse config correctly)
-- No unit tests needed for this task
+- Run `cd frontend && npx tsc --noEmit` to verify configuration
 
 **Commit Message Template:**
 ```
-chore(config): add TypeScript configuration
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Create tsconfig.json with strict settings
-- Enable ES2020 target with React JSX transform
-- Configure path mappings for clean imports
-- Enable strict type checking for better code quality
-- Set up module resolution for bundler compatibility
+refactor(vite): update TypeScript configuration for Vite
+
+Create frontend/tsconfig.json with Vite-compatible settings
+Create frontend/tsconfig.node.json for config files
+Update module resolution to bundler mode
+Configure path aliases for new structure
 ```
-
-**Estimated Tokens:** ~2,000
 
 ---
 
-### Task 3: Update ESLint Configuration for TypeScript
+### Task 7: Update All Import Paths
 
-**Goal:** Configure ESLint to work with TypeScript files and enforce TypeScript-specific rules.
+**Goal:** Update all import statements in source files to use the new path alias format.
 
-**Files to Modify/Create:**
-- `.eslintrc.json` or `.eslintrc.js` - Modify existing ESLint config
-- Create if doesn't exist
-
-**Prerequisites:**
-- Task 1 complete (TypeScript ESLint plugins installed)
-- Task 2 complete (tsconfig.json exists)
+**Files to Modify:**
+- All `.ts` and `.tsx` files in `frontend/src/`
 
 **Implementation Steps:**
+- Identify all files using the old path alias format:
+  - `components/*` → `@components/*` or `@/components/*`
+  - `hooks/*` → `@hooks/*` or `@/hooks/*`
+  - `stores/*` → `@stores/*` or `@/stores/*`
+  - `constants/*` → `@constants/*` or `@/constants/*`
+  - `types/*` → `@types/*` or `@/types/*` (note: avoid `@types` if it conflicts with DefinitelyTyped convention)
+  - `utils/*` → `@utils/*` or `@/utils/*`
+- Use consistent alias format: prefer `@/` prefix pattern for clarity
+- Update barrel exports (index.ts files) if they use old paths
+- Ensure relative imports within the same directory remain relative
+- Do not change imports from node_modules packages
 
-1. Update ESLint parser:
-   - Change `parser` to `@typescript-eslint/parser`
-   - Add `parserOptions.project` pointing to `./tsconfig.json`
-   - This allows ESLint to use TypeScript type information
-
-2. Add TypeScript ESLint plugin:
-   - Add `@typescript-eslint` to plugins array
-   - Extend `plugin:@typescript-eslint/recommended`
-   - This provides TypeScript-specific linting rules
-
-3. Update ESLint settings:
-   - Keep existing React rules
-   - Add file extensions: `['.ts', '.tsx', '.js', '.jsx']`
-   - Configure rules to work with TypeScript syntax
-
-4. Disable conflicting rules:
-   - Disable `no-undef` (TypeScript handles this)
-   - Disable `no-unused-vars` (use TypeScript version instead)
-   - Configure `@typescript-eslint/no-unused-vars` with appropriate settings
-
-5. Keep existing rules:
-   - Preserve Google ESLint config if it's being used
-   - Preserve React-specific rules
-   - Ensure no conflicts between TypeScript and existing rules
+**Import Pattern Decision:**
+Use `@/` as the root alias:
+- `import { cn } from '@/utils/classNameUtils'`
+- `import { useSceneInteractionStore } from '@/stores/sceneInteractionStore'`
+- `import type { CameraTypes } from '@/types'`
 
 **Verification Checklist:**
-- [ ] ESLint config file updated with TypeScript settings
-- [ ] `npx eslint --ext .ts,.tsx src/` runs without crashing
-- [ ] ESLint recognizes TypeScript syntax
-- [ ] No configuration errors in terminal
+- [ ] No imports use old bare module paths (e.g., `from 'components/...'`)
+- [ ] All internal imports use `@/` prefix or are relative
+- [ ] Type imports use `import type` syntax
+- [ ] No TypeScript resolution errors
 
 **Testing Instructions:**
-- Run `npx eslint --ext .ts,.tsx src/` (will have errors from untyped files, that's OK)
-- Verify ESLint doesn't crash on parsing errors
-- No unit tests needed for this task
+- Run `cd frontend && npx tsc --noEmit` - should exit 0
 
 **Commit Message Template:**
 ```
-chore(config): configure ESLint for TypeScript
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Update parser to @typescript-eslint/parser
-- Add TypeScript ESLint plugin and recommended rules
-- Disable rules that conflict with TypeScript
-- Extend configuration to support .ts and .tsx files
+refactor(structure): update import paths to use @ alias
+
+Update all imports to use @/ path alias format
+Ensure consistent import style across codebase
+Maintain relative imports for same-directory files
 ```
-
-**Estimated Tokens:** ~2,000
 
 ---
 
-### Task 4: Create Directory Structure
+### Task 8: Configure Tailwind for Vite
 
-**Goal:** Create the new layer-based directory structure that will house refactored components.
+**Goal:** Update Tailwind CSS configuration for Vite build system.
 
-**Files to Modify/Create:**
-- `src/components/three/` - New directory
-- `src/components/controls/` - New directory
-- `src/components/ui/` - New directory
-- `src/stores/` - New directory (for Phase 2)
-- `src/types/` - New directory
-- `src/constants/` - New directory
-- `src/utils/` - New directory
-
-**Prerequisites:**
-- Task 2 complete (tsconfig.json with path mappings exists)
+**Files to Move/Modify:**
+- `tailwind.config.js` → `frontend/tailwind.config.js`
+- `postcss.config.js` → `frontend/postcss.config.js`
 
 **Implementation Steps:**
-
-1. Create component subdirectories:
-   - Create `src/components/three/` for WebGL/Three.js components
-   - Create `src/components/controls/` for interaction controllers
-   - Create `src/components/ui/` for DOM-based UI components
-   - These will house components organized by technical layer
-
-2. Create supporting directories:
-   - Create `src/stores/` for future Zustand stores (Phase 2)
-   - Create `src/types/` for TypeScript type definitions
-   - Create `src/constants/` for configuration constants
-   - Create `src/utils/` for utility functions
-
-3. Create placeholder index files:
-   - Create `src/components/three/index.ts` (empty, for barrel exports)
-   - Create `src/components/controls/index.ts` (empty, for barrel exports)
-   - Create `src/components/ui/index.ts` (empty, for barrel exports)
-   - These will export components as they're migrated
-
-4. Verify directory structure:
-   - Check all directories created successfully
-   - Verify they're in correct locations under `src/`
-   - Ensure Git recognizes new directories
+- Move Tailwind config to frontend directory
+- Update content paths for new directory structure:
+  ```javascript
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ]
+  ```
+- Move PostCSS config to frontend directory
+- Verify Tailwind directives in main CSS file work correctly
+- Ensure custom theme colors are preserved
 
 **Verification Checklist:**
-- [ ] All component subdirectories exist
-- [ ] All supporting directories exist
-- [ ] Placeholder index.ts files created
-- [ ] `ls -la src/components/` shows three/, controls/, ui/ subdirectories
-- [ ] `ls -la src/` shows stores/, types/, constants/, utils/ directories
+- [ ] `frontend/tailwind.config.js` exists
+- [ ] `frontend/postcss.config.js` exists
+- [ ] Content paths point to correct locations
+- [ ] Custom colors (background-primary, urban-theme, etc.) preserved
+- [ ] Root tailwind.config.js removed
+- [ ] Root postcss.config.js removed
 
 **Testing Instructions:**
-- Run `ls -R src/` to verify directory structure
-- Verify Git sees new directories: `git status`
-- No unit tests needed for this task
+- Build verification in Task 11
 
 **Commit Message Template:**
 ```
-refactor(structure): create layer-based directory structure
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Add src/components/three/ for Three.js components
-- Add src/components/controls/ for interaction controllers
-- Add src/components/ui/ for UI components
-- Add src/stores/ for future state management
-- Add src/types/, src/constants/, src/utils/ for supporting code
-- Create barrel export index files for each directory
+chore(vite): move Tailwind configuration to frontend
+
+Move tailwind.config.js to frontend/
+Move postcss.config.js to frontend/
+Update content paths for new directory structure
 ```
-
-**Estimated Tokens:** ~1,500
 
 ---
 
-### Task 5: Create Type Definition Files
+### Task 9: Configure ESLint for Vite (Flat Config)
 
-**Goal:** Create centralized type definition files for common types used across the application.
+**Goal:** Migrate ESLint to flat config format compatible with Vite.
 
-**Files to Modify/Create:**
-- `src/types/threeJSTypes.ts` - Three.js-related types
-- `src/types/cameraTypes.ts` - Camera-related types
-- `src/types/componentTypes.ts` - Component prop types
-- `src/types/storeTypes.ts` - Store types (for Phase 2)
-- `src/types/index.ts` - Barrel exports
+**Files to Create:**
+- `frontend/eslint.config.js`
 
-**Prerequisites:**
-- Task 4 complete (types/ directory exists)
-- Understanding of Phase-0 naming conventions
+**Files to Delete:**
+- Root `.eslintrc.json`
 
 **Implementation Steps:**
+- Create `frontend/eslint.config.js` using flat config format
+- Configure TypeScript ESLint with type-aware linting
+- Replicate essential rules from the current .eslintrc.json:
+  - Single quotes
+  - 2-space indentation
+  - 120 character max line length
+  - React Three Fiber JSX property ignore list
+  - Unused vars warning with underscore ignore
+- Remove Google style guide (no flat config support), implement key rules manually
+- Set up parser options for TypeScript
 
-1. Create `threeJSTypes.ts`:
-   - Import Three.js types: `import type * as THREE from 'three'`
-   - Define custom Three.js-related types:
-     - `ThreeJSSceneModel` (alias for THREE.Scene)
-     - `ThreeJSVector3Position` (alias for THREE.Vector3)
-     - Event types for Three.js interactions
-   - Export all types
-
-2. Create `cameraTypes.ts`:
-   - Define camera position types (tuples or interfaces)
-   - Define camera configuration interface with scroll constants
-   - Define camera animation state interface
-   - Define camera index types and position arrays
-   - Export all types
-
-3. Create `componentTypes.ts`:
-   - Define common prop types used across components
-   - Define theme/vibe configuration type
-   - Define light intensity configuration type
-   - Define URL mapping types
-   - Export all types
-
-4. Create `storeTypes.ts`:
-   - Define store state interfaces (scaffolding for Phase 2)
-   - Define action types
-   - Define selector return types
-   - Export all types
-
-5. Create barrel export `index.ts`:
-   - Re-export all types from individual files
-   - Organize exports by category
-   - Add JSDoc comments explaining type categories
-
-6. Add JSDoc documentation:
-   - Document each type with purpose and usage examples
-   - Explain complex types (e.g., theme configurations)
-   - Provide examples of proper usage
+**Essential Rules to Preserve:**
+```javascript
+{
+  'quotes': ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
+  'indent': ['error', 2, { SwitchCase: 1 }],
+  'max-len': ['error', { code: 120, ignoreUrls: true, ignoreStrings: true }],
+  'object-curly-spacing': ['error', 'always'],
+  '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+}
+```
 
 **Verification Checklist:**
-- [ ] All type definition files created
-- [ ] No TypeScript errors in type files (`tsc --noEmit`)
-- [ ] All types exported from index.ts
-- [ ] JSDoc comments present for complex types
-- [ ] Types align with Phase-0 naming conventions
+- [ ] `frontend/eslint.config.js` exists
+- [ ] Root `.eslintrc.json` removed
+- [ ] ESLint runs without config errors
+- [ ] Key style rules preserved
 
 **Testing Instructions:**
-- Run `npx tsc --noEmit` on types directory specifically
-- Import types in a test file to verify exports work
-- No unit tests needed for type definitions
+- Run `cd frontend && npx eslint src --max-warnings 0` (may have warnings initially, but should not error on config)
 
 **Commit Message Template:**
 ```
-feat(types): create TypeScript type definitions
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Add threeJSTypes.ts for Three.js-related types
-- Add cameraTypes.ts for camera configuration types
-- Add componentTypes.ts for component prop types
-- Add storeTypes.ts for future store types
-- Create barrel exports in types/index.ts
-- Document types with JSDoc comments
+chore(eslint): migrate to flat config format
+
+Create frontend/eslint.config.js with flat config
+Remove legacy .eslintrc.json
+Preserve essential style rules (quotes, indent, max-len)
+Configure TypeScript-aware linting
 ```
-
-**Estimated Tokens:** ~4,000
 
 ---
 
-### Task 6: Migrate Data Constants to TypeScript
+### Task 10: Install Dependencies
 
-**Goal:** Convert the `src/data/` directory to typed constants in `src/constants/`.
+**Goal:** Install all required dependencies for the new Vite-based setup.
 
-**Files to Modify/Create:**
-- `src/constants/cameraConfiguration.ts` - From `src/data/camera.js`
-- `src/constants/lightingConfiguration.ts` - From `src/data/lighting.js`
-- `src/constants/meshConfiguration.ts` - From `src/data/meshes.js`
-- `src/constants/urlConfiguration.ts` - From `src/data/urls.js`
-- `src/constants/animationConfiguration.ts` - From `src/data/animations.js`
-- `src/constants/themeConfiguration.ts` - From `src/data/ui.js`
-- `src/constants/index.ts` - Barrel exports
-
-**Prerequisites:**
-- Task 5 complete (type definitions exist)
-- Read current data files to understand structure
+**Files to Modify:**
+- `frontend/package.json` (add any missing dependencies)
 
 **Implementation Steps:**
+- Navigate to frontend directory
+- Run npm install to install all dependencies
+- Verify no peer dependency warnings for core packages
+- Verify Vite, React, and TypeScript versions are compatible
 
-1. Migrate camera.js → cameraConfiguration.ts:
-   - Read existing `src/data/camera.js`
-   - Create typed interfaces for camera positions and scroll constants
-   - Rename exports following explicit naming convention:
-     - `positions` → `CAMERA_POSITION_ARRAY`
-     - `scrollConstants` → `CAMERA_SCROLL_CONFIGURATION`
-   - Add explicit types to all constants
-   - Export as const assertions where appropriate
-
-2. Migrate lighting.js → lightingConfiguration.ts:
-   - Read existing `src/data/lighting.js`
-   - Create typed arrays for light names
-   - Rename exports:
-     - `lightNames` → `INTERACTIVE_LIGHT_MESH_NAMES`
-   - Add JSDoc explaining light configuration
-   - Export as const assertions for type narrowing
-
-3. Migrate meshes.js → meshConfiguration.ts:
-   - Read existing `src/data/meshes.js`
-   - Create typed interfaces for mesh configuration
-   - Rename exports:
-     - `meshNames` → `VIDEO_TEXTURE_MESH_NAMES`
-     - `videoPaths` → `VIDEO_TEXTURE_FILE_PATHS`
-     - `closeUpClickThrough` → `CLOSE_UP_CLICK_THRESHOLD_COUNT`
-     - `MODEL_PATH` → `GLTF_MODEL_FILE_PATH`
-   - Add types for mesh-related constants
-
-4. Migrate urls.js → urlConfiguration.ts:
-   - Read existing `src/data/urls.js`
-   - Create typed interfaces for URL mappings
-   - Rename exports:
-     - `urlMap` → `MESH_NAME_TO_URL_MAPPING`
-     - `phoneUrls` → `INTERACTIVE_PHONE_URL_CONFIGURATIONS`
-   - Add proper typing for URL configuration objects
-
-5. Migrate animations.js → animationConfiguration.ts:
-   - Read existing `src/data/animations.js`
-   - Create typed animation configurations
-   - Add proper types for animation parameters
-   - Export with const assertions
-
-6. Migrate ui.js → themeConfiguration.ts:
-   - Read existing `src/data/ui.js`
-   - Create typed theme/vibe configurations
-   - Rename exports:
-     - `colorMap` → `THEME_COLOR_CONFIGURATION_MAP`
-   - Add union type for theme names
-   - Export with const assertions
-
-7. Create barrel export index.ts:
-   - Export all constants from individual files
-   - Organize by category
-   - Add JSDoc explaining constant categories
-
-8. Update existing imports:
-   - Find all files importing from `src/data/`
-   - Update import paths to `constants/`
-   - Update imported names to new explicit names
-   - Verify no import errors
+**Core Dependencies to Verify:**
+- vite
+- @vitejs/plugin-react
+- typescript (^5.x)
+- react (18.2.x)
+- react-dom (18.2.x)
+- three
+- @react-three/fiber
+- @react-three/drei
+- zustand
+- tailwindcss
+- autoprefixer
+- postcss
 
 **Verification Checklist:**
-- [ ] All data files migrated to constants/
-- [ ] All constants have explicit types
-- [ ] Naming follows explicit convention (SCREAMING_SNAKE_CASE or descriptive camelCase)
-- [ ] All existing imports updated
-- [ ] `npx tsc --noEmit` passes for constants directory
-- [ ] No runtime errors when running app
+- [ ] `npm install` completes without errors
+- [ ] `frontend/node_modules/` exists
+- [ ] `frontend/package-lock.json` created or updated
+- [ ] No critical peer dependency warnings
 
 **Testing Instructions:**
-- Run `npx tsc --noEmit` to verify types
-- Run `npm start` and verify app still loads
-- Verify 3D model loads correctly
-- Verify clicking on interactive elements still works
-- No unit tests needed yet (will be added in Phase 4)
+- Run `cd frontend && npm ls vite` - should show installed version
+- Run `cd frontend && npm ls react` - should show 18.2.x
 
 **Commit Message Template:**
 ```
-refactor(constants): migrate data files to typed constants
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Migrate camera.js to cameraConfiguration.ts with types
-- Migrate lighting.js to lightingConfiguration.ts with types
-- Migrate meshes.js to meshConfiguration.ts with types
-- Migrate urls.js to urlConfiguration.ts with types
-- Migrate animations.js to animationConfiguration.ts with types
-- Migrate ui.js to themeConfiguration.ts with types
-- Update all import paths to use constants/
-- Apply explicit naming convention to all exports
+chore(deps): install Vite and related dependencies
+
+Run npm install in frontend workspace
+Verify all dependencies resolve correctly
+Update package-lock.json
 ```
-
-**Estimated Tokens:** ~8,000
 
 ---
 
-### Task 7: Migrate Custom Hooks to TypeScript
+### Task 11: Verify Build and Development Server
 
-**Goal:** Convert custom hooks from JavaScript to TypeScript with proper types.
+**Goal:** Ensure the application builds and runs correctly with Vite.
 
-**Files to Modify/Create:**
-- `src/hooks/useCameraScrollBehavior.ts` - From `useCameraScroll.js`
-- `src/hooks/useCameraPositionAnimation.ts` - From `useCameraAnimation.js`
-- `src/hooks/useLightingController.ts` - From `useLightController.js`
-
-**Prerequisites:**
-- Task 5 complete (types exist)
-- Task 6 complete (constants migrated)
-- Understanding of current hook implementations
+**Files to Modify:**
+- Any files with remaining import/config issues discovered during verification
 
 **Implementation Steps:**
+- Run `npm run build` from root to verify production build works
+- Run `npm run dev` from root to verify development server starts
+- Open the application in browser and verify:
+  - 3D scene loads correctly
+  - No console errors
+  - Interactions work (clicks, scrolling)
+  - Themes change correctly
+  - Audio plays
+- Fix any issues discovered during verification
 
-1. Migrate useCameraScroll.js → useCameraScrollBehavior.ts:
-   - Rename file with explicit name
-   - Create interface for hook parameters with explicit names
-   - Create interface for hook return type
-   - Add types to all variables and function parameters
-   - Update imports from `data/` to `constants/`
-   - Update Context hooks to typed versions (will be removed in Phase 2)
-   - Add JSDoc with parameter descriptions and usage example
-   - Ensure all Three.js objects properly typed
-
-2. Migrate useCameraAnimation.js → useCameraPositionAnimation.ts:
-   - Rename file with explicit name
-   - Create parameter interface
-   - Create return type interface
-   - Add explicit types to all internal variables
-   - Update constant imports
-   - Add comprehensive JSDoc
-   - Type all Three.js interactions
-
-3. Migrate useLightController.js → useLightingController.ts:
-   - Rename file with explicit name
-   - Create parameter and return interfaces
-   - Add types throughout implementation
-   - Update imports to typed constants
-   - Add JSDoc documentation
-   - Ensure Three.js light objects properly typed
-
-4. Update hook imports:
-   - Find all files importing these hooks
-   - Update import paths (if changed)
-   - Update imported names to new explicit names
-   - Verify no import errors
-
-5. Handle Context dependencies:
-   - Note that hooks still use Context (will migrate in Phase 2)
-   - Add temporary type definitions for Context hooks
-   - Mark with TODO comments for Phase 2 migration
+**Common Issues to Check:**
+- GLSL shader imports failing
+- Asset imports (images, audio, video) not resolving
+- Three.js/React Three Fiber initialization errors
+- Tailwind styles not applying
+- Path alias resolution failures
 
 **Verification Checklist:**
-- [ ] All hooks converted to TypeScript
-- [ ] No `any` types (except for Context temporarily)
-- [ ] All parameters and return values typed
-- [ ] JSDoc comments added
-- [ ] Imports updated to constants/
-- [ ] `npx tsc --noEmit` passes
-- [ ] App runs without errors
-
-**Testing Instructions:**
-- Run `npx tsc --noEmit` to verify types
-- Run `npm start` and test camera scroll functionality
-- Test mobile navigation button
-- Test light interaction
-- No unit tests yet (Phase 4)
-
-**Commit Message Template:**
-```
-refactor(hooks): migrate custom hooks to TypeScript
-
-- Migrate useCameraScroll to useCameraScrollBehavior with types
-- Migrate useCameraAnimation to useCameraPositionAnimation with types
-- Migrate useLightController to useLightingController with types
-- Add parameter and return type interfaces for all hooks
-- Update imports to use typed constants
-- Add JSDoc documentation with usage examples
-- Apply explicit naming convention to hook names
-```
-
-**Estimated Tokens:** ~10,000
-
----
-
-### Task 8: Create Temporary Typed Context Wrappers
-
-**Goal:** Create TypeScript wrappers for existing Context hooks to enable typed usage until Phase 2 migration.
-
-**Files to Modify/Create:**
-- `src/contexts/UIContext.tsx` - Migrate from `.js` to `.tsx`
-- `src/contexts/InteractionContext.tsx` - Migrate from `.js` to `.tsx`
-- `src/contexts/index.ts` - Add types
-
-**Prerequisites:**
-- Task 5 complete (types exist)
-- Understanding that these will be replaced in Phase 2
-
-**Implementation Steps:**
-
-1. Migrate UIContext.js → UIContext.tsx:
-   - Rename file to `.tsx` extension
-   - Create interface `UIContextState` with all state properties typed
-   - Create interface `UIContextActions` with all action functions typed
-   - Create combined type `UIContextValue = UIContextState & UIContextActions`
-   - Type the context: `React.createContext<UIContextValue | undefined>(undefined)`
-   - Type provider props: `{ children: React.ReactNode }`
-   - Add explicit return types to all setter functions
-   - Update all `useState` calls with explicit types
-   - Add JSDoc comments
-   - Mark with `// TODO: Phase 2 - Replace with Zustand`
-
-2. Migrate InteractionContext.js → InteractionContext.tsx:
-   - Same approach as UIContext
-   - Create state and action interfaces
-   - Type the context creation
-   - Type all functions and state
-   - Add JSDoc and TODO comments
-
-3. Update contexts/index.ts:
-   - Export types from both contexts
-   - Add barrel exports
-   - Ensure all types exportable
-
-4. Update imports throughout codebase:
-   - Find all files using `useUI` or `useInteraction`
-   - Verify TypeScript recognizes types
-   - Fix any type errors that arise
-
-**Verification Checklist:**
-- [ ] Both context files are `.tsx`
-- [ ] All context values typed
-- [ ] No `any` types in contexts
-- [ ] All consumers have type information
-- [ ] `npx tsc --noEmit` passes
-- [ ] App runs without errors
-
-**Testing Instructions:**
-- Run `npx tsc --noEmit` to verify types
-- Run `npm start` and verify all UI interactions work
-- Test theme selection
-- Test mute button
-- No unit tests yet
-
-**Commit Message Template:**
-```
-refactor(contexts): migrate React contexts to TypeScript
-
-- Migrate UIContext to TypeScript with full typing
-- Migrate InteractionContext to TypeScript with full typing
-- Create state and action interfaces for both contexts
-- Add JSDoc documentation
-- Mark contexts for Phase 2 Zustand migration
-- Ensure all context consumers have type information
-```
-
-**Estimated Tokens:** ~6,000
-
----
-
-### Task 9: Migrate UI Components to TypeScript
-
-**Goal:** Convert UI components to TypeScript and move to `components/ui/` with explicit names.
-
-**Files to Modify/Create:**
-- `src/components/ui/LaunchScreen.tsx` - From `LaunchScreen.js`
-- `src/components/ui/ThemeSelectionOption.tsx` - From `VibeOption.js`
-- `src/components/ui/CustomCheckbox.tsx` - From `Checkbox.js`
-
-**Prerequisites:**
-- Task 5 complete (types exist)
-- Task 8 complete (typed contexts exist)
-- UI components directory exists
-
-**Implementation Steps:**
-
-1. Migrate LaunchScreen.js → ui/LaunchScreen.tsx:
-   - Move file to `src/components/ui/` directory
-   - Rename file to `.tsx` extension
-   - Create `LaunchScreenProps` interface (if props exist)
-   - Add explicit types to all variables and functions
-   - Type all React hooks (useState, useCallback, etc.)
-   - Update imports to use typed contexts
-   - Update imports from constants/
-   - Add JSDoc component documentation
-   - Ensure component follows Phase-0 structure pattern
-
-2. Migrate VibeOption.js → ui/ThemeSelectionOption.tsx:
-   - Move to `src/components/ui/`
-   - Rename to explicit name `ThemeSelectionOption.tsx`
-   - Create props interface with typed theme configuration
-   - Add types throughout implementation
-   - Update imports
-   - Add JSDoc
-   - Follow Phase-0 component pattern
-
-3. Migrate Checkbox.js → ui/CustomCheckbox.tsx:
-   - Move to `src/components/ui/`
-   - Rename to `CustomCheckbox.tsx`
-   - Create comprehensive props interface
-   - Type checkbox state and handlers
-   - Update imports
-   - Add JSDoc with usage example
-   - Preserve CSS classes (will migrate to Tailwind in Phase 3)
-
-4. Update ui/index.ts:
-   - Add barrel exports for all UI components
-   - Export component types
-   - Organize exports alphabetically
-
-5. Update imports across codebase:
-   - Find all files importing these components
-   - Update paths to `components/ui/ComponentName`
-   - Update component names to new explicit names
-   - Verify no import errors
-
-**Verification Checklist:**
-- [ ] All UI components in `components/ui/`
-- [ ] All components are `.tsx` files
-- [ ] All props typed with interfaces
-- [ ] No `any` types
-- [ ] Imports updated throughout codebase
-- [ ] `npx tsc --noEmit` passes
-- [ ] App runs and UI functions correctly
-
-**Testing Instructions:**
-- Run `npx tsc --noEmit`
-- Run `npm start`
-- Test launch screen appears
-- Test theme selection works
-- Test checkbox interactions
-- Verify styling preserved
-
-**Commit Message Template:**
-```
-refactor(ui): migrate UI components to TypeScript
-
-- Migrate LaunchScreen to TypeScript in components/ui/
-- Migrate VibeOption to ThemeSelectionOption with types
-- Migrate Checkbox to CustomCheckbox with types
-- Create prop interfaces for all UI components
-- Update all imports to new component locations
-- Add JSDoc documentation for each component
-- Follow Phase-0 component structure pattern
-```
-
-**Estimated Tokens:** ~9,000
-
----
-
-### Task 10: Migrate Three.js Components to TypeScript
-
-**Goal:** Convert Three.js components to TypeScript and move to `components/three/` with explicit names.
-
-**Files to Modify/Create:**
-- `src/components/three/SceneModel.tsx` - From `Model.js`
-- `src/components/three/SceneEnvironment.tsx` - From `Environment.js`
-- `src/components/three/VideoTextureMesh.tsx` - From `VideoMesh.js`
-- `src/components/three/InteractiveLightMesh.tsx` - From `Lamp.js`
-- `src/components/three/InteractiveMeshElement.tsx` - From `InteractiveElement.js`
-
-**Prerequisites:**
-- Task 5 complete (Three.js types exist)
-- Task 6 complete (mesh/lighting constants exist)
-- Task 8 complete (typed contexts exist)
-
-**Implementation Steps:**
-
-1. Migrate Model.js → three/SceneModel.tsx:
-   - Move to `src/components/three/`
-   - Rename to `SceneModel.tsx`
-   - Create props interface (if needed)
-   - Add explicit types to all Three.js objects:
-     - Type `gltf` as `GLTF` from drei
-     - Type `scene` as `THREE.Scene`
-     - Type mesh references with proper types
-   - Type all event handlers (ThreeEvent from r3f)
-   - Type video element refs as `React.RefObject<HTMLVideoElement>`
-   - Update imports from constants/
-   - Update context usage to typed versions
-   - Add JSDoc with usage example
-   - Ensure proper cleanup in useEffect
-
-2. Migrate Environment.js → three/SceneEnvironment.tsx:
-   - Move to `src/components/three/`
-   - Rename to `SceneEnvironment.tsx`
-   - Type all Three.js lighting objects
-   - Type props if any
-   - Update imports
-   - Add JSDoc
-
-3. Migrate VideoMesh.js → three/VideoTextureMesh.tsx:
-   - Move to `src/components/three/`
-   - Rename to `VideoTextureMesh.tsx`
-   - Type video texture props
-   - Type Three.js material and texture objects
-   - Update imports
-   - Add JSDoc
-
-4. Migrate Lamp.js → three/InteractiveLightMesh.tsx:
-   - Move to `src/components/three/`
-   - Rename to `InteractiveLightMesh.tsx`
-   - Type light object props
-   - Type interaction handlers
-   - Update imports
-   - Add JSDoc
-
-5. Migrate InteractiveElement.js → three/InteractiveMeshElement.tsx:
-   - Move to `src/components/three/`
-   - Rename to `InteractiveMeshElement.tsx`
-   - Type mesh interaction props
-   - Type event handlers
-   - Update imports
-   - Add JSDoc
-
-6. Update three/index.ts:
-   - Add barrel exports for all Three.js components
-   - Export component types
-   - Organize exports
-
-7. Update imports across codebase:
-   - Find all files importing these components
-   - Update paths to `components/three/ComponentName`
-   - Update names to new explicit names
-   - Verify no import errors
-
-**Verification Checklist:**
-- [ ] All Three.js components in `components/three/`
-- [ ] All components are `.tsx` files
-- [ ] All Three.js objects properly typed
-- [ ] Event handlers typed with ThreeEvent
-- [ ] No `any` types
-- [ ] Imports updated throughout codebase
-- [ ] `npx tsc --noEmit` passes
+- [ ] `npm run build` exits 0
+- [ ] `npm run dev` starts server without errors
+- [ ] Application loads in browser
 - [ ] 3D scene renders correctly
-- [ ] Interactions work (clicks, hover)
+- [ ] No JavaScript console errors
+- [ ] Tailwind styles applied correctly
+- [ ] Interactive elements functional
 
 **Testing Instructions:**
-- Run `npx tsc --noEmit`
-- Run `npm start`
-- Verify 3D model loads
-- Test clicking on interactive elements
-- Test video textures playing
-- Test light interactions
-- Verify performance not degraded
+- Manual browser testing required
+- Verify all interactive elements work as before migration
 
 **Commit Message Template:**
 ```
-refactor(three): migrate Three.js components to TypeScript
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Migrate Model to SceneModel with Three.js types
-- Migrate Environment to SceneEnvironment with types
-- Migrate VideoMesh to VideoTextureMesh with types
-- Migrate Lamp to InteractiveLightMesh with types
-- Migrate InteractiveElement to InteractiveMeshElement with types
-- Type all Three.js objects (Scene, Mesh, Material, etc.)
-- Type all event handlers with ThreeEvent
-- Update imports to new component locations
-- Add JSDoc documentation for each component
+fix(vite): resolve build and runtime issues
+
+Fix any issues discovered during build verification
+Ensure application runs correctly with Vite
+Verify 3D scene and interactions work properly
 ```
-
-**Estimated Tokens:** ~12,000
 
 ---
 
-### Task 11: Migrate Control Components to TypeScript
+### Task 12: Clean Up Legacy Files
 
-**Goal:** Convert control components to TypeScript and move to `components/controls/` with explicit names.
+**Goal:** Remove all CRA-specific files and configurations that are no longer needed.
 
-**Files to Modify/Create:**
-- `src/components/controls/CameraController.tsx` - From `CameraControls.js`
-- `src/components/controls/SceneAnimationController.tsx` - From `Animations.js`
-- `src/components/controls/AudioController.tsx` - From `Sounds.js`
+**Files to Delete:**
+- Root `jest.config.js`
+- `Implement` file
+- Any remaining CRA-specific files (react-scripts references, etc.)
 
-**Prerequisites:**
-- Task 7 complete (typed hooks exist)
-- Task 8 complete (typed contexts exist)
-- Controls directory exists
+**Files to Verify Removed:**
+- `src/` directory (should be empty/removed after Task 2)
+- `public/` directory (should be empty/removed after Task 2)
 
 **Implementation Steps:**
-
-1. Migrate CameraControls.js → controls/CameraController.tsx:
-   - Move to `src/components/controls/`
-   - Rename to `CameraController.tsx`
-   - Create props interface if needed
-   - Type all camera-related variables
-   - Type Three.js camera objects
-   - Type hook return values explicitly
-   - Update hook imports to new names
-   - Update context usage to typed versions
-   - Add JSDoc
-
-2. Migrate Animations.js → controls/SceneAnimationController.tsx:
-   - Move to `src/components/controls/`
-   - Rename to `SceneAnimationController.tsx`
-   - Type animation state
-   - Type Three.js animation objects
-   - Type timing and interpolation values explicitly
-   - Update imports
-   - Add JSDoc
-
-3. Migrate Sounds.js → controls/AudioController.tsx:
-   - Move to `src/components/controls/`
-   - Rename to `AudioController.tsx`
-   - Type audio-related state
-   - Type HTML audio elements
-   - Type sound configuration
-   - Update imports
-   - Add JSDoc
-
-4. Update controls/index.ts:
-   - Add barrel exports
-   - Export types
-   - Organize exports
-
-5. Update imports across codebase:
-   - Find all files importing control components
-   - Update paths to `components/controls/ComponentName`
-   - Update names to new explicit names
-   - Verify no import errors
+- Remove jest.config.js (will be replaced by Vitest config in Phase-2)
+- Remove the `Implement` file at project root
+- Verify no orphaned files remain at root that belong in frontend/
+- Update .gitignore if needed for new structure
 
 **Verification Checklist:**
-- [ ] All control components in `components/controls/`
-- [ ] All components are `.tsx` files
-- [ ] All props and state typed
-- [ ] Camera controls work correctly
-- [ ] Animations play correctly
-- [ ] Audio controls function
-- [ ] `npx tsc --noEmit` passes
-- [ ] App runs without errors
+- [ ] Root `jest.config.js` removed
+- [ ] `Implement` file removed
+- [ ] No `src/` directory at root
+- [ ] No `public/` directory at root
+- [ ] `.gitignore` updated if needed
 
 **Testing Instructions:**
-- Run `npx tsc --noEmit`
-- Run `npm start`
-- Test camera scroll (desktop wheel)
-- Test mobile navigation button
-- Test camera animations
-- Test audio playback and mute
-- Verify all interactions smooth
+- Run `ls -la` at root to verify only expected files remain
+- Expected root files: package.json, package-lock.json, README.md, .gitignore, frontend/, docs/, tests/, .github/
 
 **Commit Message Template:**
 ```
-refactor(controls): migrate control components to TypeScript
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 
-- Migrate CameraControls to CameraController with types
-- Migrate Animations to SceneAnimationController with types
-- Migrate Sounds to AudioController with types
-- Type all camera and animation state
-- Type all Three.js object interactions
-- Update imports to new component locations
-- Add JSDoc documentation for each controller
-```
+chore(structure): remove legacy CRA files
 
-**Estimated Tokens:** ~10,000
-
----
-
-### Task 12: Migrate Root App Component to TypeScript
-
-**Goal:** Convert the main App component to TypeScript with proper typing.
-
-**Files to Modify/Create:**
-- `src/App.tsx` - From `App.js`
-- `src/index.tsx` - From `index.js`
-
-**Prerequisites:**
-- All other components migrated (Tasks 9-11 complete)
-- All hooks migrated (Task 7 complete)
-- All contexts migrated (Task 8 complete)
-
-**Implementation Steps:**
-
-1. Migrate App.js → App.tsx:
-   - Rename to `.tsx` extension
-   - Update all component imports to new locations:
-     - Import from `components/three/*`
-     - Import from `components/controls/*`
-     - Import from `components/ui/*`
-   - Type all state variables explicitly
-   - Type all refs (navigationButtonRef, muteButtonRef) with proper HTML element types
-   - Type all event handlers with explicit parameters
-   - Type all useEffect dependencies
-   - Update context provider imports
-   - Add JSDoc for main component
-   - Ensure TitleEffect sub-component properly typed
-   - Type LoadingScreen memoized component
-
-2. Migrate index.js → index.tsx:
-   - Rename to `.tsx` extension
-   - Ensure React imports typed
-   - Type the root element: `HTMLElement | null`
-   - Add null check for root element
-   - Update import path for App (if needed)
-   - Add JSDoc
-
-3. Update tsconfig.json if needed:
-   - Verify `jsx: "react-jsx"` is set
-   - Verify includes cover new `.tsx` files
-
-4. Final verification:
-   - Check all imports resolve correctly
-   - Verify no circular dependencies
-   - Ensure all TypeScript errors resolved
-
-**Verification Checklist:**
-- [ ] App.tsx compiles without errors
-- [ ] index.tsx compiles without errors
-- [ ] All component imports resolve
-- [ ] No `any` types in App or index
-- [ ] `npx tsc --noEmit` passes for entire project
-- [ ] App runs and functions identically to before refactor
-- [ ] All UI interactions work
-- [ ] 3D scene loads and is interactive
-
-**Testing Instructions:**
-- Run `npx tsc --noEmit` for full type check
-- Run `npm start` and verify full application
-- Test complete user flow:
-  - Load application
-  - See loading screen
-  - Select theme
-  - Interact with 3D scene
-  - Scroll camera
-  - Click interactive elements
-  - Toggle audio mute
-  - Test on mobile viewport (Chrome DevTools)
-- Verify no console errors
-- Verify no TypeScript errors
-
-**Commit Message Template:**
-```
-refactor(app): migrate root App component to TypeScript
-
-- Migrate App.js to App.tsx with full typing
-- Migrate index.js to index.tsx with types
-- Update all component imports to new locations
-- Type all state, refs, and event handlers
-- Type sub-components (TitleEffect, LoadingScreen)
-- Ensure entire application type-safe
-- Verify all functionality preserved
-```
-
-**Estimated Tokens:** ~8,000
-
----
-
-### Task 13: Remove Old JavaScript Files
-
-**Goal:** Delete old JavaScript files and clean up deprecated data directory.
-
-**Files to Modify/Create:**
-- DELETE: `src/components/Animations.js`
-- DELETE: `src/components/CameraControls.js`
-- DELETE: `src/components/Checkbox.js`
-- DELETE: `src/components/Environment.js`
-- DELETE: `src/components/InteractiveElement.js`
-- DELETE: `src/components/Lamp.js`
-- DELETE: `src/components/LaunchScreen.js`
-- DELETE: `src/components/Model.js`
-- DELETE: `src/components/Sounds.js`
-- DELETE: `src/components/VibeOption.js`
-- DELETE: `src/components/VideoMesh.js`
-- DELETE: `src/hooks/useCameraAnimation.js`
-- DELETE: `src/hooks/useCameraScroll.js`
-- DELETE: `src/hooks/useLightController.js`
-- DELETE: `src/contexts/UIContext.js`
-- DELETE: `src/contexts/InteractionContext.js`
-- DELETE: `src/data/` directory (all files)
-
-**Prerequisites:**
-- ALL previous tasks complete
-- Verified app runs with TypeScript files
-- Git committed all TypeScript migrations
-
-**Implementation Steps:**
-
-1. Verify no files importing deleted files:
-   - Search codebase for imports from old file paths
-   - Use grep or IDE find: `grep -r "from.*components/Model" src/`
-   - Ensure all imports updated to new locations
-   - If any found, update them before deletion
-
-2. Delete old component files:
-   - Remove all old `.js` component files from `src/components/`
-   - Verify TypeScript versions exist in new locations
-   - Double-check no imports remain
-
-3. Delete old hook files:
-   - Remove old `.js` hook files from `src/hooks/`
-   - Verify TypeScript versions exist
-   - Check no imports remain
-
-4. Delete old context files:
-   - Remove old `.js` context files
-   - Verify `.tsx` versions exist
-   - Check no imports remain
-
-5. Delete data directory:
-   - Remove entire `src/data/` directory
-   - Verify all constants migrated to `src/constants/`
-   - Check no imports from `data/` remain
-
-6. Verify application still works:
-   - Run `npm start`
-   - Test full functionality
-   - Verify no runtime errors
-
-**Verification Checklist:**
-- [ ] No `.js` files remain in src/ (except config files if any)
-- [ ] `src/data/` directory deleted
-- [ ] App compiles successfully
-- [ ] App runs without errors
-- [ ] No "module not found" errors
-- [ ] Git status shows deleted files
-
-**Testing Instructions:**
-- Run `find src -name "*.js" -type f` (should return no results)
-- Run `npm start` and verify app loads
-- Test all functionality once more
-- Verify build: `npm run build` succeeds
-
-**Commit Message Template:**
-```
-chore(cleanup): remove old JavaScript files
-
-- Delete old component JavaScript files
-- Delete old hook JavaScript files
-- Delete old context JavaScript files
-- Delete src/data/ directory (migrated to constants/)
-- Verify all imports updated to TypeScript files
-- Confirm application functions correctly
-```
-
-**Estimated Tokens:** ~2,000
-
----
-
-### Task 14: Update Package.json Scripts
-
-**Goal:** Add TypeScript-specific scripts to package.json for type checking and development.
-
-**Files to Modify/Create:**
-- `package.json` - Add new scripts
-
-**Prerequisites:**
-- All TypeScript migration complete
-- App compiles and runs
-
-**Implementation Steps:**
-
-1. Add type checking script:
-   - Add `"type-check": "tsc --noEmit"` to scripts
-   - This allows running type check without compilation
-   - Useful for CI/CD pipelines
-
-2. Add type checking watch script:
-   - Add `"type-check:watch": "tsc --noEmit --watch"` to scripts
-   - Allows continuous type checking during development
-
-3. Update build script (if needed):
-   - Verify `build` script works with TypeScript
-   - React Scripts should handle TypeScript automatically
-   - Test build to ensure no issues
-
-4. Add pre-commit type check (optional):
-   - Consider adding `"precommit": "npm run type-check"`
-   - Ensures TypeScript errors caught before commit
-   - Optional: discuss with team before adding
-
-5. Document scripts:
-   - Update README.md (not in this phase, but note for later)
-   - Ensure scripts are self-explanatory
-
-**Verification Checklist:**
-- [ ] `npm run type-check` succeeds
-- [ ] `npm run type-check:watch` runs continuously
-- [ ] `npm run build` succeeds
-- [ ] All scripts documented in package.json
-
-**Testing Instructions:**
-- Run `npm run type-check` - should pass with 0 errors
-- Run `npm run build` - should complete successfully
-- Run `npm start` - should start dev server
-- Verify build output in `build/` directory works
-
-**Commit Message Template:**
-```
-chore(scripts): add TypeScript checking scripts
-
-- Add type-check script for manual type checking
-- Add type-check:watch script for continuous checking
-- Verify build script works with TypeScript
-- Document new scripts for team usage
-```
-
-**Estimated Tokens:** ~1,500
-
----
-
-### Task 15: Final Phase 1 Verification
-
-**Goal:** Comprehensive testing and verification that Phase 1 is complete and successful.
-
-**Files to Modify/Create:**
-- None (verification only)
-
-**Prerequisites:**
-- ALL Phase 1 tasks complete (Tasks 1-14)
-
-**Implementation Steps:**
-
-1. Run comprehensive type checking:
-   - Run `npx tsc --noEmit`
-   - Verify 0 errors
-   - Fix any lingering type issues
-   - Ensure strict mode enabled
-
-2. Run ESLint:
-   - Run `npx eslint --ext .ts,.tsx src/`
-   - Fix any linting errors
-   - Verify TypeScript rules enforced
-
-3. Test build:
-   - Run `npm run build`
-   - Verify build succeeds
-   - Check bundle size (should be similar or smaller)
-   - Test built application in `build/` directory
-
-4. Manual testing:
-   - Run `npm start`
-   - Test complete user journey:
-     - Loading screen appears
-     - Theme selection works
-     - 3D model loads
-     - Camera scroll works (desktop)
-     - Mobile navigation works
-     - Click interactions work
-     - Light interactions work
-     - Video textures play
-     - Audio mute works
-     - Responsive design works
-   - Test in multiple browsers (Chrome, Firefox, Safari if available)
-   - Test on mobile device or simulator
-
-5. Code review checklist:
-   - All files follow naming conventions
-   - All components in correct directories
-   - No `any` types used
-   - All functions have return types
-   - All parameters typed
-   - JSDoc comments present
-   - Imports organized and clean
-
-6. Git verification:
-   - Run `git status` - verify clean state
-   - Run `git log --oneline` - verify all commits present
-   - Check commit messages follow conventional format
-   - Ensure all changes committed
-
-7. Documentation check:
-   - Verify tsconfig.json documented
-   - Verify file structure documented (can update in Phase 4)
-   - Note any gotchas or issues for documentation
-
-**Verification Checklist:**
-- [ ] `npx tsc --noEmit` passes with 0 errors
-- [ ] `npx eslint --ext .ts,.tsx src/` passes
-- [ ] `npm run build` succeeds
-- [ ] Application runs identically to pre-refactor
-- [ ] All manual tests pass
-- [ ] No console errors or warnings
-- [ ] Bundle size acceptable
-- [ ] All files follow naming conventions
-- [ ] All components in correct directories
-- [ ] All commits have good messages
-- [ ] Git state clean
-
-**Testing Instructions:**
-- Follow manual testing checklist above
-- Compare behavior to original JavaScript version
-- Verify no regressions
-- Check performance (should be same or better)
-- Test error scenarios (network failures, etc.)
-
-**Commit Message Template:**
-```
-test(phase-1): verify Phase 1 completion
-
-- Run comprehensive type checking (0 errors)
-- Run ESLint verification
-- Test production build
-- Complete manual testing checklist
-- Verify all naming conventions followed
-- Verify all files in correct locations
-- Confirm Phase 1 success criteria met
-```
-
-**Estimated Tokens:** ~3,000
-
----
-
-## Phase 1 Verification
-
-### Completion Criteria
-
-Before marking Phase 1 complete, verify:
-
-1. **TypeScript Compilation:**
-   - `npx tsc --noEmit` passes with 0 errors
-   - `npm run build` succeeds
-   - No `any` types in codebase
-
-2. **File Structure:**
-   - All components in layer-based directories
-   - All files follow naming conventions
-   - Old JavaScript files deleted
-   - No `src/data/` directory
-
-3. **Functionality:**
-   - Application runs identically to before refactor
-   - All user interactions work
-   - 3D scene renders correctly
-   - No performance degradation
-
-4. **Code Quality:**
-   - All functions typed with return types
-   - All parameters typed
-   - JSDoc comments added
-   - ESLint passes
-
-5. **Git State:**
-   - All changes committed
-   - Commit messages follow conventional format
-   - Branch up to date
-
-### Integration Points
-
-**Interfaces for Phase 2 (Zustand Migration):**
-- Typed contexts exist but marked for replacement
-- Store types created in `src/types/storeTypes.ts`
-- `src/stores/` directory exists and ready
-
-**Interfaces for Phase 3 (Tailwind):**
-- CSS classes preserved in components
-- Styling structure unchanged
-- Ready for Tailwind class replacement
-
-**Interfaces for Phase 4 (Testing):**
-- Pure functions isolated and testable
-- Hooks extracted and ready for testing
-- Type system enables better test mocking
-
-### Known Limitations
-
-1. **Context Still Used:** React Context still in use, will migrate to Zustand in Phase 2
-2. **Custom CSS:** All custom CSS still in place, will migrate to Tailwind in Phase 3
-3. **No Tests:** No tests yet, will add in Phase 4
-4. **Some Verbose Names:** Some names may feel overly explicit, can refine after team review
-
-### Rollback Procedure
-
-If Phase 1 needs to be rolled back:
-
-```bash
-# Find commit before Phase 1 started
-git log --oneline
-
-# Reset to that commit
-git reset --hard <commit-hash>
-
-# Force push if already pushed
-git push -f origin claude/design-feature-naming-refactor-01SwsoFYJoanSP88r5nfjhMG
+Delete jest.config.js (replaced by Vitest in Phase-2)
+Delete Implement file
+Clean up any remaining orphaned files
 ```
 
 ---
 
-## Next Steps
+## Phase Verification
 
-After Phase 1 completion:
+Before marking Phase-1 complete, verify:
 
-1. **Review with team:** Share TypeScript migration results
-2. **Performance check:** Compare metrics with pre-refactor baseline
-3. **Documentation:** Note any deviations or improvements for docs
-4. **Proceed to Phase 2:** Begin Zustand state management migration
+1. **Directory Structure:**
+   ```
+   tree -L 2 -I 'node_modules|dist'
+   ```
+   Should show frontend/, docs/, tests/, .github/ structure
 
-**Continue to:** [Phase-2.md](./Phase-2.md) - State Management with Zustand
+2. **Build:**
+   ```bash
+   npm run build
+   ```
+   Must exit 0
 
----
+3. **Type Check:**
+   ```bash
+   npm run type-check
+   ```
+   Must exit 0
 
-## Code Review Feedback (Iteration 1)
+4. **Lint (may have warnings):**
+   ```bash
+   npm run lint
+   ```
+   Should run without config errors
 
-### Verification Results
+5. **Dev Server:**
+   ```bash
+   npm run dev
+   ```
+   Application must load and function correctly
 
-**Tool Evidence:**
-- **Bash("npm run build")**: ❌ Failed to compile - ESLint errors
-- **Bash("npx tsc --noEmit")**: ❌ 25 TypeScript errors
-- **Bash("find src -name '*.js'")**: ❌ 4 old .js files remain
-- **Bash("npm install")**: ❌ Peer dependency conflict with TypeScript 5.3.3
-- **Read & Glob**: ✅ File structure correct (components/three/, components/controls/, components/ui/)
-- **Bash("git log --oneline -20")**: ✅ Commits follow conventional format
-
-### Critical Issues
-
-#### TypeScript Version Compatibility
-
-> **Consider:** When you ran `npm install`, did you encounter a peer dependency error mentioning `react-scripts@5.0.1` and `typescript`?
->
-> **Think about:** React Scripts 5.0.1 specifies `peerOptional typescript@"^3.2.1 || ^4"` in its package.json. What version of TypeScript did you install in Task 1?
->
-> **Reflect:** The README.md specifies TypeScript 5.3.3, but does React Scripts support TypeScript 5.x? Check the React Scripts documentation or error message carefully.
->
-> **Action needed:** What version range would be compatible with both React Scripts 5.0.1 AND provide modern TypeScript features? (Hint: TypeScript 4.9.5 is the latest 4.x version)
-
-#### Build Failure - ESLint Configuration
-
-> **Consider:** When you run `npm run build`, what's the root cause of the "Failed to compile" message?
->
-> **Think about:** The .eslintrc.json extends "google" - what are Google's ESLint rules for:
->   - `object-curly-spacing` (spacing inside `{ }`)
->   - `max-len` (line length limit)
->   - `indent` (indentation requirements)
->   - `comma-dangle` (trailing commas)
->
-> **Reflect:** Looking at these lint errors:
->   ```
->   Line 10:9: There should be no space after '{'
->   Line 103:1: This line has a length of 137. Maximum allowed is 80
->   ```
->   Does your TypeScript code follow Google's style guide? Should you:
->   A) Fix all formatting to match Google style
->   B) Adjust .eslintrc.json rules to be less strict
->   C) Use Prettier to auto-format code
->
-> **Action needed:** Run `npm run build` and review ALL ESLint errors. How will you resolve them?
-
-#### TypeScript Compilation Errors
-
-> **Consider:** Running `npx tsc --noEmit` shows 25 errors. Let's analyze the types:
->
-> **Unused Variables (TS6133, TS6196):**
->   - `Camera` in CameraController.tsx:12
->   - `handleMobileScroll` in CameraController.tsx:64
->   - `VIDEO_TEXTURE_MESH_NAMES` in SceneModel.tsx:19
->
->   **Think about:** Are these imports actually needed? If not, why are they imported? If yes, where should they be used?
->
-> **Type Mismatches:**
->   - InteractiveMeshElement.tsx:38 - `Argument of type '(prevCount: number) => number' is not assignable to parameter of type 'number'`
->
->   **Reflect:** This error occurs when calling state setters. Look at line 38 - are you calling `setClickCount((prev) => prev + 1)` when the Context expects `setClickCount(number)`? What's the difference between the Context API and how you're using it?
->
-> **Scene vs Group Type:**
->   - SceneModel.tsx:126 - `Type 'Group<Object3DEventMap>' is not assignable to parameter of type 'Scene'`
->
->   **Think about:** When you call `setGLTF(gltf.scene)`, what type is `gltf.scene`? Is it a `THREE.Scene` or a `THREE.Group`? Check the GLTF type definitions.
->
-> **Missing Return:**
->   - CustomCheckbox.tsx:34 - `Not all code paths return a value`
->
->   **Reflect:** What should this function return? Look at the function signature.
->
-> **Action needed:** Address each TypeScript error. Don't ignore them - they indicate real type safety issues.
-
-### Task 13: Incomplete File Deletion
-
-> **Consider:** Task 13 says "Delete old JavaScript files". When you run `find src -name "*.js"`, what files appear?
->
-> **Evidence found:**
->   ```
->   src/components/InteractiveElement.js
->   src/components/Lamp.js
->   src/components/VideoMesh.js
->   src/components/Animations.js
->   ```
->
-> **Think about:** Why are these 4 files still present? Did you migrate them to TypeScript? Let's check:
->   - Where is InteractiveMeshElement.tsx? (Hint: it's in components/three/)
->   - Did you delete the old InteractiveElement.js?
->   - Same question for Lamp → InteractiveLightMesh, VideoMesh → VideoTextureMesh, Animations → SceneAnimationController
->
-> **Reflect:** The success criteria states "All `.js` files converted to `.ts` or `.tsx`" - is this met?
->
-> **Action needed:** Verify these files were migrated, then delete the old .js versions. Double-check no code references the old paths.
-
-### Success Criteria Verification
-
-Let's check each success criterion from the Phase Goal:
-
-> **"TypeScript compiles without errors (`tsc --noEmit` passes)"**
->   - Current result: ❌ 25 errors
->   - **What needs to happen** before this passes?
->
-> **"Build completes successfully"**
->   - Current result: ❌ Failed to compile (ESLint)
->   - **What needs to happen** before this passes?
->
-> **"All `.js` files converted"**
->   - Current result: ❌ 4 files remain
->   - **What needs to happen** before this passes?
->
-> **"Application runs and functions identically"**
->   - Current result: ⚠️  Cannot verify - build fails
->   - **What needs to happen** before you can test this?
-
-### Code Quality Observations
-
-> **Formatting Consistency:**
->   - ESLint flagged 50+ formatting violations
->   - **Consider:** Should you run a formatter (Prettier) before committing?
->   - **Think about:** Would adding a pre-commit hook prevent formatting issues?
->
-> **Import Organization:**
->   - Multiple unused imports detected
->   - **Reflect:** Before completing a file, do you check for unused imports? Your IDE should highlight these.
->   - **Think about:** ESLint's `no-unused-vars` rule should catch these - is it enabled?
-
-### What's Working Well
-
-> **Excellent work on:**
->   - ✅ Commit message format (conventional commits)
->   - ✅ File structure organization (layer-based directories)
->   - ✅ Constants migration (data/ → constants/)
->   - ✅ Type definitions created
->   - ✅ Contexts migrated to TypeScript
->   - ✅ Component organization (three/, controls/, ui/)
->   - ✅ Barrel exports created
->   - ✅ Path aliases configured in tsconfig.json
->
-> **The foundation is solid!** These issues are fixable refinements.
-
-### Recommended Action Plan
-
-1. **Fix TypeScript version:**
-   - Downgrade to TypeScript 4.9.5
-   - Run `npm install` successfully
-   - Update README.md to reflect correct version
-
-2. **Fix ESLint issues:**
-   - Either: Auto-format with Prettier
-   - Or: Manually fix spacing/length violations
-   - Verify: `npm run build` succeeds
-
-3. **Fix TypeScript errors:**
-   - Remove unused imports
-   - Fix type mismatches in state setters
-   - Fix Scene/Group type issue
-   - Add missing return statements
-
-4. **Complete Task 13:**
-   - Delete 4 remaining .js files
-   - Verify no references to old paths
-
-5. **Final verification:**
-   - `npx tsc --noEmit` → 0 errors
-   - `npm run build` → success
-   - `npm start` → app runs
-   - Test app functionality
-
-**Once all success criteria are met, this phase can be marked APPROVED.**
+6. **Manual Testing:**
+   - 3D scene loads
+   - Click interactions work
+   - Theme switching works
+   - Audio plays
+   - Navigation to external links works
 
 ---
 
-**Phase 1 Token Estimate Total:** ~85,000 tokens
+## Known Limitations
 
-This phase establishes a solid TypeScript foundation with proper structure and naming, setting up success for Phases 2-4.
+- Tests not yet migrated (Phase-2)
+- ESLint may report warnings for comments/sanitization (Phase-2)
+- CI/CD not yet configured (Phase-2)
+
+---
+
+## Rollback Plan
+
+If Phase-1 fails:
+1. `git stash` any uncommitted work
+2. `git log --oneline -10` to find last good commit
+3. `git reset --hard <commit>` to restore
+4. Review error logs before reattempting
+5. Consider breaking tasks into smaller commits
+
+---
+
+## Review Feedback (Iteration 1) - RESOLVED
+
+All issues from initial review have been addressed.
+
+---
+
+## Review Feedback (Iteration 2) - FINAL
+
+### Verification Summary
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| Directory structure | ✅ Pass | `src/` removed, `frontend/src/` correct |
+| `npm run build` | ✅ Pass | Builds successfully (27.13s) |
+| `npm run type-check` | ✅ Pass | TypeScript compiles |
+| `npm run lint` | ✅ Pass | 0 errors, 2 warnings (acceptable) |
+| Vite config | ✅ Good | Correct structure |
+| Package.json | ✅ Good | Workspace setup correct |
+| Commits | ✅ Good | Follow conventional format |
+
+### Fixes Verified
+
+1. **`require()` imports fixed** - `meshConfiguration.ts` now uses ES module imports:
+   ```typescript
+   import VocabularyVideo from '@/assets/Vocabulary.mp4';
+   ```
+
+2. **`process.env.PUBLIC_URL` fixed** - Now uses Vite-compatible path:
+   ```typescript
+   export const GLTF_MODEL_FILE_PATH: string = '/compressed_model.glb';
+   ```
+
+3. **Root `src/` directory removed** - Test files moved appropriately
+
+### Remaining Warnings (Deferred to Phase-2)
+
+- `@typescript-eslint/no-explicit-any` in InteractiveMeshElement.tsx:20
+- `react-hooks/exhaustive-deps` in SceneModel.tsx:140
+
+These are code quality warnings, not errors, and are acceptable to address in Phase-2 sanitization.
+
+### Tool Evidence
+
+```
+npm run lint: 0 errors, 2 warnings
+npm run build: ✓ built in 27.13s
+npm run type-check: exits 0
+git log: fix(vite): address reviewer feedback for Phase-1
+```
+
+**APPROVED**

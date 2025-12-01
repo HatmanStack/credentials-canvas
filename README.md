@@ -1,10 +1,10 @@
-<div align="center" style="display: block;margin-left: auto;margin-right: auto;width: 50%;">
+<div align="center">
 <h1>Credentials Canvas</h1>
 
 <div style="display: flex; justify-content: center; align-items: center;">
   <h4 style="margin: 0; display: flex;">
     <a href="https://www.apache.org/licenses/LICENSE-2.0.html">
-      <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0 liscense" />
+      <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0 license" />
     </a>
     <a href="https://r3f.docs.pmnd.rs/getting-started/introduction">
       <img src="https://img.shields.io/badge/React%20Fiber-violet" alt="React Fiber" />
@@ -13,78 +13,79 @@
       <img src="https://img.shields.io/badge/Three.js-yellow" alt="Threejs" />
     </a>
     <a href="https://www.blender.org/">
-    <img src="https://img.shields.io/badge/Blender%204.3-F69455" alt="Blender Version">
+      <img src="https://img.shields.io/badge/Blender%204.3-F69455" alt="Blender Version">
     </a>
   </h4>
 </div>
 
-  <p><b>Interactive 3D Portfolio Experience<br> <a href="https://production.dld9ll6ojjns2.amplifyapp.com/"> Experience Credentials Canvas » </a> </b> </p>
-  <h1 >
- <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Interactive 3D Environment"></td></p>
-     <p align="center">
-    <td><img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="3D Scene Navigation"></td></p>
-</h1>
+<p><b>Interactive 3D Portfolio Experience</b></p>
+<p><a href="https://production.dld9ll6ojjns2.amplifyapp.com/">Experience Credentials Canvas »</a></p>
+
+<p align="center">
+  <img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Interactive 3D Environment">
+</p>
+<p align="center">
+  <img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="3D Scene Navigation">
+</p>
 </div>
 
-## What is Credentials Canvas?
+## Overview
 
-**Credentials Canvas** is an immersive 3D portfolio experience that showcases personal projects in an interactive virtual environment. Instead of a traditional portfolio website, visitors explore a fully realized 3D scene where each element tells a story and provides access to different projects and achievements.
+Credentials Canvas is an immersive 3D portfolio that showcases projects in an interactive virtual environment. Navigate through a detailed scene, click objects to discover projects, and explore different themed atmospheres.
 
-### 🎮 Interactive Experience
-- **Navigate** through a detailed 3D environment with smooth camera controls
-- **Click** on various objects to discover projects, skills, and accomplishments  
-- **Explore** different themed "vibes" that transform the lighting and atmosphere
-- **Engage** with interactive elements like control panels, phones, and signposts
+## Structure
 
-### 🏗️ 3D Environment Features
-- **Dynamic Lighting System** - Interactive lights that respond to user clicks
-- **Video Displays** - Phone screens showing project demos and presentations
-- **Atmospheric Controls** - Multiple environment themes (Urban, Rural, Classy, Chill)
-- **Particle Effects** - Visual enhancements that bring the scene to life
-- **Sound Design** - Audio feedback for interactions and ambiance
-
-### 📱 Project Showcase
-The 3D environment serves as a unique portfolio platform featuring:
-- **Web Applications** - Interactive demos accessible through in-scene displays
-- **Technical Projects** - Links to GitHub repositories and live deployments
-- **Professional Links** - Direct access to LinkedIn, articles, and contact information
-- **Skills Demonstration** - 3D modeling, web development, and interactive design capabilities
-
-### 🎨 Creative Approach
-Rather than listing projects in a traditional format, Credentials Canvas presents them as part of a cohesive 3D narrative where:
-- Each interactive element has purpose and meaning
-- Projects are contextualized within a virtual space
-- The portfolio itself demonstrates technical and artistic skills
-- Visitors have a memorable, engaging experience
-
-## Tech Stack
-- Three.js for 3D rendering
-- React Three Fiber for React integration
-- Node.js backend
-
-## Setup
-1. Installation:
-```bash
-git clone https://github.com/hatmanstack/credentials-camvas.git
-cd credentials-camvas
-npm install --global yarn
-yarn
-npm start
+```text
+credentials-canvas/
+├── frontend/           # React + Three.js application
+│   ├── src/
+│   ├── tests/          # Test suite
+│   └── public/
+└── docs/               # Documentation
 ```
 
-2. Download the custom model:
-- Get `.glb` file from [here](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb)
-- Place in public folder
+## Prerequisites
 
-## Model Optimization (if altering in Blender):
+- Node.js 24 LTS
+- npm 10+
+
+## Quick Start
+
 ```bash
-gltf-pipeline -i updated.glb -o compressed_model.glb --draco.compressionLevel=7 --keepUnusedElements --keepDefaultScene
+git clone https://github.com/hatmanstack/credentials-canvas.git
+cd credentials-canvas/frontend
+npm install
+
+# Download model
+# Get from: https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb
+# Place in: frontend/public/compressed_model.glb
+
+npm run dev
 ```
 
-## Special Thanks  
-A big thank you to [freepacman.org](https://freepacman.org) for their site contribution, which is featured as an interactive iframe within this portfolio.
+## Scripts
+
+Run from `frontend/`:
+
+```bash
+npm run dev        # Development server
+npm run build      # Production build
+npm run test       # Run tests
+npm run lint       # ESLint + TypeScript check
+```
+
+## Documentation
+
+See [docs/README.md](docs/README.md) for full documentation including:
+- Architecture overview
+- Development guide
+- Testing patterns
+- Styling conventions
 
 ## License
 
-This project is licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Special Thanks
+
+Thanks to [freepacman.org](https://freepacman.org) for their site contribution featured as an interactive iframe.

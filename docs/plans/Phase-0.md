@@ -1,1166 +1,454 @@
-# Phase 0: Foundation & Architecture
+# Phase-0: Foundation
 
-## Overview
-
-This document contains the architectural foundation that applies to ALL implementation phases. Read this document completely before starting any phase. Return to this document when you need clarification on design decisions, naming conventions, or architectural patterns.
-
-**Purpose:** Establish consistent patterns, conventions, and technical decisions that will guide all implementation work.
+This document establishes the architectural decisions, conventions, and standards that apply to **all phases** of the refactor. Engineers must read and internalize this document before starting any implementation work.
 
 ---
 
 ## Architecture Decision Records (ADRs)
 
-### ADR-001: Full TypeScript Migration
+### ADR-001: Vite as Build Tool
 
-**Decision:** Convert entire codebase from JavaScript to TypeScript
+**Status:** Accepted
 
-**Rationale:**
-- **Type Safety:** Catch errors at compile time, especially critical for complex Three.js object manipulation
-- **Developer Experience:** Better IDE autocomplete, inline documentation, refactoring tools
-- **Industry Standard:** TypeScript is the de facto standard for new React projects in 2025
-- **Three.js Integration:** Strong type definitions available for Three.js reduce runtime errors
-- **Maintainability:** Explicit types serve as living documentation
+**Context:** The project currently uses Create React App (CRA) which is deprecated and has slow build times. The target monorepo structure requires flexible path configurations that CRA makes difficult.
 
-**Alternatives Considered:**
-- JSDoc with type hints: Less powerful, no compile-time checking
-- Incremental adoption: Creates inconsistent codebase, deferred benefits
-- PropTypes: Runtime only, verbose, less powerful than TypeScript
+**Decision:** Migrate to Vite with the `@vitejs/plugin-react` plugin.
 
-**Implications:**
-- All `.js` → `.tsx` (components) or `.ts` (utilities)
-- Add type definitions for all props, state, functions
-- Configure strict TypeScript settings
-- Learning curve for TypeScript concepts (generics, unions, etc.)
-
-### ADR-002: Zustand for State Management
-
-**Decision:** Replace React Context API with Zustand
-
-**Rationale:**
-- **Performance:** Context causes re-renders across all consumers even when unrelated state changes. Zustand uses selectors for granular subscriptions
-- **Developer Experience:** Simpler API, less boilerplate than Context + useReducer
-- **Bundle Size:** Zustand is tiny (~1kb gzipped) vs Redux (~10kb)
-- **Three.js Optimization:** Frequent state updates (camera position, click counts) benefit from Zustand's performance
-- **Debugging:** Better dev tools, easier to trace state changes
-- **Scalability:** Easier to split stores by domain without provider nesting
-
-**Current Problems with Context:**
-```javascript
-// Problem: Every UI state change re-renders ALL consumers
-const { titleColorHue, showArcadeIframe, screenWidth, lightIntensity } = useUI();
-// Even components only using screenWidth re-render when titleColorHue changes
-```
-
-**Zustand Solution:**
-```typescript
-// Only re-renders when screenWidth changes
-const screenWidth = useUIStore(state => state.screenWidth);
-```
-
-**Alternatives Considered:**
-- Keep Context with optimization: Still has fundamental limitations
-- Redux Toolkit: Overkill for this project size, more boilerplate
-- Jotai/Recoil: Atomic approach, but steeper learning curve
-
-**Implications:**
-- Remove Context providers and hooks
-- Create Zustand stores organized by domain
-- Migrate all state consumers to Zustand selectors
-- Update component hierarchy (remove Provider wrappers)
-
-### ADR-003: Layer-Based Component Organization
-
-**Decision:** Organize components by technical layer, not feature
-
-**Structure:**
-```
-src/
-├── components/
-│   ├── three/         # WebGL/Three.js components
-│   ├── controls/      # Interaction controllers (camera, animations)
-│   └── ui/            # DOM-based UI components
-├── hooks/             # Custom React hooks
-├── stores/            # Zustand state stores
-├── types/             # TypeScript type definitions
-├── constants/         # Configuration and constants
-└── utils/             # Pure utility functions
-```
-
-**Rationale:**
-- **Clear Separation:** Three.js (WebGL) vs DOM components have different concerns
-- **Three.js Architecture:** Industry pattern in Three.js apps (r3f documentation uses this)
-- **Mental Model:** Developers think about "3D scene", "controls", "UI" as distinct layers
-- **Import Clarity:** `from 'components/three/SceneModel'` makes purpose obvious
-- **Performance Optimization:** Easier to optimize render performance by layer
-
-**Alternatives Considered:**
-- Feature-based (features/scene, features/audio): Less natural for Three.js split
-- Atomic design: Too abstract for this project's needs
-- Flat structure: Doesn't scale, harder to navigate
-
-**Implications:**
-- Move Model → components/three/SceneModel
-- Move CameraControls → components/controls/CameraController
-- Move LaunchScreen → components/ui/LaunchScreen
-- Update all import paths
-
-### ADR-004: Descriptive & Explicit Naming Convention
-
-**Decision:** Use long, self-documenting names throughout codebase
-
-**Philosophy:** Code is read 10x more than written. Prioritize clarity over brevity.
-
-**Examples:**
-```typescript
-// Before (ambiguous)
-const gltfModel = useUI();
-const selectedVibe = state.vibe;
-function handleClick() { }
-
-// After (explicit)
-const threeJSSceneModel = useUIStore(state => state.threeJSSceneModel);
-const selectedThemeConfiguration = state.selectedThemeConfiguration;
-function handleMeshClickInteraction() { }
-```
-
-**Rationale:**
-- **Onboarding:** New developers understand code without context
-- **Maintenance:** Less time spent deciphering abbreviations
-- **Refactoring:** Explicit names make search/replace safer
-- **TypeScript Synergy:** Types + descriptive names = self-documenting code
-
-**Naming Rules:**
-1. **Variables:** camelCase, descriptive noun phrases
-2. **Functions:** camelCase, descriptive verb phrases
-3. **Components:** PascalCase, descriptive noun
-4. **Types/Interfaces:** PascalCase, often `{ComponentName}Props`
-5. **Constants:** SCREAMING_SNAKE_CASE or camelCase config objects
-6. **Files:** PascalCase (components), camelCase (utilities)
-
-**Common Patterns:**
-- `handle{Action}{Context}` → `handleMuteButtonClick`, `handleCameraScrollAnimation`
-- `is{State}` / `has{State}` → `isAudioMuted`, `hasUserScrolledScene`
-- `set{Property}` → `setSelectedThemeConfiguration`, `setAudioMutedState`
-- `use{Purpose}` → `useCameraScrollBehavior`, `useThreeJSSceneInteraction`
-
-**Alternatives Considered:**
-- Concise naming: Prioritizes typing speed over reading comprehension
-- Domain-specific jargon: Less accessible to new team members
-
-**Implications:**
-- Systematic renaming of all variables, functions, components
-- Update all import statements
-- Potential git history complexity (use `git log --follow`)
-
-### ADR-005: Tailwind CSS with Custom CSS Exceptions
-
-**Decision:** Migrate to Tailwind CSS utility classes, preserve complex custom CSS where appropriate
-
-**What Stays Custom CSS:**
-- `checkbox.css` - Complex animations with keyframes and pseudo-elements
-- Custom Three.js-related animations if they exist
-- Theme variable definitions
-
-**What Migrates to Tailwind:**
-- Layout classes (flexbox, positioning)
-- Spacing (margin, padding)
-- Sizing (width, height)
-- Basic styling (colors, borders, shadows)
-- Responsive breakpoints
-
-**Rationale:**
-- **Developer Velocity:** Tailwind classes faster than writing custom CSS
-- **Consistency:** Design system built-in (spacing scale, colors)
-- **Bundle Size:** PurgeCSS removes unused utilities
-- **Maintenance:** No need to name CSS classes, no orphaned styles
-- **Pragmatism:** Custom CSS warranted for complex animations (checkbox)
-
-**Implementation Strategy:**
-```typescript
-// Before
-<div className="button-container">
-  <button className="navigate" />
-</div>
-
-// After
-<div className="relative h-full">
-  <button className="w-12 h-12 absolute bottom-0 left-0 rounded-full
-                     bg-rest-color active:bg-active-color" />
-</div>
-
-// For complex patterns, use utility function
-import { cn } from 'utils/classNames';
-<button className={cn(
-  "w-12 h-12 rounded-full",
-  isActive && "bg-active-color",
-  "hover:scale-95 transition-transform"
-)} />
-```
-
-**Alternatives Considered:**
-- CSS Modules: Scoping without utility classes, more custom CSS
-- Styled Components: CSS-in-JS with runtime cost
-- Keep current CSS: Misses modernization benefits
-
-**Implications:**
-- Install Tailwind dependencies
-- Configure tailwind.config.js with custom colors
-- Create utility functions for conditional classes
-- Gradually migrate each component's styles
-- Preserve checkbox.css and import alongside Tailwind
-
-### ADR-006: Unit Testing Only (Phase 1)
-
-**Decision:** Implement unit tests for business logic, hooks, and utilities. Defer integration and E2E tests.
-
-**Scope:**
-- ✅ **Test:** Pure functions (utils, calculations)
-- ✅ **Test:** Custom hooks (useCameraScroll, useLightController)
-- ✅ **Test:** Zustand stores (state updates, actions)
-- ✅ **Test:** Business logic (click handlers, scroll logic)
-- ❌ **Defer:** Component rendering (too coupled to Three.js)
-- ❌ **Defer:** E2E user flows (requires Playwright setup)
-- ❌ **Defer:** Visual regression tests (requires Storybook/Chromatic)
-
-**Rationale:**
-- **Quick Wins:** Test high-value logic with minimal setup
-- **Three.js Complexity:** Mocking WebGL is complex and brittle
-- **ROI Focus:** Business logic has highest bug risk
-- **Incremental:** Can add integration tests later
-- **Performance:** Unit tests run fast, enable TDD workflow
-
-**Testing Philosophy:**
-- **Arrange-Act-Assert** pattern
-- **Test behavior, not implementation**
-- **Mock external dependencies (Three.js, DOM APIs)**
-- **Descriptive test names:** `it('should increment camera index when user scrolls down')`
-
-**Tools:**
-- **Jest:** Test runner
-- **React Testing Library:** Hook testing utilities
-- **jest-environment-jsdom:** DOM simulation
-- **@testing-library/user-event:** User interaction simulation
-
-**Alternatives Considered:**
-- Full integration tests: Too much complexity for initial implementation
-- E2E with Playwright: Overkill for validating refactoring equivalence
-- No tests: Risks regression bugs during refactoring
-
-**Implications:**
-- Configure Jest in package.json
-- Create test files adjacent to source (`*.test.ts`)
-- Write tests for all hooks and utilities
-- Mock Zustand stores in tests
-- Establish coverage baseline (target 80%+ for business logic)
+**Consequences:**
+- Entry point changes from `src/index.tsx` to `frontend/src/main.tsx`
+- HTML file moves from `public/index.html` to `frontend/index.html` and must include `<script type="module" src="/src/main.tsx"></script>`
+- Environment variables change from `REACT_APP_*` to `VITE_*` (accessed via `import.meta.env.VITE_*`)
+- Hot Module Replacement (HMR) works out of the box
+- Path aliases configured in `vite.config.ts` instead of `tsconfig.json` paths alone
 
 ---
 
-## Design Decisions & Rationale
+### ADR-002: Vitest as Test Runner
 
-### Naming Convention Reference
+**Status:** Accepted
 
-#### File Naming
+**Context:** The project uses Jest with CRA's preset. Vite projects work better with Vitest due to shared configuration and native ES module support.
 
-| File Type | Convention | Example |
-|-----------|-----------|---------|
-| React Component | PascalCase.tsx | `SceneModel.tsx`, `CameraController.tsx`, `LaunchScreen.tsx` |
-| Custom Hook | camelCase.ts | `useCameraScrollBehavior.ts`, `useThreeJSSceneInteraction.ts` |
-| Zustand Store | camelCase.ts | `sceneInteractionStore.ts`, `userInterfaceStore.ts` |
-| Type Definitions | camelCase.ts | `threeJSTypes.ts`, `cameraTypes.ts` |
-| Constants | camelCase.ts | `cameraConfiguration.ts`, `lightingConfiguration.ts` |
-| Utility Functions | camelCase.ts | `classNameUtils.ts`, `vectorCalculations.ts` |
+**Decision:** Migrate from Jest to Vitest.
 
-#### Variable & Function Naming
+**Consequences:**
+- Test files remain `*.test.ts` / `*.test.tsx`
+- Import `describe`, `it`, `expect`, `vi` from `vitest` instead of global Jest
+- Mocking uses `vi.fn()`, `vi.mock()`, `vi.spyOn()` instead of `jest.*`
+- Configuration in `vite.config.ts` under `test` key
+- Same Testing Library APIs work unchanged
+- Coverage via `@vitest/coverage-v8`
+
+---
+
+### ADR-003: Centralized Test Directory
+
+**Status:** Accepted
+
+**Context:** Tests are currently colocated in `src/__tests__/`. The target architecture requires a root-level `tests/` directory.
+
+**Decision:** Move all tests to `tests/frontend/` with subdirectories mirroring source structure.
+
+**Consequences:**
+- Tests import source via path aliases (e.g., `@/stores/sceneInteractionStore`)
+- Test helpers move to `tests/helpers/`
+- Vitest configured with `include: ['tests/**/*.test.{ts,tsx}']`
+- Source files remain clean of test-related code
+
+---
+
+### ADR-004: Full Code Sanitization
+
+**Status:** Accepted
+
+**Context:** The codebase should be production-hardened with no development artifacts.
+
+**Decision:** Remove all comments, console statements, and debugger statements from source code.
+
+**Consequences:**
+- All `//` and `/* */` comments removed from `.ts` and `.tsx` files
+- All `console.log`, `console.debug`, `console.info`, `console.warn` removed
+- All `debugger` statements removed
+- JSDoc comments removed
+- License headers removed from source files (license remains in LICENSE file)
+- Type definitions (`.d.ts`) may retain minimal comments for clarity
+
+**Exceptions:**
+- `// eslint-disable` directives that are necessary
+- `// @ts-ignore` or `// @ts-expect-error` with genuine need
+- CSS custom property comments in `.css` files (preserve for maintainability)
+
+---
+
+### ADR-005: No Backend Structure
+
+**Status:** Accepted
+
+**Context:** This is a frontend-only React/Three.js portfolio application with no server-side logic.
+
+**Decision:** Do not create a `backend/` directory. The monorepo structure includes only `frontend/`, `docs/`, and `tests/`.
+
+**Consequences:**
+- Root `package.json` contains only orchestration scripts
+- No Python, no pytest, no backend-related CI jobs
+- All `npm run test:backend` and `npm run lint:backend` scripts omitted
+
+---
+
+### ADR-006: ESLint Flat Config
+
+**Status:** Accepted
+
+**Context:** ESLint is moving to flat config format (`eslint.config.js`). The current `.eslintrc.json` uses legacy format.
+
+**Decision:** Migrate to ESLint flat config during the Vite migration.
+
+**Consequences:**
+- Replace `.eslintrc.json` with `frontend/eslint.config.js`
+- Use `@eslint/js` and `typescript-eslint` packages
+- Google style guide rules replicated manually (no flat-config-compatible version)
+- Plugins imported as ES modules
+
+---
+
+### ADR-007: Public Assets as Static URLs
+
+**Status:** Accepted
+
+**Context:** The project contains YouTube video URLs, CDN paths, and external links in `urlConfiguration.ts`.
+
+**Decision:** Treat all URLs as public static configuration. No environment variable extraction needed.
+
+**URLs Confirmed Public:**
+- `https://www.gemenielabs.com/*` - Portfolio main site
+- `https://medium.com/@HatmanStack` - Blog articles
+- `https://github.com/HatmanStack` - GitHub profile
+- `https://huggingface.co/Hatman` - HuggingFace profile
+- `https://d6d8ny9p8jhyg.cloudfront.net/` - CloudFront CDN (public)
+- `https://*.streamlit.app` - Streamlit apps (public)
+- `https://*.hf.space/` - HuggingFace Spaces (public)
+- `https://*.amplifyapp.com/` - AWS Amplify apps (public)
+- `https://*.lambda-url.*.on.aws/` - Lambda function URLs (public)
+- Google Forms link - Public form
+
+**Consequences:**
+- No `.env` file needed for secrets
+- No `import.meta.env.VITE_*` usage for URLs
+- urlConfiguration.ts remains as static TypeScript
+
+---
+
+## Tech Stack
+
+### Core Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| react | 18.2.x | UI framework |
+| react-dom | 18.2.x | React DOM renderer |
+| three | ^0.165.0 | 3D graphics engine |
+| @react-three/fiber | ^8.16.x | React Three.js renderer |
+| @react-three/drei | ^9.105.x | Three.js helpers |
+| @react-spring/three | ^9.7.x | Animation library |
+| @use-gesture/react | ^10.3.x | Gesture handling |
+| zustand | ^4.4.x | State management |
+| clsx | ^2.0.x | Class name utility |
+| tailwind-merge | ^2.2.x | Tailwind class merging |
+| use-sound | ^4.0.x | Audio playback |
+
+### Dev Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| vite | ^6.x | Build tool |
+| @vitejs/plugin-react | ^4.x | React plugin for Vite |
+| vitest | ^2.x | Test runner |
+| @testing-library/react | ^14.x | React testing utilities |
+| @testing-library/jest-dom | ^6.x | DOM matchers |
+| @vitest/coverage-v8 | ^2.x | Coverage reporting |
+| typescript | ^5.x | Type checking |
+| tailwindcss | ^3.4.x | CSS framework |
+| autoprefixer | ^10.x | CSS prefixing |
+| postcss | ^8.x | CSS processing |
+| eslint | ^9.x | Linting |
+| @eslint/js | ^9.x | ESLint core rules |
+| typescript-eslint | ^8.x | TypeScript ESLint |
+
+---
+
+## Shared Patterns & Conventions
+
+### File Naming
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Components | PascalCase | `LaunchScreen.tsx` |
+| Hooks | camelCase with `use` prefix | `useCameraScrollBehavior.ts` |
+| Stores | camelCase with `Store` suffix | `sceneInteractionStore.ts` |
+| Utils | camelCase | `classNameUtils.ts` |
+| Constants | camelCase with `Configuration` suffix | `cameraConfiguration.ts` |
+| Types | camelCase with `Types` suffix | `cameraTypes.ts` |
+| Tests | Same as source + `.test` | `sceneInteractionStore.test.ts` |
+
+### Import Order
+
+Imports should be ordered:
+1. React and React-related (`react`, `react-dom`)
+2. External packages (three, zustand, etc.)
+3. Internal absolute imports (using path aliases)
+4. Relative imports
+5. Type imports (using `import type`)
+6. CSS imports
+
+### Path Aliases
+
+Configure in both `vite.config.ts` and `tsconfig.json`:
 
 ```typescript
-// ✅ GOOD - Explicit and clear
-const threeJSSceneModel: THREE.Scene
-const isAudioCurrentlyMuted: boolean
-const hasUserStartedScrolling: boolean
-const selectedThemeConfiguration: ThemeConfiguration
-const currentCameraPositionIndex: number
-
-function handleMobileNavigationButtonClick(): void
-function handleThreeJSMeshClickInteraction(event: ThreeEvent<MouseEvent>): void
-function initializeVideoTextureForMesh(meshName: string): void
-function calculateInterpolatedCameraPosition(progress: number): Vector3
-
-// ❌ BAD - Ambiguous, abbreviated
-const gltf: any
-const muted: boolean
-const scroll: boolean
-const vibe: any
-const idx: number
-
-function onClick(): void
-function handle(e: any): void
-function init(name: string): void
-function calc(p: number): Vector3
-```
-
-#### Component Naming
-
-```typescript
-// Component file: SceneModel.tsx
-export const SceneModel: React.FC<SceneModelProps> = (props) => { }
-
-// Component file: CameraController.tsx
-export const CameraController: React.FC<CameraControllerProps> = (props) => { }
-
-// Component file: AudioMuteButton.tsx
-export const AudioMuteButton: React.FC<AudioMuteButtonProps> = (props) => { }
-```
-
-#### Type Naming
-
-```typescript
-// Props types
-interface SceneModelProps {
-  threeJSSceneModel: THREE.Scene;
-  enableInteractions: boolean;
-}
-
-// State types
-interface CameraPositionState {
-  currentCameraPositionIndex: number;
-  interpolationProgress: number;
-  isAnimating: boolean;
-}
-
-// Configuration types
-interface ThemeConfiguration {
-  themeIdentifier: string;
-  titleColorHue: number;
-  activeButtonColor: string;
-  restingButtonColor: string;
-}
-
-// Event handler types
-type MeshClickHandler = (event: ThreeEvent<MouseEvent>) => void;
-type ScrollEventHandler = (deltaY: number) => void;
-```
-
-### Directory Structure
-
-```
-src/
-├── components/
-│   ├── three/
-│   │   ├── SceneModel.tsx              # Main 3D model
-│   │   ├── SceneEnvironment.tsx        # Lighting and environment
-│   │   ├── InteractiveMeshElement.tsx  # Clickable 3D objects
-│   │   ├── VideoTextureMesh.tsx        # Video-textured meshes
-│   │   └── LightMeshElement.tsx        # Interactive lights
-│   │
-│   ├── controls/
-│   │   ├── CameraController.tsx        # Camera positioning logic
-│   │   ├── SceneAnimationController.tsx # Animation orchestration
-│   │   └── AudioController.tsx         # Sound management
-│   │
-│   └── ui/
-│       ├── LaunchScreen.tsx            # Initial loading screen
-│       ├── ThemeSelectionOption.tsx    # Theme/vibe selector
-│       ├── CustomCheckbox.tsx          # Custom checkbox component
-│       ├── MobileNavigationButton.tsx  # Mobile scroll button
-│       └── AudioMuteButton.tsx         # Audio mute toggle
-│
-├── hooks/
-│   ├── useCameraScrollBehavior.ts      # Camera scroll logic
-│   ├── useCameraPositionAnimation.ts   # Camera animation
-│   └── useLightingController.ts        # Light intensity control
-│
-├── stores/
-│   ├── sceneInteractionStore.ts        # Click, scroll, drag state
-│   ├── userInterfaceStore.ts           # UI state (theme, audio, dimensions)
-│   └── threeJSSceneStore.ts            # Three.js object references
-│
-├── types/
-│   ├── threeJSTypes.ts                 # Three.js-specific types
-│   ├── cameraTypes.ts                  # Camera-related types
-│   ├── storeTypes.ts                   # Zustand store types
-│   └── componentTypes.ts               # Shared component prop types
-│
-├── constants/
-│   ├── cameraConfiguration.ts          # Camera positions, scroll speeds
-│   ├── lightingConfiguration.ts        # Light names, intensities
-│   ├── meshConfiguration.ts            # Mesh names, video paths
-│   ├── urlConfiguration.ts             # External URLs
-│   ├── themeConfiguration.ts           # Theme/vibe settings
-│   └── applicationConfiguration.ts     # General app config
-│
-├── utils/
-│   ├── classNameUtils.ts               # Tailwind class helpers (cn)
-│   ├── vectorCalculations.ts           # Three.js math utilities
-│   └── loaderUtilities.ts              # GLTF/texture loading helpers
-│
-├── styles/
-│   ├── customAnimations.css            # Preserved checkbox animations
-│   └── themeVariables.css              # CSS custom properties
-│
-├── assets/
-│   ├── images/                         # SVG, PNG, GIF files
-│   └── sounds/                         # Audio files
-│
-└── __tests__/
-    ├── hooks/
-    ├── stores/
-    └── utils/
-```
-
-### State Architecture
-
-#### Zustand Store Organization
-
-**Three Stores by Domain:**
-
-1. **sceneInteractionStore.ts** - User interactions with 3D scene
-2. **userInterfaceStore.ts** - UI state and configuration
-3. **threeJSSceneStore.ts** - Three.js object references
-
-```typescript
-// sceneInteractionStore.ts
-interface SceneInteractionState {
-  // Click interactions
-  clickedMeshPosition: THREE.Vector3 | null;
-  clickedLightName: string | null;
-  totalClickCount: number;
-
-  // Scroll interactions
-  hasUserStartedScrolling: boolean;
-  mobileScrollTriggerCount: number | null;
-
-  // Camera state
-  currentCameraPositionIndex: number;
-  cameraInterpolationProgress: number;
-
-  // View state
-  isCloseUpViewActive: boolean;
-  isUserCurrentlyDragging: boolean;
-
-  // Actions
-  setClickedMeshPosition: (position: THREE.Vector3 | null) => void;
-  setClickedLightName: (name: string | null) => void;
-  incrementClickCount: () => void;
-  setHasUserStartedScrolling: (hasStarted: boolean) => void;
-  triggerMobileScrollNavigation: () => void;
-  setCurrentCameraPositionIndex: (index: number) => void;
-  setCameraInterpolationProgress: (progress: number) => void;
-  setIsCloseUpViewActive: (isActive: boolean) => void;
-  setIsUserCurrentlyDragging: (isDragging: boolean) => void;
-}
-
-// userInterfaceStore.ts
-interface UserInterfaceState {
-  // Theme
-  selectedThemeConfiguration: ThemeConfiguration | null;
-  titleTextColorHue: number | null;
-
-  // UI visibility
-  shouldShowArcadeIframe: boolean;
-  shouldShowMusicIframe: boolean;
-
-  // Audio
-  isAudioCurrentlyMuted: boolean;
-
-  // Responsive
-  currentWindowWidth: number;
-
-  // Lighting
-  currentLightIntensityConfiguration: {
-    sliderName: string;
-    intensity: number;
-  };
-
-  // Actions
-  setSelectedThemeConfiguration: (theme: ThemeConfiguration) => void;
-  setTitleTextColorHue: (hue: number) => void;
-  setShouldShowArcadeIframe: (show: boolean) => void;
-  setShouldShowMusicIframe: (show: boolean) => void;
-  setIsAudioCurrentlyMuted: (isMuted: boolean) => void;
-  setCurrentWindowWidth: (width: number) => void;
-  setCurrentLightIntensityConfiguration: (config: LightIntensityConfig) => void;
-}
-
-// threeJSSceneStore.ts
-interface ThreeJSSceneState {
-  // Three.js objects
-  threeJSSceneModel: THREE.Scene | null;
-  htmlVideoPlayerElement: HTMLVideoElement | null;
-
-  // Actions
-  setThreeJSSceneModel: (scene: THREE.Scene) => void;
-  setHTMLVideoPlayerElement: (player: HTMLVideoElement) => void;
-}
-```
-
-**Migration Strategy from Context:**
-```typescript
-// Before (Context)
-const { clickPoint, clickLight, isCloseUpView } = useInteraction();
-const { selectedVibe, isAudioMuted } = useUI();
-
-// After (Zustand with selectors)
-const clickedMeshPosition = useSceneInteractionStore(state => state.clickedMeshPosition);
-const clickedLightName = useSceneInteractionStore(state => state.clickedLightName);
-const isCloseUpViewActive = useSceneInteractionStore(state => state.isCloseUpViewActive);
-const selectedThemeConfiguration = useUserInterfaceStore(state => state.selectedThemeConfiguration);
-const isAudioCurrentlyMuted = useUserInterfaceStore(state => state.isAudioCurrentlyMuted);
-```
-
-### TypeScript Configuration
-
-**tsconfig.json settings:**
-```json
+// Path alias mapping
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-
-    "baseUrl": "src",
-    "paths": {
-      "components/*": ["components/*"],
-      "hooks/*": ["hooks/*"],
-      "stores/*": ["stores/*"],
-      "types/*": ["types/*"],
-      "constants/*": ["constants/*"],
-      "utils/*": ["utils/*"]
-    }
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "build", "public"]
+  '@': 'frontend/src',
+  '@components': 'frontend/src/components',
+  '@hooks': 'frontend/src/hooks',
+  '@stores': 'frontend/src/stores',
+  '@constants': 'frontend/src/constants',
+  '@types': 'frontend/src/types',
+  '@utils': 'frontend/src/utils',
 }
 ```
 
-### Tailwind Configuration
+### Component Structure
 
-**tailwind.config.js:**
-```javascript
-module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        'background-primary': 'var(--background-primary)',
-        'rest-color': 'var(--rest-color)',
-        'active-color': 'var(--active-color)',
-        'urban-theme': '#e96929',
-        'rural-theme': '#80c080',
-        'classy-theme': '#ef5555',
-        'chill-theme': '#9fa8da',
-      },
-      animation: {
-        // Custom animations if needed
-      },
-    },
-  },
-  plugins: [],
-}
-```
+Components follow this internal structure:
+1. Type imports
+2. Dependency imports
+3. Store/hook imports
+4. Type definitions (if component-specific)
+5. Component function
+6. Export
+
+### Store Pattern
+
+Zustand stores follow this pattern:
+1. Import zustand
+2. Define state interface
+3. Define actions interface
+4. Create store with `create<State & Actions>()`
+5. Export hook
 
 ---
 
-## Common Patterns & Best Practices
-
-### Pattern 1: Component Structure
-
-```typescript
-import React, { useCallback, useEffect, useMemo } from 'react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
-import type { ComponentNameProps } from 'types/componentTypes';
-
-/**
- * Brief description of component purpose
- *
- * @example
- * <ComponentName prop1="value" prop2={42} />
- */
-export const ComponentName: React.FC<ComponentNameProps> = ({
-  propOne,
-  propTwo
-}) => {
-  // 1. Zustand store selectors (grouped by store)
-  const stateValue = useSceneInteractionStore(state => state.stateValue);
-  const actionFunction = useSceneInteractionStore(state => state.actionFunction);
-
-  // 2. Local state (if needed)
-  const [localState, setLocalState] = React.useState<number>(0);
-
-  // 3. Refs (if needed)
-  const elementRef = React.useRef<HTMLDivElement>(null);
-
-  // 4. Memoized values
-  const computedValue = useMemo(() => {
-    return propOne + propTwo;
-  }, [propOne, propTwo]);
-
-  // 5. Callbacks
-  const handleSomeAction = useCallback(() => {
-    actionFunction(computedValue);
-  }, [actionFunction, computedValue]);
-
-  // 6. Effects
-  useEffect(() => {
-    // Setup
-    return () => {
-      // Cleanup
-    };
-  }, []);
-
-  // 7. Render
-  return (
-    <div ref={elementRef} className="flex flex-col">
-      {/* JSX */}
-    </div>
-  );
-};
-```
-
-### Pattern 2: Custom Hook Structure
-
-```typescript
-import { useEffect, useRef, useCallback } from 'react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
-import type { HookReturnType, HookParameters } from 'types/hookTypes';
-
-/**
- * Brief description of hook purpose
- *
- * @param parameters - Description
- * @returns Description of return value
- */
-export const useCustomHookName = (parameters: HookParameters): HookReturnType => {
-  // 1. Store selectors
-  const stateValue = useSceneInteractionStore(state => state.stateValue);
-
-  // 2. Refs for non-reactive values
-  const internalRef = useRef<number>(0);
-
-  // 3. Hook logic
-  const someMethod = useCallback(() => {
-    // Implementation
-  }, [stateValue]);
-
-  // 4. Effects
-  useEffect(() => {
-    // Setup
-    return () => {
-      // Cleanup
-    };
-  }, [someMethod]);
-
-  // 5. Return API
-  return {
-    someMethod,
-    someValue: internalRef.current,
-  };
-};
-```
-
-### Pattern 3: Zustand Store Creation
-
-```typescript
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import type { StoreState } from 'types/storeTypes';
-
-export const useStoreName = create<StoreState>()(
-  devtools(
-    (set, get) => ({
-      // State
-      propertyName: initialValue,
-
-      // Actions
-      setPropertyName: (value) => set({ propertyName: value }),
-
-      // Complex actions
-      complexAction: () => {
-        const currentState = get();
-        // Logic
-        set({
-          propertyName: newValue,
-          anotherProperty: derivedValue
-        });
-      },
-
-      // Reset action
-      reset: () => set({
-        propertyName: initialValue,
-        // Reset all state
-      }),
-    }),
-    { name: 'StoreName' }
-  )
-);
-```
-
-### Pattern 4: Type Definition
-
-```typescript
-// types/componentTypes.ts
-
-import type { Vector3 } from 'three';
-
-// Component props
-export interface ComponentNameProps {
-  requiredProp: string;
-  optionalProp?: number;
-  callbackProp: (value: string) => void;
-  children?: React.ReactNode;
-}
-
-// State types
-export interface CameraState {
-  currentPositionIndex: number;
-  interpolationProgress: number;
-  isAnimating: boolean;
-}
-
-// Configuration types
-export interface ThemeConfiguration {
-  themeIdentifier: 'urban' | 'rural' | 'classy' | 'chill';
-  titleColorHue: number;
-  activeButtonColor: string;
-  restingButtonColor: string;
-}
-
-// Utility types
-export type MeshClickHandler = (event: ThreeEvent<MouseEvent>) => void;
-export type Nullable<T> = T | null;
-export type Optional<T> = T | undefined;
-```
-
-### Pattern 5: Tailwind Class Composition
-
-```typescript
-// utils/classNameUtils.ts
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-/**
- * Merges Tailwind classes with proper precedence
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-// Usage in components
-import { cn } from 'utils/classNameUtils';
-
-<button
-  className={cn(
-    "w-12 h-12 rounded-full",
-    "transition-all duration-200",
-    isActive && "bg-active-color scale-95",
-    !isActive && "bg-rest-color"
-  )}
-/>
-```
-
-### Pattern 6: Testing Structure
-
-```typescript
-// __tests__/hooks/useCameraScrollBehavior.test.ts
-
-import { renderHook, act } from '@testing-library/react';
-import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
-
-// Mock stores
-jest.mock('stores/sceneInteractionStore');
-
-describe('useCameraScrollBehavior', () => {
-  beforeEach(() => {
-    // Reset mocks
-    jest.clearAllMocks();
-  });
-
-  describe('when user scrolls down', () => {
-    it('should increment camera position index', () => {
-      // Arrange
-      const mockSetIndex = jest.fn();
-      (useSceneInteractionStore as jest.Mock).mockReturnValue({
-        currentCameraPositionIndex: 0,
-        setCurrentCameraPositionIndex: mockSetIndex,
-      });
-
-      const { result } = renderHook(() => useCameraScrollBehavior({
-        /* parameters */
-      }));
-
-      // Act
-      act(() => {
-        result.current.handleScroll({ deltaY: 100 });
-      });
-
-      // Assert
-      expect(mockSetIndex).toHaveBeenCalledWith(1);
-    });
-  });
-
-  describe('when at last camera position', () => {
-    it('should wrap around to first position', () => {
-      // Test implementation
-    });
-  });
-});
-```
-
----
-
-## Common Pitfalls to Avoid
-
-### Pitfall 1: Over-Selecting from Zustand
-
-**Problem:**
-```typescript
-// ❌ BAD - Re-renders on any store change
-const entireStore = useSceneInteractionStore();
-const { clickedMeshPosition } = entireStore;
-```
-
-**Solution:**
-```typescript
-// ✅ GOOD - Only re-renders when clickedMeshPosition changes
-const clickedMeshPosition = useSceneInteractionStore(
-  state => state.clickedMeshPosition
-);
-```
-
-### Pitfall 2: Not Cleaning Up Three.js Resources
-
-**Problem:**
-```typescript
-// ❌ BAD - Memory leak
-useEffect(() => {
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial();
-  // No cleanup
-}, []);
-```
-
-**Solution:**
-```typescript
-// ✅ GOOD - Proper disposal
-useEffect(() => {
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial();
-
-  return () => {
-    geometry.dispose();
-    material.dispose();
-  };
-}, []);
-```
-
-### Pitfall 3: Using `any` Type
-
-**Problem:**
-```typescript
-// ❌ BAD - Defeats purpose of TypeScript
-const handleClick = (event: any) => {
-  // Type safety lost
-};
-```
-
-**Solution:**
-```typescript
-// ✅ GOOD - Explicit types
-import type { ThreeEvent } from '@react-three/fiber';
-
-const handleMeshClickInteraction = (
-  event: ThreeEvent<MouseEvent>
-) => {
-  // Full type safety
-  const meshName: string = event.object.name;
-};
-```
-
-### Pitfall 4: Inline Functions in JSX
-
-**Problem:**
-```typescript
-// ❌ BAD - Creates new function every render
-<button onClick={() => handleClick(id)}>Click</button>
-```
-
-**Solution:**
-```typescript
-// ✅ GOOD - Memoized callback
-const handleButtonClick = useCallback(() => {
-  handleClick(id);
-}, [id, handleClick]);
-
-<button onClick={handleButtonClick}>Click</button>
-```
-
-### Pitfall 5: Not Testing Edge Cases
-
-**Problem:**
-```typescript
-// ❌ BAD - Only happy path
-it('should scroll camera', () => {
-  // Test normal scroll only
-});
-```
-
-**Solution:**
-```typescript
-// ✅ GOOD - Edge cases covered
-describe('useCameraScrollBehavior', () => {
-  it('should scroll camera forward');
-  it('should wrap to start when reaching end');
-  it('should handle rapid scroll events');
-  it('should not scroll when animation in progress');
-  it('should handle mobile touch scroll');
-});
-```
-
----
-
-## Testing Strategy Overview
+## Testing Strategy
 
 ### What to Test
 
-**High Priority (Must Test):**
-- Store actions and state updates
-- Custom hooks with complex logic
-- Utility functions (calculations, transformations)
-- Event handlers with business logic
+| Category | Coverage Target | Test Type |
+|----------|-----------------|-----------|
+| Zustand Stores | 100% | Unit |
+| Custom Hooks | >80% | Unit |
+| Utility Functions | 100% | Unit |
+| React Components | Not tested | N/A |
 
-**Medium Priority (Should Test):**
-- Component logic (conditional rendering)
-- Integration between hooks and stores
-- Configuration validation
+### What NOT to Test
 
-**Low Priority (Nice to Have):**
-- Simple presentational components
-- Type definitions (TypeScript provides this)
-- Constants and configurations
+- React components (too coupled to Three.js/WebGL)
+- Three.js rendering logic
+- CSS/styling
+- Third-party library internals
 
-### Testing Patterns
+### Test File Structure
 
-**Pattern: Testing Zustand Store**
+```
+tests/
+├── frontend/
+│   ├── hooks/
+│   │   ├── useCameraPositionAnimation.test.ts
+│   │   ├── useCameraScrollBehavior.test.ts
+│   │   └── useLightingController.test.ts
+│   ├── stores/
+│   │   ├── sceneInteractionStore.test.ts
+│   │   ├── threeJSSceneStore.test.ts
+│   │   └── userInterfaceStore.test.ts
+│   └── utils/
+│       └── classNameUtils.test.ts
+├── helpers/
+│   ├── storeMocks.ts
+│   ├── testUtils.tsx
+│   └── threeMocks.ts
+└── setup.ts
+```
+
+### Test Conventions
+
+**Naming:**
+- Test files: `{source-file-name}.test.ts`
+- Describe blocks: Source module/function name
+- It blocks: Start with "should" + expected behavior
+
+**Structure:**
 ```typescript
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
 
-describe('sceneInteractionStore', () => {
+describe('moduleName', () => {
   beforeEach(() => {
-    // Reset store state
-    useSceneInteractionStore.setState({
-      clickedMeshPosition: null,
-      totalClickCount: 0,
-    });
+    // Reset state
   });
 
-  it('should increment click count', () => {
-    const { result } = renderHook(() => useSceneInteractionStore());
-
-    act(() => {
-      result.current.incrementClickCount();
-    });
-
-    expect(result.current.totalClickCount).toBe(1);
+  it('should do expected behavior', () => {
+    // Arrange
+    // Act
+    // Assert
   });
 });
 ```
 
-**Pattern: Testing Custom Hook**
-```typescript
-import { renderHook, act } from '@testing-library/react';
-import { useCameraScrollBehavior } from 'hooks/useCameraScrollBehavior';
+### Mocking Strategy
 
-describe('useCameraScrollBehavior', () => {
-  it('should interpolate camera position on scroll', () => {
-    const mockCamera = { position: { copy: jest.fn() } };
-    const mockPositions = [[0,0,0], [10,10,10]];
+**Zustand Stores:** Use mock factories that return typed mock objects.
 
-    const { result } = renderHook(() =>
-      useCameraScrollBehavior({
-        camera: mockCamera,
-        positions: mockPositions,
-      })
-    );
+**Three.js Objects:** Use minimal mock objects with required properties only.
 
-    act(() => {
-      result.current.handleScroll({ deltaY: 100 });
-    });
-
-    expect(mockCamera.position.copy).toHaveBeenCalled();
-  });
-});
-```
-
-### Mock Strategies
-
-**Mocking Three.js:**
-```typescript
-// __mocks__/three.ts
-export const Vector3 = jest.fn().mockImplementation((x, y, z) => ({
-  x, y, z,
-  copy: jest.fn(),
-  lerp: jest.fn(),
-}));
-
-export const Scene = jest.fn().mockImplementation(() => ({
-  traverse: jest.fn(),
-}));
-```
-
-**Mocking Zustand Store:**
-```typescript
-jest.mock('stores/sceneInteractionStore', () => ({
-  useSceneInteractionStore: jest.fn((selector) =>
-    selector({
-      clickedMeshPosition: null,
-      setClickedMeshPosition: jest.fn(),
-    })
-  ),
-}));
-```
+**Browser APIs:** Mock in `tests/setup.ts` (HTMLMediaElement, matchMedia, etc.)
 
 ---
 
-## Troubleshooting Guide
+## CI/CD Configuration
 
-### Issue: TypeScript Errors with Three.js
+### GitHub Actions Workflow
 
-**Symptom:** `Property 'traverse' does not exist on type 'Scene'`
+**File:** `.github/workflows/ci.yml`
 
-**Solution:**
-```typescript
-// Install types
-npm install --save-dev @types/three
+**Triggers:**
+- `push` to `main` and `develop`
+- `pull_request` to `main` and `develop`
 
-// Import types explicitly
-import type * as THREE from 'three';
+**Jobs:**
 
-// Use typed variables
-const scene: THREE.Scene = gltf.scene;
-```
+1. **frontend-lint**
+   - Runs: `npm run lint`
+   - Node.js: 24
+   - Fails if lint errors exist
 
-### Issue: Zustand Store Not Updating
+2. **frontend-tests**
+   - Runs: `npm test -- --run`
+   - Node.js: 24
+   - Generates coverage report
+   - Fails if tests fail or coverage below threshold
 
-**Symptom:** Component doesn't re-render when store changes
+3. **status-check**
+   - Depends on: frontend-lint, frontend-tests
+   - Purpose: Single required check for branch protection
+   - Always runs if dependencies complete
+   - Reports overall success/failure
 
-**Solution:**
-```typescript
-// ❌ Wrong - selector returns new object every time
-const { value } = useStore(state => ({ value: state.value }));
+### CI Environment
 
-// ✅ Correct - selector returns primitive or stable reference
-const value = useStore(state => state.value);
-```
+- No secrets required
+- No deployment (local deployment only)
+- No backend jobs
+- Coverage thresholds enforced
 
-### Issue: Tailwind Classes Not Applying
+---
 
-**Symptom:** Custom colors or classes not showing
+## Root Package Scripts
 
-**Solution:**
-```typescript
-// 1. Ensure content paths in tailwind.config.js include your files
-content: ["./src/**/*.{js,jsx,ts,tsx}"]
+The root `package.json` contains orchestration scripts only:
 
-// 2. Import Tailwind in your entry CSS
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-// 3. Rebuild after config changes
-npm run build
-```
-
-### Issue: Tests Failing with Module Not Found
-
-**Symptom:** `Cannot find module 'components/three/SceneModel'`
-
-**Solution:**
 ```json
-// Add to jest.config.js or package.json
 {
-  "jest": {
-    "moduleNameMapper": {
-      "^components/(.*)$": "<rootDir>/src/components/$1",
-      "^hooks/(.*)$": "<rootDir>/src/hooks/$1",
-      "^stores/(.*)$": "<rootDir>/src/stores/$1"
-    }
-  }
+  "scripts": {
+    "start": "npm run start --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "test": "npm run test --workspace=frontend",
+    "lint": "npm run lint --workspace=frontend",
+    "check": "npm run lint && npm run test -- --run",
+    "type-check": "npm run type-check --workspace=frontend"
+  },
+  "workspaces": ["frontend"]
 }
 ```
 
-### Issue: Memory Leak with Three.js Components
+**Note:** npm workspaces used for monorepo orchestration. All actual dependencies live in `frontend/package.json`.
 
-**Symptom:** Browser slows down over time, memory usage increases
+---
 
-**Solution:**
-```typescript
-useEffect(() => {
-  // Create resources
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial();
-  const mesh = new THREE.Mesh(geometry, material);
+## Commit Message Format
 
-  // Cleanup function
-  return () => {
-    geometry.dispose();
-    material.dispose();
-    if (material.map) material.map.dispose();
-  };
-}, []);
+All commits must follow Conventional Commits:
+
+```
+type(scope): brief description
+
+Detail 1
+Detail 2
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Code change that neither fixes nor adds
+- `chore`: Build, CI, tooling changes
+- `docs`: Documentation only
+- `test`: Test only changes
+- `style`: Formatting, no code change
+
+**Scopes:**
+- `vite`: Vite configuration
+- `vitest`: Test infrastructure
+- `eslint`: Linting configuration
+- `ci`: GitHub Actions
+- `structure`: Directory/file organization
+- `sanitize`: Code cleanup
+
+**Author Configuration:**
+```
+Author & Committer: HatmanStack
+Email: 82614182+HatmanStack@users.noreply.github.com
 ```
 
 ---
 
-## Reference Links
+## Verification Criteria
 
-### Official Documentation
-- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
-- [Three.js Documentation](https://threejs.org/docs/)
-- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/)
-- [Zustand Documentation](https://docs.pmnd.rs/zustand/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+Before marking any phase complete:
 
-### TypeScript Resources
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
-- [React TypeScript Best Practices](https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/basic_type_example)
-
-### Testing Resources
-- [Jest Testing Patterns](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
-- [Testing React Hooks](https://react-hooks-testing-library.com/)
+1. **Build passes:** `npm run build` exits 0
+2. **Lint passes:** `npm run lint` exits 0
+3. **Tests pass:** `npm test -- --run` exits 0
+4. **Type check passes:** `npm run type-check` exits 0
+5. **No regressions:** Application runs correctly with `npm start`
 
 ---
 
-## Summary Checklist
+## Risk Mitigation
 
-Before starting any phase, ensure you understand:
+### Migration Risks
 
-- ✅ Why we chose TypeScript over JavaScript
-- ✅ Why Zustand over Context API
-- ✅ How to organize components by layer
-- ✅ Naming convention rules (descriptive & explicit)
-- ✅ When to use Tailwind vs custom CSS
-- ✅ What to test and what to skip
-- ✅ Common patterns for components, hooks, stores
-- ✅ Common pitfalls to avoid
-- ✅ Where to find answers (this document!)
+| Risk | Mitigation |
+|------|------------|
+| Import path breakage | Batch update with regex, verify with TypeScript |
+| Test migration failures | Migrate one test file at a time, verify each |
+| Missing dependencies | Run `npm install` verification after package.json changes |
+| Vite config errors | Start minimal, add features incrementally |
 
-**Ready?** Proceed to [Phase-1.md](./Phase-1.md) to begin TypeScript setup and file structure refactoring.
+### Rollback Strategy
+
+If a phase fails:
+1. `git stash` any uncommitted changes
+2. `git reset --hard` to last known good commit
+3. Review error logs
+4. Fix issues before reattempting
+
+---
+
+## Definition of Done
+
+A phase is complete when:
+- [ ] All tasks in the phase are marked complete
+- [ ] All verification criteria pass
+- [ ] Commit history follows conventional commits
+- [ ] No console errors in browser
+- [ ] No TypeScript errors
+- [ ] No ESLint errors
+- [ ] All tests pass with coverage thresholds met
