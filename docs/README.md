@@ -65,11 +65,10 @@ credentials-canvas/
 │   │   ├── styles/          # Tailwind entry
 │   │   ├── types/           # TypeScript definitions
 │   │   └── utils/           # Utility functions
+│   ├── tests/
+│   │   ├── frontend/        # Test files
+│   │   └── helpers/         # Test utilities
 │   └── public/              # Static assets
-├── tests/
-│   ├── frontend/            # Test files
-│   ├── helpers/             # Test utilities
-│   └── setup.ts             # Test setup
 └── docs/
     └── plans/               # Implementation plans
 ```
@@ -113,21 +112,21 @@ The 3D scene consists of:
 
 ```bash
 git clone https://github.com/hatmanstack/credentials-canvas.git
-cd credentials-canvas
+cd credentials-canvas/frontend
 npm install
 npm run dev
 ```
 
 ### Available Scripts
 
+Run from `frontend/`:
+
 ```bash
 npm run dev        # Start development server
 npm run build      # Production build
 npm run preview    # Preview production build
 npm run test       # Run tests
-npm run lint       # Run ESLint
-npm run type-check # TypeScript verification
-npm run check      # Lint + tests
+npm run lint       # ESLint + TypeScript check
 ```
 
 ### Model Setup
@@ -160,16 +159,16 @@ npm run test -- --coverage  # With coverage report
 ### Test Structure
 
 ```text
-tests/
+frontend/tests/
 ├── frontend/
 │   ├── hooks/           # Custom hook tests
 │   ├── stores/          # Zustand store tests
 │   └── utils/           # Utility function tests
-├── helpers/
-│   ├── storeMocks.ts    # Mock store factories
-│   ├── testUtils.tsx    # Test utilities
-│   └── threeMocks.ts    # Three.js mocks
-└── setup.ts             # Global test setup
+└── helpers/
+    ├── storeMocks.ts    # Mock store factories
+    ├── testUtils.tsx    # Test utilities
+    ├── threeMocks.ts    # Three.js mocks
+    └── setup.ts         # Global test setup
 ```
 
 ### Test Coverage

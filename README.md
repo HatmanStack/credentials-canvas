@@ -39,8 +39,8 @@ Credentials Canvas is an immersive 3D portfolio that showcases projects in an in
 credentials-canvas/
 ├── frontend/           # React + Three.js application
 │   ├── src/
+│   ├── tests/          # Test suite
 │   └── public/
-├── tests/              # Test suite
 └── docs/               # Documentation
 ```
 
@@ -53,7 +53,7 @@ credentials-canvas/
 
 ```bash
 git clone https://github.com/hatmanstack/credentials-canvas.git
-cd credentials-canvas
+cd credentials-canvas/frontend
 npm install
 
 # Download model
@@ -65,12 +65,13 @@ npm run dev
 
 ## Scripts
 
+Run from `frontend/`:
+
 ```bash
 npm run dev        # Development server
 npm run build      # Production build
 npm run test       # Run tests
-npm run lint       # Run ESLint
-npm run check      # Lint + tests
+npm run lint       # ESLint + TypeScript check
 ```
 
 ## Documentation
