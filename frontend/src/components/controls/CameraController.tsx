@@ -6,6 +6,7 @@ import type { Camera } from 'three';
 import { useSceneInteractionStore, useUserInterfaceStore } from '@/stores';
 import { useCameraScrollBehavior } from '@/hooks/useCameraScrollBehavior';
 import { useCameraPositionAnimation } from '@/hooks/useCameraPositionAnimation';
+import { MAIN_CAMERA_POSITIONS, IFRAME_VISIBILITY_THRESHOLDS } from '@/constants/cameraConfiguration';
 
 class OrbitControls extends ThreeOrbitControls {
   currentPosIndex: number;
@@ -44,11 +45,8 @@ export const CameraController: React.FC = React.memo(() => {
   const [shouldResetCamera, setShouldResetCamera] = useState<boolean>(true);
 
   const cameraPositions = useMemo<[number, number, number][]>(() => [
-    usePrimaryCameraPosition === true ? [1, 1, 13] : [10, 1, 13],
-    [4, 1, 2],
-    [3, 1, 3.75],
-    [0, 1, 6.5],
-    [-12, 6, 0],
+    usePrimaryCameraPosition === true ? MAIN_CAMERA_POSITIONS.primary : MAIN_CAMERA_POSITIONS.alternate,
+    ...MAIN_CAMERA_POSITIONS.positions,
   ], [usePrimaryCameraPosition]);
 
   const {
@@ -95,44 +93,35 @@ export const CameraController: React.FC = React.memo(() => {
       controls.current.target.copy(rotationPoint);
       controls.current.update();
 
-      if (
-        camera.position.x > 1.78 &&
-        camera.position.y > 0 &&
-        camera.position.z > 0.25
-      ) {
-        setShouldShowArcadeIframe(true);
-      } else {
-        setShouldShowArcadeIframe(false);
+      // Iframe visibility computed per-frame to sync with smooth camera transitions;
+      // state updates are batched by React, so this doesn't cause excessive re-renders
+      const { arcade, music } = IFRAME_VISIBILITY_THRESHOLDS;
+
+      const shouldShowArcade =
+        camera.position.x > arcade.minX &&
+        camera.position.y > arcade.minY &&
+        camera.position.z > arcade.minZ;
+      setShouldShowArcadeIframe(shouldShowArcade);
+
+      let shouldShowMusic =
+        camera.position.y > music.minY &&
+        camera.position.z > music.minZ;
+
+      if (camera.position.y > music.maxY) {
+        shouldShowMusic = false;
       }
 
       if (
-        camera.position.y > 0 &&
-        camera.position.z > 4.3
+        camera.position.y > music.hideWhen.minY &&
+        camera.position.x > music.hideWhen.minX &&
+        camera.position.z < music.hideWhen.maxZ
       ) {
-        setShouldShowMusicIframe(true);
-      } else {
-        setShouldShowMusicIframe(false);
+        shouldShowMusic = false;
       }
-      if (camera.position.y > 3) {
-        setShouldShowMusicIframe(false);
-      }
-      if (
-        camera.position.y > 1.2 &&
-        camera.position.x > -1.5 &&
-        camera.position.z < 5.2
-      ) {
-        setShouldShowMusicIframe(false);
-      }
+
+      setShouldShowMusicIframe(shouldShowMusic);
     }
   });
-
-  useEffect(() => {
-    if (controls.current && isUserCurrentlyDragging) {
-      controls.current.update();
-      controls.current.enabled = !isUserCurrentlyDragging;
-      controls.current.update();
-    }
-  }, [isUserCurrentlyDragging]);
 
   useEffect(() => {
     controls.current = new OrbitControls(camera, domElement);

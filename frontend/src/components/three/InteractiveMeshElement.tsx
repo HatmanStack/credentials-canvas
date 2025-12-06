@@ -7,6 +7,8 @@ import { INTERACTIVE_LIGHT_MESH_NAMES, CLOSE_UP_CLICK_THRESHOLD_COUNT } from '@/
 export interface InteractiveMeshElementProps {
   children: React.ReactNode;
   meshRef?: React.RefObject<THREE.Mesh>;
+  // R3F mesh props are extensive and version-dependent; index signature avoids
+  // tight coupling to @react-three/fiber internals while preserving prop spreading
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }

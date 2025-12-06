@@ -14,6 +14,8 @@ import {
 } from '@/constants/meshConfiguration';
 
 const dracoLoader = new DRACOLoader();
+// JS decoder chosen over WASM for broader browser compatibility;
+// performance difference is negligible for single-model portfolio scenes
 dracoLoader.setDecoderConfig({ type: 'js' });
 dracoLoader.setDecoderPath('/draco/javascript/');
 
@@ -66,6 +68,8 @@ export const SceneModel: React.FC = React.memo(() => {
       gltf.scene.traverse(node => {
         const mesh = node as THREE.Mesh;
 
+        // Videos are eagerly loaded since all 6 phone screens are visible from
+        // the initial camera position; lazy-loading would cause visible pop-in
         for (let i = 0; i < PHONE_VIDEO_CONFIGURATIONS.length; i++) {
           const config = PHONE_VIDEO_CONFIGURATIONS[i];
 
@@ -78,7 +82,8 @@ export const SceneModel: React.FC = React.memo(() => {
             video.preload = 'auto';
 
             video.play().catch(() => {
-              video.autoplay = false;
+              // Autoplay blocked by browser policy - video will remain paused
+              // User interaction required to start playback
             });
 
             const videoTexture = new THREE.VideoTexture(video);

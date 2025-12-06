@@ -174,6 +174,7 @@ const AppContent: React.FC = () => {
               style={navigationButtonStyle}
               onMouseDown={handleNavigationClick}
               onTouchStart={handleNavigationClick}
+              aria-label="Navigate to next camera position"
             />
             <button
               className={cn(
@@ -192,6 +193,7 @@ const AppContent: React.FC = () => {
               ref={muteButtonRef}
               style={muteButtonStyle}
               onClick={handleMuteToggle}
+              aria-label={isAudioCurrentlyMuted ? 'Unmute audio' : 'Mute audio'}
             />
           </div>
         </Suspense>

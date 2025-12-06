@@ -70,3 +70,38 @@ export const CAMERA_SCROLL_CONFIGURATION: CameraScrollConfiguration = {
   desktop: 0.3,
   mobile: 0.8,
 };
+
+// Main camera positions for orbital navigation
+export const MAIN_CAMERA_POSITIONS: {
+  primary: CameraPositionTuple;
+  alternate: CameraPositionTuple;
+  positions: CameraPositionTuple[];
+} = {
+  primary: [1, 1, 13],
+  alternate: [10, 1, 13],
+  positions: [
+    [4, 1, 2],
+    [3, 1, 3.75],
+    [0, 1, 6.5],
+    [-12, 6, 0],
+  ],
+};
+
+// Iframe visibility thresholds based on camera position
+export const IFRAME_VISIBILITY_THRESHOLDS = {
+  arcade: {
+    minX: 1.78,
+    minY: 0,
+    minZ: 0.25,
+  },
+  music: {
+    minY: 0,
+    minZ: 4.3,
+    maxY: 3,
+    hideWhen: {
+      minY: 1.2,
+      minX: -1.5,
+      maxZ: 5.2,
+    },
+  },
+};
