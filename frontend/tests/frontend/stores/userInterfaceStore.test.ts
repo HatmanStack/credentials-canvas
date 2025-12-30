@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useUserInterfaceStore } from 'stores/userInterfaceStore';
+import { useUserInterfaceStore } from '@/stores';
 import { createMockThemeConfiguration } from 'test-helpers/storeMocks';
 
 describe('userInterfaceStore', () => {

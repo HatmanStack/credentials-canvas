@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
+import { useSceneInteractionStore } from '@/stores';
 
 describe('sceneInteractionStore', () => {
   beforeEach(() => {
