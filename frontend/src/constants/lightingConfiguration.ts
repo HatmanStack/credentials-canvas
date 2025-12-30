@@ -25,6 +25,11 @@ export const LIGHT_COLOR_WHEEL: string[] = [
 
 export const LIGHT_INTENSITY_INITIAL_VALUE: number = 30;
 
+// Slider input range bounds for intensity normalization
+export const SLIDER_INPUT_MIN_VALUE: number = 0.503;
+export const SLIDER_INPUT_MAX_VALUE: number = 0.563;
+export const SLIDER_INPUT_RANGE: number = SLIDER_INPUT_MAX_VALUE - SLIDER_INPUT_MIN_VALUE;
+
 export const POINT_LIGHT_POSITION_CONFIGURATIONS: PointLightPositionConfiguration[] = [
   { position: [10.5, 2.8, 9.35], signName: ['lamppost'] },
   {

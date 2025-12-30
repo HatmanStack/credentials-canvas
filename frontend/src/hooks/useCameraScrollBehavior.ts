@@ -14,8 +14,6 @@ export interface UseCameraScrollBehaviorParameters {
   setCloseUp: (isCloseUp: boolean) => void;
   setCloseUpPosIndex: (index: number) => void;
   setCameraClone: (position: Vector3 | boolean) => void;
-  holderprogress: number;
-  setProgress: (progress: number) => void;
   mobileScroll: number | null;
 }
 

@@ -33,8 +33,6 @@ export const CameraController: React.FC = React.memo(() => {
   const setHasUserStartedScrolling = useSceneInteractionStore(state => state.setHasUserStartedScrolling);
   const currentCameraPositionIndex = useSceneInteractionStore(state => state.currentCameraPositionIndex);
   const setCurrentCameraPositionIndex = useSceneInteractionStore(state => state.setCurrentCameraPositionIndex);
-  const cameraInterpolationProgress = useSceneInteractionStore(state => state.cameraInterpolationProgress);
-  const setCameraInterpolationProgress = useSceneInteractionStore(state => state.setCameraInterpolationProgress);
 
   const currentWindowWidth = useUserInterfaceStore(state => state.currentWindowWidth);
   const setShouldShowArcadeIframe = useUserInterfaceStore(state => state.setShouldShowArcadeIframe);
@@ -65,8 +63,6 @@ export const CameraController: React.FC = React.memo(() => {
     setCloseUp: setIsCloseUpViewActive,
     setCloseUpPosIndex: setCloseUpCameraIndex,
     setCameraClone: setUsePrimaryCameraPosition,
-    holderprogress: cameraInterpolationProgress,
-    setProgress: setCameraInterpolationProgress,
     mobileScroll: mobileScrollTriggerCount
   });
 

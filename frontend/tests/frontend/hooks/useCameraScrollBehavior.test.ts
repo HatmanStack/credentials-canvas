@@ -28,7 +28,6 @@ describe('useCameraScrollBehavior', () => {
   let mockSetCloseUp: Mock;
   let mockSetCloseUpPosIndex: Mock;
   let mockSetCameraClone: Mock;
-  let mockSetProgress: Mock;
   let mockPositions: CameraPositionTuple[];
 
   beforeEach(() => {
@@ -39,7 +38,6 @@ describe('useCameraScrollBehavior', () => {
     mockSetCloseUp = vi.fn();
     mockSetCloseUpPosIndex = vi.fn();
     mockSetCameraClone = vi.fn();
-    mockSetProgress = vi.fn();
     mockPositions = [
       [0, 0, 10],
       [5, 0, 10],
@@ -66,8 +64,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -88,8 +84,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -113,8 +107,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -137,8 +129,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -167,8 +157,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -193,8 +181,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -217,8 +203,6 @@ describe('useCameraScrollBehavior', () => {
             setCloseUp: mockSetCloseUp,
             setCloseUpPosIndex: mockSetCloseUpPosIndex,
             setCameraClone: mockSetCameraClone,
-            holderprogress: 0,
-            setProgress: mockSetProgress,
             mobileScroll,
           }),
         {
@@ -245,8 +229,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -270,8 +252,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -293,8 +273,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -318,8 +296,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -346,8 +322,6 @@ describe('useCameraScrollBehavior', () => {
             setCloseUp: mockSetCloseUp,
             setCloseUpPosIndex: mockSetCloseUpPosIndex,
             setCameraClone: mockSetCameraClone,
-            holderprogress: 0,
-            setProgress: mockSetProgress,
             mobileScroll: null,
           }),
         {
@@ -374,8 +348,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -403,8 +375,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -426,8 +396,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );
@@ -451,8 +419,6 @@ describe('useCameraScrollBehavior', () => {
           setCloseUp: mockSetCloseUp,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           setCameraClone: mockSetCameraClone,
-          holderprogress: 0,
-          setProgress: mockSetProgress,
           mobileScroll: null,
         }),
       );

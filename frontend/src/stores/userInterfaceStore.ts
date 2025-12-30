@@ -1,26 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { VibeThemeConfiguration, LightIntensityConfiguration } from '@/types';
-
-export interface UserInterfaceState {
-  selectedThemeConfiguration: VibeThemeConfiguration | null;
-  titleTextColorHue: number | null;
-  shouldShowArcadeIframe: boolean;
-  shouldShowMusicIframe: boolean;
-  isAudioCurrentlyMuted: boolean;
-  currentWindowWidth: number;
-  currentLightIntensityConfiguration: LightIntensityConfiguration;
-
-  setSelectedThemeConfiguration: (theme: VibeThemeConfiguration | null) => void;
-  setTitleTextColorHue: (hue: number | null) => void;
-  setShouldShowArcadeIframe: (show: boolean) => void;
-  setShouldShowMusicIframe: (show: boolean) => void;
-  setIsAudioCurrentlyMuted: (isMuted: boolean) => void;
-  toggleAudioMute: () => void;
-  setCurrentWindowWidth: (width: number) => void;
-  setCurrentLightIntensityConfiguration: (config: LightIntensityConfiguration) => void;
-  resetUserInterfaceState: () => void;
-}
+import type { UserInterfaceState } from '@/types/storeTypes';
 
 export const useUserInterfaceStore = create<UserInterfaceState>()(
   devtools(

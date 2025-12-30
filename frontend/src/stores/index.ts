@@ -1,14 +1,9 @@
-export {
-  useSceneInteractionStore,
-  type SceneInteractionState,
-} from './sceneInteractionStore';
+export { useSceneInteractionStore } from './sceneInteractionStore';
+export { useUserInterfaceStore } from './userInterfaceStore';
+export { useThreeJSSceneStore } from './threeJSSceneStore';
 
-export {
-  useUserInterfaceStore,
-  type UserInterfaceState,
-} from './userInterfaceStore';
-
-export {
-  useThreeJSSceneStore,
-  type ThreeJSSceneState,
-} from './threeJSSceneStore';
+export type {
+  SceneInteractionState,
+  UserInterfaceState,
+  ThreeJSSceneState,
+} from '@/types/storeTypes';
