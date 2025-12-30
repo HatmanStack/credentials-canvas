@@ -1,16 +1,13 @@
 import React from 'react';
-import type { ThreeEvent } from '@react-three/fiber';
+import type { ThreeEvent, MeshProps } from '@react-three/fiber';
+import type { Mesh } from 'three';
 import { useSceneInteractionStore } from '@/stores';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from '@/constants/urlConfiguration';
 import { INTERACTIVE_LIGHT_MESH_NAMES, CLOSE_UP_CLICK_THRESHOLD_COUNT } from '@/constants/meshConfiguration';
 
-export interface InteractiveMeshElementProps {
+export interface InteractiveMeshElementProps extends Omit<MeshProps, 'onClick'> {
   children: React.ReactNode;
-  meshRef?: React.RefObject<THREE.Mesh>;
-  // R3F mesh props are extensive and version-dependent; index signature avoids
-  // tight coupling to @react-three/fiber internals while preserving prop spreading
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+  meshRef?: React.RefObject<Mesh>;
 }
 
 export const InteractiveMeshElement: React.FC<InteractiveMeshElementProps> = ({

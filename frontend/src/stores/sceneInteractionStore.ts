@@ -1,30 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-
-export interface SceneInteractionState {
-  clickedMeshPosition: string | null;
-  clickedLightName: string | null;
-  totalClickCount: number;
-  isCloseUpViewActive: boolean;
-  isUserCurrentlyDragging: boolean;
-  hasUserStartedScrolling: boolean;
-  mobileScrollTriggerCount: number | null;
-  currentCameraPositionIndex: number;
-  cameraInterpolationProgress: number;
-
-  setClickedMeshPosition: (position: string | null) => void;
-  setClickedLightName: (name: string | null) => void;
-  incrementClickCount: () => void;
-  resetClickCount: () => void;
-  setIsCloseUpViewActive: (isActive: boolean) => void;
-  setIsUserCurrentlyDragging: (isDragging: boolean) => void;
-  setHasUserStartedScrolling: (hasStarted: boolean) => void;
-  setMobileScrollTriggerCount: (count: number | null) => void;
-  triggerMobileScrollNavigation: () => void;
-  setCurrentCameraPositionIndex: (index: number) => void;
-  setCameraInterpolationProgress: (progress: number) => void;
-  resetSceneInteractionState: () => void;
-}
+import type { SceneInteractionState } from '@/types/storeTypes';
 
 export const useSceneInteractionStore = create<SceneInteractionState>()(
   devtools(

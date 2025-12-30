@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useThreeJSSceneStore } from 'stores/threeJSSceneStore';
+import { useThreeJSSceneStore } from '@/stores';
 import { createMockScene } from 'test-helpers/threeMocks';
 
 describe('threeJSSceneStore', () => {

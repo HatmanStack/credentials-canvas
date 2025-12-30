@@ -1,16 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type * as THREE from 'three';
-import type { YouTubePlayer } from '@/types/youtubeTypes';
-
-export interface ThreeJSSceneState {
-  threeJSSceneModel: THREE.Group | THREE.Scene | null;
-  htmlVideoPlayerElement: YouTubePlayer | null;
-
-  setThreeJSSceneModel: (scene: THREE.Group | THREE.Scene | null) => void;
-  setHTMLVideoPlayerElement: (player: YouTubePlayer | null) => void;
-  resetThreeJSSceneState: () => void;
-}
+import type { ThreeJSSceneState } from '@/types/storeTypes';
 
 export const useThreeJSSceneStore = create<ThreeJSSceneState>()(
   devtools(

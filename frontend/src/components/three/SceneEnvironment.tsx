@@ -9,7 +9,9 @@ import {
   LIGHT_COLOR_WHEEL,
   LIGHT_INTENSITY_INITIAL_VALUE,
   POINT_LIGHT_POSITION_CONFIGURATIONS,
-  THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY
+  THEME_TO_LIGHT_COLOR_CONFIGURATION_ARRAY,
+  SLIDER_INPUT_MIN_VALUE,
+  SLIDER_INPUT_RANGE,
 } from '@/constants/lightingConfiguration';
 
 export const SceneEnvironment: React.FC = React.memo(() => {
@@ -44,9 +46,8 @@ export const SceneEnvironment: React.FC = React.memo(() => {
   useEffect(() => {
     const sliderName = currentLightIntensityConfiguration.sliderName;
     const intensity = currentLightIntensityConfiguration.intensity;
-    const oldRange = 0.563 - 0.503;
     const normalizedIntensity =
-      ((intensity - 0.503) / oldRange) * LIGHT_INTENSITY_INITIAL_VALUE;
+      ((intensity - SLIDER_INPUT_MIN_VALUE) / SLIDER_INPUT_RANGE) * LIGHT_INTENSITY_INITIAL_VALUE;
 
     setLightIntensities(prevIntensities => {
       const newIntensities = { ...prevIntensities };
