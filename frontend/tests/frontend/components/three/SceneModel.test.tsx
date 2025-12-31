@@ -8,11 +8,11 @@ import { useSceneInteractionStore, useThreeJSSceneStore } from '@/stores';
 vi.mock('@/constants/urlConfiguration', () => ({
   MESH_NAME_TO_URL_MAPPING: {
     Sign_Github: 'https://github.com/HatmanStack',
-    Sign_About: 'https://www.gemenielabs.com/contact/',
+    Sign_About: 'https://gemenielabs.hatstack.fun',
   },
   INTERACTIVE_PHONE_URL_CONFIGURATIONS: [
-    { signName: ['Phone_Stocks_5', 'Phone_Stocks_Text'], url: 'https://www.gemenielabs.com/#stocks' },
-    { signName: ['Phone_Vocabulary_5'], url: 'https://www.gemenielabs.com/#vocabulary' },
+    { signName: ['Phone_Stocks_5', 'Phone_Stocks_Text'], url: 'https://stocks.hatstack.fun' },
+    { signName: ['Phone_Vocabulary_5'], url: 'https://vocabulary.hatstack.fun' },
     { signName: ['Cube009_2'], url: '' },
     { signName: ['Music_Control_Box', 'Light_Control_Box'], url: '' },
   ],

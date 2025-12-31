@@ -102,23 +102,6 @@ describe('LaunchScreen', () => {
   });
 
   describe('launch functionality', () => {
-    it('should call setSelectedThemeConfiguration when LAUNCH is clicked with a theme selected', () => {
-      const { container } = render(<LaunchScreen />);
-
-      const urbanCheckbox = container.querySelector('#urban-checkbox') as HTMLInputElement;
-      fireEvent.click(urbanCheckbox);
-
-      const launchButton = screen.getByRole('button', { name: /launch/i });
-      fireEvent.click(launchButton);
-
-      expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '0',
-          name: 'urban',
-        })
-      );
-    });
-
     it('should call setSelectedThemeConfiguration with null when no theme selected', () => {
       render(<LaunchScreen />);
 
@@ -128,55 +111,30 @@ describe('LaunchScreen', () => {
       expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(null);
     });
 
-    it('should launch with rural theme when selected', () => {
-      const { container } = render(<LaunchScreen />);
+    const themes = [
+      { id: '0', name: 'urban', checkboxId: 'urban-checkbox' },
+      { id: '1', name: 'rural', checkboxId: 'rural-checkbox' },
+      { id: '2', name: 'classy', checkboxId: 'classy-checkbox' },
+      { id: '3', name: 'chill', checkboxId: 'chill-checkbox' },
+    ];
 
-      const ruralCheckbox = container.querySelector('#rural-checkbox') as HTMLInputElement;
-      fireEvent.click(ruralCheckbox);
+    themes.forEach(theme => {
+      it(`should launch with ${theme.name} theme when selected`, () => {
+        const { container } = render(<LaunchScreen />);
 
-      const launchButton = screen.getByRole('button', { name: /launch/i });
-      fireEvent.click(launchButton);
+        const checkbox = container.querySelector(`#${theme.checkboxId}`) as HTMLInputElement;
+        fireEvent.click(checkbox);
 
-      expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '1',
-          name: 'rural',
-        })
-      );
-    });
+        const launchButton = screen.getByRole('button', { name: /launch/i });
+        fireEvent.click(launchButton);
 
-    it('should launch with classy theme when selected', () => {
-      const { container } = render(<LaunchScreen />);
-
-      const classyCheckbox = container.querySelector('#classy-checkbox') as HTMLInputElement;
-      fireEvent.click(classyCheckbox);
-
-      const launchButton = screen.getByRole('button', { name: /launch/i });
-      fireEvent.click(launchButton);
-
-      expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '2',
-          name: 'classy',
-        })
-      );
-    });
-
-    it('should launch with chill theme when selected', () => {
-      const { container } = render(<LaunchScreen />);
-
-      const chillCheckbox = container.querySelector('#chill-checkbox') as HTMLInputElement;
-      fireEvent.click(chillCheckbox);
-
-      const launchButton = screen.getByRole('button', { name: /launch/i });
-      fireEvent.click(launchButton);
-
-      expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '3',
-          name: 'chill',
-        })
-      );
+        expect(mockSetSelectedThemeConfiguration).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: theme.id,
+            name: theme.name,
+          })
+        );
+      });
     });
   });
 
