@@ -132,7 +132,7 @@ npm run lint       # ESLint + TypeScript check
 ### Model Setup
 
 Download the GLTF model:
-1. Get `.glb` file from [production deployment](https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb)
+1. Get `.glb` file from [production deployment](https://credentials.hatstack.fun/compressed_model.glb)
 2. Place in `frontend/public/compressed_model.glb`
 
 ### Model Optimization
