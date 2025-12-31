@@ -19,7 +19,7 @@
 </div>
 
 <p><b>Interactive 3D Portfolio Experience</b></p>
-<p><a href="https://production.dld9ll6ojjns2.amplifyapp.com/">Experience Credentials Canvas »</a></p>
+<p><a href="https://credentials.hatstack.fun">Experience Credentials Canvas »</a></p>
 
 <p align="center">
   <img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Interactive 3D Environment">

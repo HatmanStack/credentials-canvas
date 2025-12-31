@@ -92,7 +92,7 @@ export const LaunchScreen: React.FC = React.memo(() => {
           </text>
         </svg>
         <a
-          href="https://www.cg-portfolio.com"
+          href="https://portfolio.hatstack.fun"
           className={cn(
             'text-white no-underline',
             'mt-24 mb-12',
