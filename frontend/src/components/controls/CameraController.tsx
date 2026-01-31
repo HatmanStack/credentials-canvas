@@ -43,7 +43,7 @@ export const CameraController: React.FC = React.memo(() => {
   const [shouldResetCamera, setShouldResetCamera] = useState<boolean>(true);
 
   const cameraPositions = useMemo<[number, number, number][]>(() => [
-    usePrimaryCameraPosition === true ? MAIN_CAMERA_POSITIONS.primary : MAIN_CAMERA_POSITIONS.alternate,
+    usePrimaryCameraPosition ? MAIN_CAMERA_POSITIONS.primary : MAIN_CAMERA_POSITIONS.alternate,
     ...MAIN_CAMERA_POSITIONS.positions,
   ], [usePrimaryCameraPosition]);
 
