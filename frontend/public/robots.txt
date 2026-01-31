@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://credentials.hatstack.fun/sitemap.xml
+
+# Crawl-delay for heavy 3D content
+Crawl-delay: 10

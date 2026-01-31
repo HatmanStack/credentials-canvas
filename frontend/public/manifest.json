@@ -1,7 +1,7 @@
 {
     "name": "Credentials Canvas",
     "short_name": "cc",
-    "description": "A portfolio of projects",
+    "description": "Interactive 3D portfolio showcasing web apps, AI projects, and creative experiments by HatmanStack",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#000000",
