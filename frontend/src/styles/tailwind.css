@@ -21,3 +21,50 @@
     50%
   );
 }
+
+/* Iframe Wrappers */
+.arcadewrapper {
+  width: 140px;
+  height: 160px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.arcadewrapper-small {
+  width: 140px;
+  height: 220px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.arcade iframe {
+  width: 560px;
+  height: 840px;
+  transform-style: preserve-3d;
+  border: none;
+  transform: scale(0.25);
+  transform-origin: 0 0;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.arcade iframe.loaded {
+  opacity: 1;
+}
+
+.musicwrapper {
+  width: 275px;
+  height: 115px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.music iframe {
+  width: 600px;
+  height: 300px;
+  border: none;
+  transform-style: preserve-3d;
+  transform: scale(0.4);
+  transform-origin: 0 0;
+}

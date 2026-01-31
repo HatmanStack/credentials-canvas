@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { useProgress, useGLTF } from '@react-three/drei';
 import { SceneEnvironment } from '@/components/three/SceneEnvironment';
 import { SceneModel } from '@/components/three/SceneModel';
+import { SceneAnimations } from '@/components/three/SceneAnimations';
 import { CameraController } from '@/components/controls/CameraController';
 import { AudioController } from '@/components/controls/AudioController';
 import { LaunchScreen } from '@/components/ui/LaunchScreen';
@@ -135,15 +136,7 @@ const AppContent: React.FC = () => {
     setMobileScrollTriggerCount((mobileScrollTriggerCount || 0) + 1);
   }, [setMobileScrollTriggerCount, mobileScrollTriggerCount]);
 
-  const navigationButtonStyle = useMemo((): React.CSSProperties => ({
-    opacity: loadingProgress < 100 ? 0 : 1,
-    backgroundImage: `url(${arrowIcon})`,
-  }), [loadingProgress]);
-
-  const muteButtonStyle = useMemo((): React.CSSProperties => ({
-    opacity: loadingProgress < 100 ? 0 : 1,
-    backgroundImage: `url(${isAudioCurrentlyMuted ? mute : volumeUp})`,
-  }), [loadingProgress, isAudioCurrentlyMuted]);
+  const buttonOpacity = loadingProgress < 100 ? 0 : 1;
 
   return (
     <>
@@ -154,6 +147,7 @@ const AppContent: React.FC = () => {
             <Canvas>
               <AudioController />
               <SceneModel />
+              <SceneAnimations />
               <CameraController />
               <SceneEnvironment />
             </Canvas>
@@ -164,18 +158,19 @@ const AppContent: React.FC = () => {
                 'ml-5 mb-5',
                 'border-0 p-0',
                 'bg-rest-color',
-                'bg-no-repeat bg-center',
-                'bg-[length:75%]',
+                'flex items-center justify-center',
                 'z-10',
                 'active:scale-95 active:bg-active-color',
                 'transition-transform duration-200'
               )}
               ref={navigationButtonRef}
-              style={navigationButtonStyle}
+              style={{ opacity: buttonOpacity }}
               onMouseDown={handleNavigationClick}
               onTouchStart={handleNavigationClick}
               aria-label="Navigate to next camera position"
-            />
+            >
+              <img src={arrowIcon} alt="" className="w-3/4 h-3/4" />
+            </button>
             <button
               className={cn(
                 'w-10 h-10 rounded-full',
@@ -183,18 +178,19 @@ const AppContent: React.FC = () => {
                 'mt-5 mr-5',
                 'border-0 p-0',
                 'cursor-pointer',
-                'bg-no-repeat bg-center',
-                'bg-[length:75%]',
+                'flex items-center justify-center',
                 'z-10',
                 'transition-transform duration-200',
                 'active:scale-95',
                 isAudioCurrentlyMuted ? 'bg-rest-color' : 'bg-active-color'
               )}
               ref={muteButtonRef}
-              style={muteButtonStyle}
+              style={{ opacity: buttonOpacity }}
               onClick={handleMuteToggle}
               aria-label={isAudioCurrentlyMuted ? 'Unmute audio' : 'Mute audio'}
-            />
+            >
+              <img src={isAudioCurrentlyMuted ? mute : volumeUp} alt="" className="w-3/4 h-3/4" />
+            </button>
           </div>
         </Suspense>
       ) : (
