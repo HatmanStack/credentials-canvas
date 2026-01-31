@@ -10,8 +10,7 @@ coverage/
 .vscode/
 
 # Model files
-public/compressed.glb
-public/compressed_model.glb
+*.glb
 
 # Claude local config
 CLAUDE.md
