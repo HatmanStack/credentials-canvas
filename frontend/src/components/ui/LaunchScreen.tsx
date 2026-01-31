@@ -9,7 +9,6 @@ export const LaunchScreen: React.FC = React.memo(() => {
   const setSelectedThemeConfiguration = useUserInterfaceStore(state => state.setSelectedThemeConfiguration);
 
   const vibeTextRef = useRef<SVGSVGElement>(null);
-  const graphicsTextRef = useRef<SVGSVGElement>(null);
   const [selectedVibeOption, setSelectedVibeOption] = useState<string | null>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -24,9 +23,6 @@ export const LaunchScreen: React.FC = React.memo(() => {
   const setAnimationName = useCallback((animationName: string): void => {
     if (vibeTextRef.current) {
       vibeTextRef.current.style.animationName = animationName;
-    }
-    if (graphicsTextRef.current) {
-      graphicsTextRef.current.style.animationName = animationName;
     }
   }, []);
 
@@ -81,16 +77,6 @@ export const LaunchScreen: React.FC = React.memo(() => {
         >
             LAUNCH
         </button>
-        <svg
-          className="text-stroke-graphics"
-          ref={graphicsTextRef}
-          style={{ width: 620 }}
-          display="none"
-        >
-          <text y="50%" dy=".6em">
-              LOW GRAPHICS
-          </text>
-        </svg>
         <a
           href="https://portfolio.hatstack.fun"
           className={cn(
