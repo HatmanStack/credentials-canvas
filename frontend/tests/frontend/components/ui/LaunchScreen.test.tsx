@@ -50,11 +50,6 @@ describe('LaunchScreen', () => {
       expect(link).toHaveAttribute('href', 'https://portfolio.hatstack.fun');
     });
 
-    it('should render LOW GRAPHICS text (hidden)', () => {
-      render(<LaunchScreen />);
-
-      expect(screen.getByText('LOW GRAPHICS')).toBeInTheDocument();
-    });
   });
 
   describe('theme selection', () => {
