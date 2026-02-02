@@ -53,6 +53,10 @@ export const CameraController: React.FC = React.memo(() => {
   } = useThree();
   const controls = useRef<OrbitControls | null>(null);
 
+  // Track previous iframe visibility to avoid per-frame setState calls
+  const prevArcadeVisible = useRef<boolean>(true);
+  const prevMusicVisible = useRef<boolean>(true);
+
   useCameraScrollBehavior({
     currentPosIndex: currentCameraPositionIndex,
     setCurrentPosIndex: setCurrentCameraPositionIndex,
@@ -90,14 +94,18 @@ export const CameraController: React.FC = React.memo(() => {
       controls.current.update();
 
       // Iframe visibility computed per-frame to sync with smooth camera transitions;
-      // state updates are batched by React, so this doesn't cause excessive re-renders
+      // Only update state when visibility actually changes to avoid 60+ setState calls/second
       const { arcade, music } = IFRAME_VISIBILITY_THRESHOLDS;
 
       const shouldShowArcade =
         camera.position.x > arcade.minX &&
         camera.position.y > arcade.minY &&
         camera.position.z > arcade.minZ;
-      setShouldShowArcadeIframe(shouldShowArcade);
+
+      if (shouldShowArcade !== prevArcadeVisible.current) {
+        setShouldShowArcadeIframe(shouldShowArcade);
+        prevArcadeVisible.current = shouldShowArcade;
+      }
 
       let shouldShowMusic =
         camera.position.y > music.minY &&
@@ -115,7 +123,10 @@ export const CameraController: React.FC = React.memo(() => {
         shouldShowMusic = false;
       }
 
-      setShouldShowMusicIframe(shouldShowMusic);
+      if (shouldShowMusic !== prevMusicVisible.current) {
+        setShouldShowMusicIframe(shouldShowMusic);
+        prevMusicVisible.current = shouldShowMusic;
+      }
     }
   });
 

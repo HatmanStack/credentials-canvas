@@ -14,6 +14,7 @@ import {
   SLIDER_SCALE_VALUES,
   TEXT_ELEMENT_POSITION_ARRAY,
   TEXT_ELEMENT_ROTATION_ARRAY,
+  SPRING_PHYSICS,
 } from '@/constants/animationConfiguration';
 import type { YouTubePlayer } from '@/types/youtubeTypes';
 import type { CameraPositionTuple } from '@/types';
@@ -36,29 +37,36 @@ function useSliderSpring(
   slider: string,
   index: number,
   initialY: number,
-  sliderPositions: CameraPositionTuple[],
   setIsDragging: (dragging: boolean) => void,
   setLightIntensity: (config: { sliderName: string; intensity: number }) => void
 ): SliderSpringResult {
+  // Track base position separately to avoid mutating the original array
+  const basePositionRef = useRef<number>(initialY);
+
   const [{ y }, set] = useSpring(() => ({
     y: initialY,
     config: {
-      tension: 15,
-      friction: 10,
+      tension: SPRING_PHYSICS.SLIDER_TENSION,
+      friction: SPRING_PHYSICS.SLIDER_FRICTION,
     },
   }));
 
   const bind = useDrag(
     ({ down, movement: [, my] }) => {
-      const movementY = -my * 0.001 + sliderPositions[index][1];
+      const movementY = -my * 0.001 + basePositionRef.current;
       const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
       const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
       const newY = down
         ? Math.min(Math.max(movementY, minY), maxY)
-        : sliderPositions[index][1];
+        : basePositionRef.current;
       set.start({ y: newY });
       setIsDragging(down);
-      sliderPositions[index][1] = newY;
+
+      // Update base position when drag ends at a new position
+      if (down) {
+        basePositionRef.current = newY;
+      }
+
       setLightIntensity({ sliderName: slider, intensity: newY });
     },
     { filterTaps: true }
@@ -110,7 +118,6 @@ export const SceneAnimations: React.FC = React.memo(() => {
     'Slider_4',
     0,
     sliderPositions.current[0][1],
-    sliderPositions.current,
     setIsUserCurrentlyDragging,
     setCurrentLightIntensityConfiguration
   );
@@ -122,7 +129,7 @@ export const SceneAnimations: React.FC = React.memo(() => {
       const isMatch = PHONE_MESH_NAMES.indexOf(clickedPhoneName || '') === index;
       return {
         scale: isMatch && isCloseUpViewActive ? [100, 100, 100] : [1, 1, 1],
-        config: { tension: 200, friction: 5 },
+        config: { tension: SPRING_PHYSICS.TEXT_TENSION, friction: SPRING_PHYSICS.TEXT_FRICTION },
       };
     })
   );
@@ -163,21 +170,51 @@ export const SceneAnimations: React.FC = React.memo(() => {
     }
   }, [threeJSSceneModel]);
 
+  // Track YouTube player instance for cleanup
+  const playerInstanceRef = useRef<YouTubePlayer | null>(null);
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://www.youtube.com/iframe_api';
-    document.body.appendChild(script);
+
+    // Preserve any existing callback to avoid breaking other integrations
+    const originalCallback = window.onYouTubeIframeAPIReady;
 
     window.onYouTubeIframeAPIReady = () => {
+      // Chain the original callback if it existed
+      if (typeof originalCallback === 'function') {
+        originalCallback();
+      }
+
       if (iframe2Ref.current && window.YT) {
-        const playerInstance = new window.YT.Player(iframe2Ref.current, {
+        const player = new window.YT.Player(iframe2Ref.current, {
           videoId: currentIframeConfig.srcID,
         });
-        setHTMLVideoPlayerElement(playerInstance);
+        playerInstanceRef.current = player;
+        setHTMLVideoPlayerElement(player);
       }
     };
 
+    document.body.appendChild(script);
+
     return () => {
+      // Destroy YouTube player to release resources
+      if (playerInstanceRef.current) {
+        try {
+          playerInstanceRef.current.destroy?.();
+        } catch {
+          // Player may already be destroyed
+        }
+        playerInstanceRef.current = null;
+        setHTMLVideoPlayerElement(null);
+      }
+
+      // Restore original callback
+      if (typeof originalCallback === 'function') {
+        window.onYouTubeIframeAPIReady = originalCallback;
+      }
+
+      // Remove script element
       if (document.body.contains(script)) {
         document.body.removeChild(script);
       }

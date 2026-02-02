@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import type { ThreeEvent } from '@react-three/fiber';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useGLTF } from '@react-three/drei';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { useSceneInteractionStore, useThreeJSSceneStore } from '@/stores';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from '@/constants/urlConfiguration';
 import {
@@ -12,18 +10,15 @@ import {
   CLOSE_UP_CLICK_THRESHOLD_COUNT,
   GLTF_MODEL_FILE_PATH
 } from '@/constants/meshConfiguration';
+import { logger } from '@/utils/logger';
 
-const dracoLoader = new DRACOLoader();
-// JS decoder chosen over WASM for broader browser compatibility;
-// performance difference is negligible for single-model portfolio scenes
-dracoLoader.setDecoderConfig({ type: 'js' });
-dracoLoader.setDecoderPath('/draco/javascript/');
-
-const gltfLoader = new GLTFLoader();
-gltfLoader.setDRACOLoader(dracoLoader);
+// DRACO decoder path - drei's useGLTF handles loader setup internally
+// Using JS decoder for broader browser compatibility
+const DRACO_DECODER_PATH = '/draco/javascript/';
 
 function useGLTFLoaderWithDRACO(path: string) {
-  const gltf = useGLTF(path, gltfLoader as unknown as boolean);
+  // drei's useGLTF accepts a string path to DRACO decoders as second argument
+  const gltf = useGLTF(path, DRACO_DECODER_PATH);
 
   useEffect(() => {
     return () => {
@@ -81,9 +76,13 @@ export const SceneModel: React.FC = React.memo(() => {
             video.playsInline = true;
             video.preload = 'auto';
 
-            video.play().catch(() => {
+            video.play().catch((error: Error) => {
               // Autoplay blocked by browser policy - video will remain paused
               // User interaction required to start playback
+              logger.warn('Video autoplay blocked', {
+                meshName: config.name,
+                error: error.message,
+              });
             });
 
             const videoTexture = new THREE.VideoTexture(video);

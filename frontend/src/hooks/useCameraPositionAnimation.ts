@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
 import {
@@ -9,6 +9,7 @@ import {
   MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
   NO_CLOSE_UP_INDEX
 } from '@/constants/cameraConfiguration';
+import { ANIMATION_DURATIONS } from '@/constants/animationConfiguration';
 import type { CameraPositionTuple } from '@/types';
 
 export interface UseCameraPositionAnimationParameters {
@@ -76,55 +77,51 @@ export const useCameraPositionAnimation = ({
     }
   }, [closeUpCameraIndex, screenWidth, camera]);
 
-  const animateInitialCameraMovement = useCallback((
-    cameraToAnimate: Camera,
-    targetPoint: Vector3,
-    arcCenter: Vector3,
-    radius: number,
-    startAngle: number,
-    endAngle: number,
-    duration: number
-  ): void => {
-    let animationStartTime: number | null = null;
-    const animateFrame = (currentTime: number): void => {
-      if (!animationStartTime) animationStartTime = currentTime;
-      const elapsedTime = currentTime - animationStartTime;
-      const animationProgress = elapsedTime / duration;
-      setUsePrimaryCameraPosition(cameraToAnimate.position.clone());
-
-      if (animationProgress < 1) {
-        const currentAngle = startAngle + (endAngle - startAngle) * animationProgress;
-        const xPosition = arcCenter.y + radius * Math.cos(currentAngle);
-        const zPosition = arcCenter.z + radius * Math.sin(currentAngle);
-        cameraToAnimate.position.z = xPosition;
-        cameraToAnimate.position.y = zPosition;
-        cameraToAnimate.lookAt(targetPoint);
-        requestAnimationFrame(animateFrame);
-      }
-    };
-    requestAnimationFrame(animateFrame);
-  }, [setUsePrimaryCameraPosition]);
+  // Track animation frame ID for cleanup on unmount
+  const animationFrameIdRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!camera) return;
+
     const targetPoint = new Vector3(...CAMERA_ROTATION_POSITION_ARRAY[0]);
     const arcCenter = new Vector3(10, 15, 15);
     const radius = 15;
     const startAngle = Math.PI / 2;
     const endAngle = (Math.PI * 3) / 2;
-    const duration = 3500;
+    const duration = ANIMATION_DURATIONS.INITIAL_CAMERA_ARC_MS;
 
-    if (camera) {
-      animateInitialCameraMovement(
-        camera,
-        targetPoint,
-        arcCenter,
-        radius,
-        startAngle,
-        endAngle,
-        duration
-      );
-    }
-  }, [camera, animateInitialCameraMovement]);
+    let animationStartTime: number | null = null;
+    let isCancelled = false;
+
+    const animateFrame = (currentTime: number): void => {
+      if (isCancelled) return;
+
+      if (!animationStartTime) animationStartTime = currentTime;
+      const elapsedTime = currentTime - animationStartTime;
+      const animationProgress = elapsedTime / duration;
+      setUsePrimaryCameraPosition(camera.position.clone());
+
+      if (animationProgress < 1) {
+        const currentAngle = startAngle + (endAngle - startAngle) * animationProgress;
+        const xPosition = arcCenter.y + radius * Math.cos(currentAngle);
+        const zPosition = arcCenter.z + radius * Math.sin(currentAngle);
+        camera.position.z = xPosition;
+        camera.position.y = zPosition;
+        camera.lookAt(targetPoint);
+        animationFrameIdRef.current = requestAnimationFrame(animateFrame);
+      }
+    };
+
+    animationFrameIdRef.current = requestAnimationFrame(animateFrame);
+
+    return () => {
+      isCancelled = true;
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
+      }
+    };
+  }, [camera, setUsePrimaryCameraPosition]);
 
   return { rotationPoint: cameraRotationTarget };
 };

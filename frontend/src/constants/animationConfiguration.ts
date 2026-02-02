@@ -1,5 +1,39 @@
 import type { CameraPositionTuple } from '@/types';
 
+/**
+ * Animation timing and physics constants
+ * Extracted from inline magic numbers for maintainability
+ */
+export const ANIMATION_DURATIONS = {
+  /** Initial camera arc animation in milliseconds */
+  INITIAL_CAMERA_ARC_MS: 3500,
+} as const;
+
+export const SPRING_PHYSICS = {
+  /** Slider spring tension (lower = slower) */
+  SLIDER_TENSION: 15,
+  /** Slider spring friction (lower = more oscillation) */
+  SLIDER_FRICTION: 10,
+  /** Text element spring tension */
+  TEXT_TENSION: 200,
+  /** Text element spring friction */
+  TEXT_FRICTION: 5,
+} as const;
+
+export const INTERPOLATION_STEPS = {
+  /** Default camera interpolation steps for smooth transitions */
+  DEFAULT: 2,
+  /** Extended interpolation for positions 1-3 */
+  EXTENDED: 3,
+} as const;
+
+export const LIGHT_INTENSITY_MULTIPLIERS = {
+  /** Primary light intensity multiplier */
+  PRIMARY: 4,
+  /** Secondary light intensity multiplier */
+  SECONDARY: 0.25,
+} as const;
+
 export interface VibeIframeURLConfiguration {
   iframe1: string;
   iframe2: string;
