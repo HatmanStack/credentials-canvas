@@ -11,6 +11,3 @@ coverage/
 
 # Model files
 *.glb
-
-# Claude local config
-CLAUDE.md
