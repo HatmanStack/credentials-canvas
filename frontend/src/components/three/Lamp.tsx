@@ -68,6 +68,7 @@ export const CustomGeometryParticles: React.FC<CustomGeometryParticlesProps> = R
         <bufferAttribute
           attach="attributes-position"
           /* eslint-disable react/no-unknown-property */
+          args={[particlesPosition, 3]}
           count={particlesPosition.length / 3}
           array={particlesPosition}
           itemSize={3}

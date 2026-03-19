@@ -1,11 +1,11 @@
 import React from 'react';
-import type { ThreeEvent, MeshProps } from '@react-three/fiber';
+import type { ThreeEvent } from '@react-three/fiber';
 import type { Mesh } from 'three';
 import { useSceneInteractionStore } from '@/stores';
 import { MESH_NAME_TO_URL_MAPPING, INTERACTIVE_PHONE_URL_CONFIGURATIONS } from '@/constants/urlConfiguration';
 import { INTERACTIVE_LIGHT_MESH_NAMES, CLOSE_UP_CLICK_THRESHOLD_COUNT } from '@/constants/meshConfiguration';
 
-export interface InteractiveMeshElementProps extends Omit<MeshProps, 'onClick'> {
+export interface InteractiveMeshElementProps {
   children: React.ReactNode;
   meshRef?: React.RefObject<Mesh>;
 }
