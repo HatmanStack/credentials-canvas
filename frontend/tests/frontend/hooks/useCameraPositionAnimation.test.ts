@@ -377,7 +377,9 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      expect(true).toBe(true);
+      // When closeUpPosIndex is null, camera.position.copy should not be called
+      // for the close-up positioning effect
+      expect(mockCamera.position.copy).not.toHaveBeenCalled();
     });
 
     it('should update position when closeUpPosIndex changes', () => {
