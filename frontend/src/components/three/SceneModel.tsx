@@ -119,8 +119,17 @@ export const SceneModel: React.FC = React.memo(() => {
 
     return () => {
       Object.values(currentVideoRefs).forEach(video => {
-        if (video && !video.paused) {
-          video.pause();
+        if (video) {
+          if (!video.paused) {
+            video.pause();
+          }
+          // Release media decode context by clearing source
+          video.removeAttribute('src');
+          video.load();
+          // Remove from DOM if attached
+          if (video.parentNode) {
+            video.parentNode.removeChild(video);
+          }
         }
       });
       Object.values(currentTextureRefs).forEach(texture => {
