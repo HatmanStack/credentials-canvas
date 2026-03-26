@@ -10,7 +10,7 @@ vi.mock('constants/cameraConfiguration', () => ({
     mobile: 0.2,
     desktop: 0.1,
   },
-  NO_CLOSE_UP_INDEX: 9,
+  NO_CLOSE_UP_INDEX: null,
   CAMERA_ROTATION_POSITION_ARRAY: [
     [0, 0, 10],
     [5, 0, 10],
@@ -140,7 +140,7 @@ describe('useCameraScrollBehavior', () => {
 
       expect(mockSetScrollStarted).toHaveBeenCalledWith(true);
       expect(mockSetCloseUp).toHaveBeenCalledWith(false);
-      expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(9);
+      expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(null);
     });
 
     it('should clean up wheel event listener on unmount', () => {
@@ -214,7 +214,7 @@ describe('useCameraScrollBehavior', () => {
 
       expect(mockSetScrollStarted).toHaveBeenCalledWith(true);
       expect(mockSetCloseUp).toHaveBeenCalledWith(false);
-      expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(9);
+      expect(mockSetCloseUpPosIndex).toHaveBeenCalledWith(null);
     });
 
     it('should update camera position when handleMobileScroll is called', () => {

@@ -11,6 +11,12 @@
     "preview": "cd frontend && npx vite preview",
     "test": "cd frontend && npx vitest",
     "lint": "cd frontend && npx eslint src && npx tsc --noEmit",
-    "check": "npm run lint && cd frontend && npx vitest --run"
+    "check": "npm run lint && cd frontend && npx vitest --run",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "husky": "^9.1.7"
   }
 }

@@ -38,8 +38,8 @@ export const CameraController: React.FC = React.memo(() => {
   const setShouldShowArcadeIframe = useUserInterfaceStore(state => state.setShouldShowArcadeIframe);
   const setShouldShowMusicIframe = useUserInterfaceStore(state => state.setShouldShowMusicIframe);
 
-  const [closeUpCameraIndex, setCloseUpCameraIndex] = useState<number>(0);
-  const [usePrimaryCameraPosition, setUsePrimaryCameraPosition] = useState<Vector3 | boolean>(true);
+  const [closeUpCameraIndex, setCloseUpCameraIndex] = useState<number | null>(null);
+  const [usePrimaryCameraPosition, setUsePrimaryCameraPosition] = useState<Vector3 | null>(new Vector3());
   const [shouldResetCamera, setShouldResetCamera] = useState<boolean>(true);
 
   const cameraPositions = useMemo<[number, number, number][]>(() => [

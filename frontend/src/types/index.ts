@@ -37,17 +37,3 @@ export type {
 export type {
   YouTubePlayer,
 } from './youtubeTypes';
-
-export type {
-  CameraPosition,
-  ThemeId,
-  HueValue,
-  InteractiveMeshName,
-} from './brandedTypes';
-
-export {
-  createCameraPosition,
-  createHueValue,
-  isThemeId,
-  createInteractiveMeshName,
-} from './brandedTypes';

@@ -29,7 +29,7 @@ Credentials Canvas is an immersive 3D portfolio experience built with Three.js a
 
 ### Frontend Stack
 
-- **React 18** - UI framework
+- **React 19** - UI framework
 - **Three.js** - 3D rendering engine
 - **React Three Fiber** - React renderer for Three.js
 - **React Three Drei** - Useful helpers for R3F
@@ -78,19 +78,21 @@ credentials-canvas/
 The app uses three Zustand stores:
 
 1. **SceneInteractionStore** - User interactions with 3D scene
-   - Mesh/light clicks
-   - Camera position and scroll state
-   - View modes (close-up, dragging)
+   - Mesh/light clicks (`clickedMeshPosition`, `clickedLightName`, `totalClickCount`)
+   - Camera position and scroll state (`currentCameraPositionIndex`, `cameraInterpolationProgress`, `hasUserStartedScrolling`)
+   - View modes (`isCloseUpViewActive`, `isUserCurrentlyDragging`)
+   - Mobile navigation (`mobileScrollTriggerCount`)
 
 2. **UserInterfaceStore** - UI state
-   - Theme selection
-   - Audio mute state
-   - Window dimensions
-   - Light intensity controls
+   - Theme selection (`selectedThemeConfiguration`, `titleTextColorHue`)
+   - Audio mute state (`isAudioCurrentlyMuted`)
+   - Window dimensions (`currentWindowWidth`)
+   - Light intensity controls (`currentLightIntensityConfiguration`)
+   - Iframe visibility (`shouldShowArcadeIframe`, `shouldShowMusicIframe`)
 
 3. **ThreeJSSceneStore** - Three.js object references
-   - GLTF scene model
-   - Video player element
+   - GLTF scene model (`threeJSSceneModel`)
+   - Video player element (`htmlVideoPlayerElement`)
 
 ### Three.js Scene Structure
 
@@ -100,6 +102,10 @@ The 3D scene consists of:
 - Point lights with interactive controls
 - Video textures on phone screens
 - Particle effects for atmosphere
+
+### Logger Utility
+
+A structured logger at `utils/logger.ts` provides leveled logging (debug, info, warn, error) that only outputs to the console in development mode (`import.meta.env.DEV`). It uses a ring buffer (max 100 entries) to prevent unbounded memory growth, and stored events can be retrieved via `getLogs()` for debugging.
 
 ## Development
 
@@ -161,6 +167,15 @@ npm run test -- --coverage  # With coverage report
 ```text
 frontend/tests/
 ├── frontend/
+│   ├── components/      # Component tests
+│   │   ├── controls/    # Camera, audio controller tests
+│   │   ├── three/       # 3D scene component tests
+│   │   ├── ui/          # UI component tests
+│   │   ├── App.test.tsx
+│   │   ├── ArcadeIframe.test.tsx
+│   │   ├── Lamp.test.tsx
+│   │   ├── SliderController.test.tsx
+│   │   └── YouTubeMusicPlayer.test.tsx
 │   ├── hooks/           # Custom hook tests
 │   ├── stores/          # Zustand store tests
 │   └── utils/           # Utility function tests
@@ -173,18 +188,14 @@ frontend/tests/
 
 ### Test Coverage
 
-| Category | Target | Status |
-|----------|--------|--------|
-| Stores | >90% | ✅ 100% |
-| Utils | 100% | ✅ 100% |
-| Hooks | >80% | ✅ 82% |
+Run `npm run check` to see current coverage. Thresholds are configured at 70% for branches, functions, lines, and statements in `vitest.config.ts`.
 
 ### Writing Tests
 
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
+import { useSceneInteractionStore } from '@/stores';
 
 describe('sceneInteractionStore', () => {
   beforeEach(() => {
@@ -217,7 +228,7 @@ The project uses Tailwind CSS for utility-first styling.
 Use the `cn()` utility for class composition:
 
 ```tsx
-import { cn } from 'utils/classNameUtils';
+import { cn } from '@/utils/classNameUtils';
 
 <button className={cn(
   'w-12 h-12 rounded-full',
@@ -239,6 +250,15 @@ colors: {
   'rural-theme': '#80c080',
   'classy-theme': '#ef5555',
   'chill-theme': '#9fa8da',
+  'graphics-theme': '#000000',
+  'urban-active': '#e96929',
+  'urban-rest': '#b68672',
+  'rural-active': '#80c080',
+  'rural-rest': '#869582',
+  'classy-active': '#ef5555',
+  'classy-rest': '#f38484',
+  'chill-active': '#9fa8da',
+  'chill-rest': '#8f909d',
 }
 ```
 

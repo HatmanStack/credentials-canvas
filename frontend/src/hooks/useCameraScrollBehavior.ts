@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, type RefObject } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
 import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from '@/constants/cameraConfiguration';
@@ -12,13 +12,66 @@ export interface UseCameraScrollBehaviorParameters {
   domElement: HTMLElement | null;
   setScrollStarted: (hasStarted: boolean) => void;
   setCloseUp: (isCloseUp: boolean) => void;
-  setCloseUpPosIndex: (index: number) => void;
-  setCameraClone: (position: Vector3 | boolean) => void;
+  setCloseUpPosIndex: (index: number | null) => void;
+  setCameraClone: (position: Vector3 | null) => void;
   mobileScroll: number | null;
 }
 
 export interface UseCameraScrollBehaviorReturn {
   handleMobileScroll: () => void;
+}
+
+interface ScrollVectorRefs {
+  currentPos: Vector3;
+  nextPos: Vector3;
+  interpolatedPos: Vector3;
+}
+
+interface ScrollInterpolationParams {
+  currentIndex: number;
+  positions: CameraPositionTuple[];
+  scrollSpeed: number;
+  progressRef: RefObject<number>;
+  camera: Camera;
+  vectors: ScrollVectorRefs;
+}
+
+interface ScrollInterpolationResult {
+  completed: boolean;
+  nextIndex: number;
+}
+
+function interpolateScroll({
+  currentIndex,
+  positions,
+  scrollSpeed,
+  progressRef,
+  camera,
+  vectors,
+}: ScrollInterpolationParams): ScrollInterpolationResult {
+  const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
+  progressRef.current += scrollSpeed / 2;
+
+  vectors.currentPos.set(...positions[currentIndex]);
+  vectors.nextPos.set(
+    ...positions[(currentIndex + 1) % positions.length]
+  );
+  vectors.interpolatedPos.lerpVectors(
+    vectors.currentPos,
+    vectors.nextPos,
+    Math.max(0, Math.min(1, progressRef.current / interpolationSteps))
+  );
+
+  camera.position.copy(vectors.interpolatedPos);
+
+  const nextIndex = (currentIndex + 1) % positions.length;
+
+  if (progressRef.current >= interpolationSteps) {
+    progressRef.current = 0;
+    return { completed: true, nextIndex };
+  }
+
+  return { completed: false, nextIndex };
 }
 
 export const useCameraScrollBehavior = ({
@@ -38,6 +91,13 @@ export const useCameraScrollBehavior = ({
   const desktopScrollProgress = useRef<number>(0);
   const mobileScrollProgress = useRef<number>(0);
 
+  // Pre-allocated Vector3 instances to avoid per-scroll-event allocations
+  const scrollVectors = useRef<ScrollVectorRefs>({
+    currentPos: new Vector3(),
+    nextPos: new Vector3(),
+    interpolatedPos: new Vector3(),
+  });
+
   useEffect(() => {
     mobileIndexRef.current = currentCameraIndex;
     desktopIndexRef.current = currentCameraIndex;
@@ -53,31 +113,21 @@ export const useCameraScrollBehavior = ({
     setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
     const currentIndex = mobileIndexRef.current;
+    if (currentIndex < 0 || currentIndex >= cameraPositions.length) return;
 
-    if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
-      return;
-    }
+    const result = interpolateScroll({
+      currentIndex,
+      positions: cameraPositions,
+      scrollSpeed: CAMERA_SCROLL_CONFIGURATION.mobile,
+      progressRef: mobileScrollProgress,
+      camera,
+      vectors: scrollVectors.current,
+    });
 
-    const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
-    mobileScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.mobile / 2;
-
-    const currentPos = new Vector3(...cameraPositions[currentIndex]);
-    const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
-    const interpolatedPos = new Vector3().lerpVectors(
-      currentPos,
-      nextPos,
-      Math.max(0, Math.min(1, mobileScrollProgress.current / interpolationSteps))
-    );
-
-    camera.position.copy(interpolatedPos);
-
-    if (mobileScrollProgress.current >= interpolationSteps) {
-      mobileScrollProgress.current = 0;
-      setUsePrimaryCameraPosition(false);
-
-      const nextIndex = (currentIndex + 1) % cameraPositions.length;
-      mobileIndexRef.current = nextIndex;
-      setCurrentCameraIndex(nextIndex);
+    if (result.completed) {
+      setUsePrimaryCameraPosition(null);
+      mobileIndexRef.current = result.nextIndex;
+      setCurrentCameraIndex(result.nextIndex);
     }
   }, [
     cameraPositions, camera, setScrollStarted, setCloseUp,
@@ -101,31 +151,21 @@ export const useCameraScrollBehavior = ({
       setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
       const currentIndex = desktopIndexRef.current;
+      if (currentIndex < 0 || currentIndex >= cameraPositions.length) return;
 
-      if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
-        return;
-      }
+      const result = interpolateScroll({
+        currentIndex,
+        positions: cameraPositions,
+        scrollSpeed: CAMERA_SCROLL_CONFIGURATION.desktop,
+        progressRef: desktopScrollProgress,
+        camera,
+        vectors: scrollVectors.current,
+      });
 
-      const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
-      desktopScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.desktop / 2;
-
-      const currentPos = new Vector3(...cameraPositions[currentIndex]);
-      const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
-      const interpolatedPos = new Vector3().lerpVectors(
-        currentPos,
-        nextPos,
-        Math.max(0, Math.min(1, desktopScrollProgress.current / interpolationSteps))
-      );
-
-      camera.position.copy(interpolatedPos);
-
-      if (desktopScrollProgress.current >= interpolationSteps) {
-        desktopScrollProgress.current = 0;
-        setUsePrimaryCameraPosition(false);
-
-        const nextIndex = (currentIndex + 1) % cameraPositions.length;
-        desktopIndexRef.current = nextIndex;
-        setCurrentCameraIndex(nextIndex);
+      if (result.completed) {
+        setUsePrimaryCameraPosition(null);
+        desktopIndexRef.current = result.nextIndex;
+        setCurrentCameraIndex(result.nextIndex);
       }
     };
 

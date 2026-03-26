@@ -25,13 +25,13 @@ Coverage thresholds are 70% for branches, functions, lines, and statements (conf
 
 ## Architecture
 
-**Stack:** React 18 + TypeScript + Three.js (via React Three Fiber/Drei) + Zustand + Vite + Tailwind CSS
+**Stack:** React 19 + TypeScript + Three.js (via React Three Fiber/Drei) + Zustand + Vite + Tailwind CSS
 
 This is an interactive 3D portfolio. A GLTF model (DRACO-compressed) renders a scene with clickable objects that link to projects. Users select a theme on a launch screen, then navigate the 3D scene via scroll/orbit controls.
 
 ### Key architectural layers
 
-- **3D Scene** (`components/three/`): `SceneModel` loads the GLTF and registers click handlers on meshes. `SceneEnvironment` manages lights/fog/background. `SceneAnimations` handles particle effects. `InteractiveMeshElement` wraps individual clickable meshes. `Lamp` controls interactive light objects.
+- **3D Scene** (`components/three/`): `SceneModel` loads the GLTF and registers click handlers on meshes. `SceneEnvironment` manages lights/fog/background. `SceneAnimations` composes `YouTubeMusicPlayer`, `ArcadeIframe`, and `SliderController` for interactive scene elements. `Lamp` controls interactive light objects.
 - **Camera System** (`components/controls/CameraController` + `hooks/useCameraScrollBehavior` + `hooks/useCameraPositionAnimation`): Scroll-driven camera navigation through predefined positions with interpolation. The hook chain is: scroll events → position index updates → smooth camera animation.
 - **State** (`stores/`): Three Zustand stores with devtools middleware:
   - `sceneInteractionStore` — camera position, click tracking, drag/scroll state
@@ -54,4 +54,4 @@ Uses flat config (`eslint.config.js`). Custom rules allow Three.js-specific JSX 
 
 ## Model Setup
 
-The 3D model (`compressed_model.glb`) is not in the repo (`.gitignore`d). For local dev, download it and place in `frontend/public/compressed_model.glb`. The model path and DRACO decoder path are configured in `constants/meshConfiguration.ts`.
+The 3D model (`compressed_model.glb`) is not in the repo (`.gitignore`d). For local dev, download it and place in `frontend/public/compressed_model.glb`. The model path is configured in `constants/meshConfiguration.ts`. The DRACO decoder path is defined in `components/three/SceneModel.tsx`.

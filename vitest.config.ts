@@ -17,14 +17,14 @@ export default defineConfig({
       'types': resolve(__dirname, 'frontend/src/types'),
       'hooks': resolve(__dirname, 'frontend/src/hooks'),
       'constants': resolve(__dirname, 'frontend/src/constants'),
-      'test-helpers': resolve(__dirname, 'tests/helpers'),
+      'test-helpers': resolve(__dirname, 'frontend/tests/helpers'),
     },
   },
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.test.{ts,tsx}'],
+    setupFiles: ['./frontend/tests/helpers/setup.ts'],
+    include: ['frontend/tests/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],

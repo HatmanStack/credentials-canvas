@@ -7,7 +7,6 @@ import {
   CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN,
   CLOSE_UP_CAMERA_ROTATION_ARRAY,
   MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
-  NO_CLOSE_UP_INDEX
 } from '@/constants/cameraConfiguration';
 import { ANIMATION_DURATIONS } from '@/constants/animationConfiguration';
 import type { CameraPositionTuple } from '@/types';
@@ -16,13 +15,13 @@ export interface UseCameraPositionAnimationParameters {
   camera: Camera;
   windowWidth: number;
   closeUp: boolean;
-  closeUpPosIndex: number;
-  setCloseUpPosIndex: (index: number) => void;
+  closeUpPosIndex: number | null;
+  setCloseUpPosIndex: (index: number | null) => void;
   currentPosIndex: number;
   clickPoint: string | null;
   setClickPoint: (point: string | null) => void;
   setCloseUp: (isCloseUp: boolean) => void;
-  setCameraClone: (position: Vector3 | boolean) => void;
+  setCameraClone: (position: Vector3 | null) => void;
 }
 
 export interface UseCameraPositionAnimationReturn {
@@ -46,7 +45,9 @@ export const useCameraPositionAnimation = ({
   useEffect(() => {
     let newRotationTarget: Vector3;
     if (isCloseUpView) {
-      const safeCloseUpIndex = Math.max(0, Math.min(closeUpCameraIndex, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1));
+      const idx = closeUpCameraIndex ?? 0;
+      const maxIndex = Math.min(CLOSE_UP_CAMERA_ROTATION_ARRAY.length, CLOSE_UP_CAMERA_POSITION_ARRAY.length) - 1;
+      const safeCloseUpIndex = Math.max(0, Math.min(idx, maxIndex));
       newRotationTarget = new Vector3(...CLOSE_UP_CAMERA_ROTATION_ARRAY[safeCloseUpIndex]);
     } else {
       const safeCameraIndex = Math.max(0, Math.min(currentCameraIndex, CAMERA_ROTATION_POSITION_ARRAY.length - 1));
@@ -65,20 +66,22 @@ export const useCameraPositionAnimation = ({
   }, [clickPoint, setCloseUp, setCloseUpCameraIndex, setClickPoint]);
 
   useEffect(() => {
-    if (closeUpCameraIndex !== NO_CLOSE_UP_INDEX) {
+    if (closeUpCameraIndex !== null) {
       const positions = screenWidth > 800 ?
         CLOSE_UP_CAMERA_POSITION_ARRAY :
         CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN;
 
-      if (closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length) {
-        const targetPosition: CameraPositionTuple = positions[closeUpCameraIndex];
-        camera.position.copy(new Vector3(...targetPosition));
-      }
+      const maxIndex = Math.min(CLOSE_UP_CAMERA_ROTATION_ARRAY.length, positions.length) - 1;
+      const safeIndex = Math.max(0, Math.min(closeUpCameraIndex, maxIndex));
+      const targetPosition: CameraPositionTuple = positions[safeIndex];
+      camera.position.copy(new Vector3(...targetPosition));
     }
   }, [closeUpCameraIndex, screenWidth, camera]);
 
   // Track animation frame ID for cleanup on unmount
   const animationFrameIdRef = useRef<number | null>(null);
+  // Track whether the arc animation has signaled to prevent per-frame clone churn
+  const hasSignaledPrimaryPosition = useRef(false);
 
   useEffect(() => {
     if (!camera) return;
@@ -99,7 +102,12 @@ export const useCameraPositionAnimation = ({
       if (!animationStartTime) animationStartTime = currentTime;
       const elapsedTime = currentTime - animationStartTime;
       const animationProgress = elapsedTime / duration;
-      setUsePrimaryCameraPosition(camera.position.clone());
+      // Signal once that the primary camera position should be used;
+      // avoid cloning every frame since the consumer only checks truthiness
+      if (!hasSignaledPrimaryPosition.current) {
+        setUsePrimaryCameraPosition(camera.position.clone());
+        hasSignaledPrimaryPosition.current = true;
+      }
 
       if (animationProgress < 1) {
         const currentAngle = startAngle + (endAngle - startAngle) * animationProgress;

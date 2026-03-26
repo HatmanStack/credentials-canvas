@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "workspaces": {
+    "frontend": {
+      "project": ["src/**/*.{ts,tsx}"],
+      "vite": {
+        "config": ["vite.config.ts"]
+      },
+      "eslint": {
+        "config": ["eslint.config.js"]
+      }
+    }
+  },
+  "ignoreWorkspaces": ["."]
+}

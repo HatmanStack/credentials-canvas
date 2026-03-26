@@ -8,3 +8,15 @@ export interface YouTubePlayer {
   seekTo?: (seconds: number, allowSeekAhead: boolean) => void;
   destroy?: () => void;
 }
+
+declare global {
+  interface Window {
+    YT?: {
+      Player: new (
+        element: HTMLElement | null,
+        config: { videoId: string }
+      ) => YouTubePlayer;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}

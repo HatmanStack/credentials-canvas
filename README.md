@@ -22,10 +22,10 @@
 <p><a href="https://credentials.hatstack.fun">Experience Credentials Canvas »</a></p>
 
 <p align="center">
-  <img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/ez.gif" alt="Interactive 3D Environment">
+  <img src="https://raw.githubusercontent.com/HatmanStack/credentials-canvas/main/frontend/public/ez.gif" alt="Interactive 3D Environment">
 </p>
 <p align="center">
-  <img src="https://github.com/HatmanStack/credentials-canvas/blob/main/public/house.gif" alt="3D Scene Navigation">
+  <img src="https://raw.githubusercontent.com/HatmanStack/credentials-canvas/main/frontend/public/house.gif" alt="3D Scene Navigation">
 </p>
 </div>
 
@@ -57,7 +57,7 @@ cd credentials-canvas/frontend
 npm install
 
 # Download model
-# Get from: https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb
+# Get from: https://credentials.hatstack.fun/compressed_model.glb
 # Place in: frontend/public/compressed_model.glb
 
 npm run dev
