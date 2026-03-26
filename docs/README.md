@@ -161,6 +161,15 @@ npm run test -- --coverage  # With coverage report
 ```text
 frontend/tests/
 ├── frontend/
+│   ├── components/      # Component tests
+│   │   ├── controls/    # Camera, audio controller tests
+│   │   ├── three/       # 3D scene component tests
+│   │   ├── ui/          # UI component tests
+│   │   ├── App.test.tsx
+│   │   ├── ArcadeIframe.test.tsx
+│   │   ├── Lamp.test.tsx
+│   │   ├── SliderController.test.tsx
+│   │   └── YouTubeMusicPlayer.test.tsx
 │   ├── hooks/           # Custom hook tests
 │   ├── stores/          # Zustand store tests
 │   └── utils/           # Utility function tests
