@@ -48,10 +48,10 @@ Fix the critical error handling gaps, decompose the SceneAnimations god componen
 6. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `ErrorBoundary` is imported and wraps `<App />` in `main.tsx`
-- [ ] Only one `<link rel="manifest">` exists in the rendered tree
-- [ ] `main.tsx` does not use `!` non-null assertion on the root element
-- [ ] `npm run check` passes
+- [x] `ErrorBoundary` is imported and wraps `<App />` in `main.tsx`
+- [x] Only one `<link rel="manifest">` exists in the rendered tree
+- [x] `main.tsx` does not use `!` non-null assertion on the root element
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -82,8 +82,8 @@ fix: mount ErrorBoundary and remove duplicate manifest link
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] YouTube script tag is only appended once even if the component remounts
-- [ ] `npm run check` passes
+- [x] YouTube script tag is only appended once even if the component remounts
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -111,8 +111,8 @@ fix(three): make YouTube iframe API script injection idempotent
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `window.open` is not called with an empty string URL
-- [ ] `npm run check` passes
+- [x] `window.open` is not called with an empty string URL
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -139,9 +139,9 @@ fix(three): guard against opening blank tab for empty mesh URLs
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] No `as THREE.MeshStandardMaterial` casts remain in the file
-- [ ] Runtime instanceof checks guard all material property access
-- [ ] `npm run check` passes
+- [x] No `as THREE.MeshStandardMaterial` casts remain in the file
+- [x] Runtime instanceof checks guard all material property access
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -175,10 +175,10 @@ refactor(three): replace unsafe material type casts with instanceof guards
 5. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `usePrimaryCameraPosition` type is `Vector3 | null`, not `Vector3 | boolean`
-- [ ] No boolean values are assigned to the state variable
-- [ ] All conditionals are updated to use null checks
-- [ ] `npm run check` passes
+- [x] `usePrimaryCameraPosition` type is `Vector3 | null`, not `Vector3 | boolean`
+- [x] No boolean values are assigned to the state variable
+- [x] All conditionals are updated to use null checks
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -209,9 +209,9 @@ refactor(camera): replace Vector3 | boolean state with Vector3 | null
 6. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] No magic sentinel value exists that implicitly depends on array length
-- [ ] All comparison sites are updated
-- [ ] `npm run check` passes
+- [x] No magic sentinel value exists that implicitly depends on array length
+- [x] All comparison sites are updated
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -254,12 +254,12 @@ refactor(camera): replace NO_CLOSE_UP_INDEX sentinel with null
 8. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] SceneAnimations.tsx is under 150 lines
-- [ ] Each extracted component is self-contained with its own imports
-- [ ] No `declare global` in SceneAnimations.tsx (moved to types file)
-- [ ] All three extracted components are rendered by SceneAnimations
-- [ ] `npm run check` passes
-- [ ] Existing SceneAnimations tests still pass (they may need import path updates)
+- [x] SceneAnimations.tsx is under 150 lines
+- [x] Each extracted component is self-contained with its own imports
+- [x] No `declare global` in SceneAnimations.tsx (moved to types file)
+- [x] All three extracted components are rendered by SceneAnimations
+- [x] `npm run check` passes
+- [x] Existing SceneAnimations tests still pass (they may need import path updates)
 
 **Commit message template:**
 ```
@@ -290,10 +290,10 @@ refactor(three): extract SceneAnimations into focused components
 5. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] No duplicated interpolation logic between mobile and desktop handlers
-- [ ] Both handlers delegate to a shared function
-- [ ] `npm run check` passes
-- [ ] Existing tests for this hook still pass
+- [x] No duplicated interpolation logic between mobile and desktop handlers
+- [x] Both handlers delegate to a shared function
+- [x] `npm run check` passes
+- [x] Existing tests for this hook still pass
 
 **Commit message template:**
 ```
@@ -321,9 +321,9 @@ refactor(camera): extract shared scroll interpolation logic
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] No `new THREE.Vector3` calls inside scroll event handlers
-- [ ] Vector3 instances are pre-allocated via useRef
-- [ ] `npm run check` passes
+- [x] No `new THREE.Vector3` calls inside scroll event handlers
+- [x] Vector3 instances are pre-allocated via useRef
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -352,9 +352,9 @@ perf(camera): pre-allocate Vector3 instances in scroll handler
 3. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `LoadingScreen` is not defined inside `useMemo`
-- [ ] The component identity is stable across re-renders
-- [ ] `npm run check` passes
+- [x] `LoadingScreen` is not defined inside `useMemo`
+- [x] The component identity is stable across re-renders
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -381,9 +381,9 @@ fix: stabilize LoadingScreen component identity
 3. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] Resize handler is debounced
-- [ ] The debounce timer is cleaned up in the useEffect cleanup function
-- [ ] `npm run check` passes
+- [x] Resize handler is debounced
+- [x] The debounce timer is cleaned up in the useEffect cleanup function
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -411,9 +411,9 @@ perf: debounce window resize handler
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] Video elements are removed from the DOM in the useEffect cleanup
-- [ ] No orphaned video elements accumulate on re-render
-- [ ] `npm run check` passes
+- [x] Video elements are removed from the DOM in the useEffect cleanup
+- [x] No orphaned video elements accumulate on re-render
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
