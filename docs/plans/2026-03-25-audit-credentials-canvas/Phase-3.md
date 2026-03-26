@@ -36,9 +36,9 @@ Bring test coverage above the 70% threshold, remove placeholder assertions, and 
 4. Run `cd frontend && npx vitest --run tests/frontend/hooks/useCameraPositionAnimation.test.ts` to verify.
 
 **Verification checklist:**
-- [ ] No `expect(true).toBe(true)` exists in the test file
-- [ ] The replacement assertion tests real behavior
-- [ ] The test passes
+- [x] No `expect(true).toBe(true)` exists in the test file
+- [x] The replacement assertion tests real behavior
+- [x] The test passes
 
 **Commit message template:**
 ```
@@ -83,10 +83,10 @@ test(hooks): replace placeholder assertion in useCameraPositionAnimation tests
 5. Run `cd frontend && npx vitest --run tests/frontend/components/YouTubeMusicPlayer.test.tsx tests/frontend/components/ArcadeIframe.test.tsx tests/frontend/components/SliderController.test.tsx`.
 
 **Verification checklist:**
-- [ ] Each new component has a test file with at least 3 test cases
-- [ ] Tests use existing mock patterns (no new mock infrastructure)
-- [ ] All new tests pass
-- [ ] `npm run check` passes
+- [x] Each new component has a test file with at least 3 test cases
+- [x] Tests use existing mock patterns (no new mock infrastructure)
+- [x] All new tests pass
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -124,9 +124,9 @@ test(three): add tests for extracted SceneAnimations components
 5. Run the test to verify.
 
 **Verification checklist:**
-- [ ] Lamp.test.tsx exists with at least 4 test cases
-- [ ] Lamp.tsx statement coverage is above 50%
-- [ ] `npm run check` passes
+- [x] Lamp.test.tsx exists with at least 4 test cases
+- [x] Lamp.tsx statement coverage is above 50%
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -156,9 +156,9 @@ test(three): add tests for Lamp component
 3. Run tests with coverage to verify improvement.
 
 **Verification checklist:**
-- [ ] Branch coverage for `useCameraPositionAnimation.ts` is at or above 70%
-- [ ] All new tests pass
-- [ ] `npm run check` passes
+- [x] Branch coverage for `useCameraPositionAnimation.ts` is at or above 70%
+- [x] All new tests pass
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -183,8 +183,8 @@ test(hooks): improve useCameraPositionAnimation branch coverage
 4. If the threshold is met, no further action needed.
 
 **Verification checklist:**
-- [ ] `npm run check` passes (all coverage thresholds met)
-- [ ] No placeholder assertions exist anywhere in the test suite
+- [x] `npm run check` passes (all coverage thresholds met)
+- [x] No placeholder assertions exist anywhere in the test suite
 
 **Commit message template (if additional tests needed):**
 ```
