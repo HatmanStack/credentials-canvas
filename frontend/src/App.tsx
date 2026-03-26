@@ -107,7 +107,6 @@ const AppContent: React.FC = () => {
 
   const LoadingScreen = useMemo(() => () => (
     <>
-      <link rel="manifest" href="/manifest.json" />
       <div
         style={{
           display: 'flex',
