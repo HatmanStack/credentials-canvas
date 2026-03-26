@@ -133,9 +133,10 @@ export const SceneModel: React.FC = React.memo(() => {
   const handleClick = (event: ThreeEvent<MouseEvent>): void => {
     const signName = event.object.name;
 
-    if (MESH_NAME_TO_URL_MAPPING[signName]) {
+    const mappedUrl = MESH_NAME_TO_URL_MAPPING[signName];
+    if (mappedUrl) {
       incrementClickCount();
-      window.open(MESH_NAME_TO_URL_MAPPING[signName], '_blank', 'noopener,noreferrer');
+      window.open(mappedUrl, '_blank', 'noopener,noreferrer');
     } else if (INTERACTIVE_LIGHT_MESH_NAMES.includes(signName)) {
       setClickedLightName(signName);
       incrementClickCount();
@@ -149,7 +150,8 @@ export const SceneModel: React.FC = React.memo(() => {
             if (
               nextCount >= CLOSE_UP_CLICK_THRESHOLD_COUNT &&
               !phoneUrl.signName.includes('Music_Control_Box') &&
-              !phoneUrl.signName.includes('Cube009_2')
+              !phoneUrl.signName.includes('Cube009_2') &&
+              phoneUrl.url
             ) {
               window.open(phoneUrl.url, '_blank', 'noopener,noreferrer');
               setClickThroughCount(0);
