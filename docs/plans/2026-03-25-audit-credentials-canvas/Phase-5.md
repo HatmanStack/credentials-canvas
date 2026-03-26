@@ -40,11 +40,11 @@ Fix all documentation drift, broken links, stale code examples, and gaps identif
 6. Run `npm run check` to make sure nothing else broke.
 
 **Verification checklist:**
-- [ ] "React 18" is replaced with "React 19"
-- [ ] DRACO decoder path documentation is accurate
-- [ ] SceneAnimations description reflects the decomposition
-- [ ] No references to deleted files
-- [ ] `npm run check` passes
+- [x] "React 18" is replaced with "React 19"
+- [x] DRACO decoder path documentation is accurate
+- [x] SceneAnimations description reflects the decomposition
+- [x] No references to deleted files
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -69,8 +69,8 @@ docs: update CLAUDE.md for React 19, DRACO path, and component changes
 4. Verify the files exist at the corrected paths.
 
 **Verification checklist:**
-- [ ] Both image URLs reference `frontend/public/` instead of `public/`
-- [ ] The referenced files exist at the corrected paths
+- [x] Both image URLs reference `frontend/public/` instead of `public/`
+- [x] The referenced files exist at the corrected paths
 
 **Commit message template:**
 ```
@@ -98,8 +98,8 @@ docs: fix broken image links in README
 4. If uncertain which URL works, note all three in a comment and pick the one from `package.json` as the canonical reference.
 
 **Verification checklist:**
-- [ ] README.md and docs/README.md use the same model download URL
-- [ ] The canonical site URL is consistent
+- [x] README.md and docs/README.md use the same model download URL
+- [x] The canonical site URL is consistent
 
 **Commit message template:**
 ```
@@ -125,8 +125,8 @@ docs: consolidate model download and site URLs
 3. List the actual test files under `components/`: check `frontend/tests/frontend/components/` for the current files (including the new ones from Phase 3).
 
 **Verification checklist:**
-- [ ] `components/` appears in the test directory tree
-- [ ] The listed test files match what actually exists
+- [x] `components/` appears in the test directory tree
+- [x] The listed test files match what actually exists
 
 **Commit message template:**
 ```
@@ -150,8 +150,8 @@ docs: add components test directory to docs/README.md structure
 3. Update the documentation to list all 15 colors.
 
 **Verification checklist:**
-- [ ] All custom Tailwind colors from `tailwind.config.js` appear in the documentation
-- [ ] No colors are listed that do not exist in the config
+- [x] All custom Tailwind colors from `tailwind.config.js` appear in the documentation
+- [x] No colors are listed that do not exist in the config
 
 **Commit message template:**
 ```
@@ -181,8 +181,8 @@ docs: update Tailwind color list to include all 15 custom colors
 4. Keep descriptions concise; just list the fields and their purpose.
 
 **Verification checklist:**
-- [ ] All state fields in each store are mentioned in the documentation
-- [ ] No fields are listed that do not exist
+- [x] All state fields in each store are mentioned in the documentation
+- [x] No fields are listed that do not exist
 
 **Commit message template:**
 ```
@@ -206,8 +206,8 @@ docs: update store descriptions with missing state fields
 3. Change `import { cn } from 'utils/classNameUtils';` to `import { cn } from '@/utils/classNameUtils';`
 
 **Verification checklist:**
-- [ ] All import paths in code examples use the `@/` prefix alias
-- [ ] Examples match actual usage patterns in the codebase
+- [x] All import paths in code examples use the `@/` prefix alias
+- [x] Examples match actual usage patterns in the codebase
 
 **Commit message template:**
 ```
@@ -231,8 +231,8 @@ docs: fix import paths in code examples to use @ alias
 3. Remove the per-category percentage columns.
 
 **Verification checklist:**
-- [ ] No hardcoded coverage percentages in documentation
-- [ ] A pointer to the coverage command exists
+- [x] No hardcoded coverage percentages in documentation
+- [x] A pointer to the coverage command exists
 
 **Commit message template:**
 ```
@@ -261,8 +261,8 @@ docs: replace hardcoded coverage percentages with command reference
 3. Keep it to 2-3 sentences.
 
 **Verification checklist:**
-- [ ] `logger.ts` is mentioned in documentation
-- [ ] The documentation accurately describes its behavior
+- [x] `logger.ts` is mentioned in documentation
+- [x] The documentation accurately describes its behavior
 
 **Commit message template:**
 ```
