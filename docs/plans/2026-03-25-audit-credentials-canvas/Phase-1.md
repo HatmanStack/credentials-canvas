@@ -136,8 +136,8 @@ refactor(types): delete unused branded types module
 4. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] Neither interface appears anywhere in the codebase
-- [ ] `npm run check` passes
+- [x] SKIPPED: Both interfaces ARE used in `frontend/src/constants/themeConfiguration.ts`. Not dead code.
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
