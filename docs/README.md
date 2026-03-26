@@ -29,7 +29,7 @@ Credentials Canvas is an immersive 3D portfolio experience built with Three.js a
 
 ### Frontend Stack
 
-- **React 18** - UI framework
+- **React 19** - UI framework
 - **Three.js** - 3D rendering engine
 - **React Three Fiber** - React renderer for Three.js
 - **React Three Drei** - Useful helpers for R3F
