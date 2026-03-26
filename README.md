@@ -57,7 +57,7 @@ cd credentials-canvas/frontend
 npm install
 
 # Download model
-# Get from: https://production.dld9ll6ojjns2.amplifyapp.com/compressed_model.glb
+# Get from: https://credentials.hatstack.fun/compressed_model.glb
 # Place in: frontend/public/compressed_model.glb
 
 npm run dev
