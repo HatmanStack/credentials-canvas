@@ -11,6 +11,10 @@
     "preview": "cd frontend && npx vite preview",
     "test": "cd frontend && npx vitest",
     "lint": "cd frontend && npx eslint src && npx tsc --noEmit",
-    "check": "npm run lint && cd frontend && npx vitest --run"
+    "check": "npm run lint && cd frontend && npx vitest --run",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }
