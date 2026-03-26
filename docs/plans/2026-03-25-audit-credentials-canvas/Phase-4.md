@@ -45,10 +45,10 @@ Add pre-commit hooks, commitlint, and fix the `@types/three` version mismatch. T
 7. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `.husky/pre-commit` exists and is executable
-- [ ] `git commit` triggers the lint check
-- [ ] Root `package.json` has a `prepare` script
-- [ ] `npm run check` passes
+- [x] `.husky/pre-commit` exists and is executable
+- [x] `git commit` triggers the lint check
+- [x] Root `package.json` has a `prepare` script
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -90,11 +90,11 @@ ci: add pre-commit hook for lint and type-check
 6. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `.commitlintrc.json` exists at repo root
-- [ ] `.husky/commit-msg` exists and is executable
-- [ ] Non-conventional commit messages are rejected
-- [ ] Conventional commit messages are accepted
-- [ ] `npm run check` passes
+- [x] `.commitlintrc.json` exists at repo root
+- [x] `.husky/commit-msg` exists and is executable
+- [x] Non-conventional commit messages are rejected
+- [x] Conventional commit messages are accepted
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -128,9 +128,9 @@ ci: add commitlint for conventional commit enforcement
 7. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `@types/three` version corresponds to the installed `three` version
-- [ ] No unnecessary `@ts-expect-error` suppressions remain
-- [ ] `npm run check` passes
+- [x] `@types/three` version corresponds to the installed `three` version
+- [x] No unnecessary `@ts-expect-error` suppressions remain
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
@@ -159,10 +159,10 @@ chore(deps): align @types/three with three runtime version
 5. Run `npm run check` from the repo root to verify tests are discovered and run correctly.
 
 **Verification checklist:**
-- [ ] `vitest.config.ts` setupFiles points to `./frontend/tests/helpers/setup.ts`
-- [ ] `vitest.config.ts` include glob is `frontend/tests/**/*.test.{ts,tsx}`
-- [ ] `vitest.config.ts` test-helpers alias resolves to `frontend/tests/helpers`
-- [ ] `npm run check` passes and finds all test files when run from repo root
+- [x] `vitest.config.ts` setupFiles points to `./frontend/tests/helpers/setup.ts`
+- [x] `vitest.config.ts` include glob is `frontend/tests/**/*.test.{ts,tsx}`
+- [x] `vitest.config.ts` test-helpers alias resolves to `frontend/tests/helpers`
+- [x] `npm run check` passes and finds all test files when run from repo root
 
 **Commit message template:**
 ```
@@ -190,8 +190,8 @@ fix(config): correct vitest root config paths
 3. Run `npm run check`.
 
 **Verification checklist:**
-- [ ] `cn()` has an explicit return type annotation
-- [ ] `npm run check` passes
+- [x] `cn()` has an explicit return type annotation
+- [x] `npm run check` passes
 
 **Commit message template:**
 ```
