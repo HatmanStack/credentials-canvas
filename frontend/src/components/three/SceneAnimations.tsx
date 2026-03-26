@@ -171,6 +171,20 @@ export const SceneAnimations: React.FC = React.memo(() => {
   const playerInstanceRef = useRef<YouTubePlayer | null>(null);
 
   useEffect(() => {
+    // Skip injection if YouTube API is already loaded or script tag already exists
+    const existingScript = document.querySelector('script[src*="youtube.com/iframe_api"]');
+    if (window.YT || existingScript) {
+      // API already available, create player directly
+      if (window.YT && iframe2Ref.current) {
+        const player = new window.YT.Player(iframe2Ref.current, {
+          videoId: currentIframeConfig.srcID,
+        });
+        playerInstanceRef.current = player;
+        setHTMLVideoPlayerElement(player);
+      }
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = 'https://www.youtube.com/iframe_api';
 
