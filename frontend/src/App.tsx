@@ -52,6 +52,46 @@ const TitleEffect: React.FC<TitleEffectProps> = React.memo(({ text, startColorHu
   );
 });
 
+interface LoadingScreenProps {
+  loadingProgress: number;
+  titleTextColorHue: number | null;
+}
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({
+  loadingProgress,
+  titleTextColorHue,
+}) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      background: '#171519',
+      margin: '10rem',
+    }}
+  >
+    <img src={handGif} width="250" alt="Loading animation" />
+    {Math.round(loadingProgress)}% loaded<br />
+    <br />
+    <TitleEffect
+      text="Click to engage with dynamic 3D objects"
+      startColorHue={titleTextColorHue}
+    />
+    <p style={{
+      textAlign: 'center',
+      fontSize: '1.5rem',
+      letterSpacing: '0.1rem',
+      lineHeight: '1.5',
+    }}>
+      <br />
+      lights, joystick, phone displays, signposts,<br />
+      control panels, text and antenna surfaces.
+    </p>
+  </div>
+);
+
 const AppContent: React.FC = () => {
   const mobileScrollTriggerCount = useSceneInteractionStore(state => state.mobileScrollTriggerCount);
   const setMobileScrollTriggerCount = useSceneInteractionStore(state => state.setMobileScrollTriggerCount);
@@ -105,32 +145,6 @@ const AppContent: React.FC = () => {
 
   const { progress: loadingProgress } = useProgress();
 
-  const LoadingScreen = useMemo(() => () => (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          background: '#171519',
-          margin: '10rem',
-        }}
-      >
-        <img src={handGif} width="250" alt="Loading animation" />
-        {Math.round(loadingProgress)}% loaded<br />
-        <br />
-        <TitleEffect text="Click to engage with dynamic 3D objects" startColorHue={titleTextColorHue} />
-        <p style={{ textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.1rem', lineHeight: '1.5' }}>
-          <br />
-          lights, joystick, phone displays, signposts,<br />
-          control panels, text and antenna surfaces.
-        </p>
-      </div>
-    </>
-  ), [loadingProgress, titleTextColorHue]);
-
   const handleNavigationClick = useCallback((): void => {
     setMobileScrollTriggerCount((mobileScrollTriggerCount || 0) + 1);
   }, [setMobileScrollTriggerCount, mobileScrollTriggerCount]);
@@ -141,7 +155,12 @@ const AppContent: React.FC = () => {
     <>
       <link rel="manifest" href="/manifest.json" />
       {selectedThemeConfiguration != null ? (
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={
+          <LoadingScreen
+            loadingProgress={loadingProgress}
+            titleTextColorHue={titleTextColorHue}
+          />
+        }>
           <div className={cn('relative h-full')}>
             <Canvas>
               <AudioController />
