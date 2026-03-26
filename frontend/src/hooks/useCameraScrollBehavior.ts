@@ -21,6 +21,51 @@ export interface UseCameraScrollBehaviorReturn {
   handleMobileScroll: () => void;
 }
 
+interface ScrollInterpolationParams {
+  currentIndex: number;
+  positions: CameraPositionTuple[];
+  scrollSpeed: number;
+  progressRef: React.RefObject<number>;
+  camera: Camera;
+}
+
+interface ScrollInterpolationResult {
+  completed: boolean;
+  nextIndex: number;
+}
+
+function interpolateScroll({
+  currentIndex,
+  positions,
+  scrollSpeed,
+  progressRef,
+  camera,
+}: ScrollInterpolationParams): ScrollInterpolationResult {
+  const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
+  progressRef.current += scrollSpeed / 2;
+
+  const currentPos = new Vector3(...positions[currentIndex]);
+  const nextPos = new Vector3(
+    ...positions[(currentIndex + 1) % positions.length]
+  );
+  const interpolatedPos = new Vector3().lerpVectors(
+    currentPos,
+    nextPos,
+    Math.max(0, Math.min(1, progressRef.current / interpolationSteps))
+  );
+
+  camera.position.copy(interpolatedPos);
+
+  const nextIndex = (currentIndex + 1) % positions.length;
+
+  if (progressRef.current >= interpolationSteps) {
+    progressRef.current = 0;
+    return { completed: true, nextIndex };
+  }
+
+  return { completed: false, nextIndex };
+}
+
 export const useCameraScrollBehavior = ({
   currentPosIndex: currentCameraIndex,
   setCurrentPosIndex: setCurrentCameraIndex,
@@ -53,31 +98,20 @@ export const useCameraScrollBehavior = ({
     setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
     const currentIndex = mobileIndexRef.current;
+    if (currentIndex < 0 || currentIndex >= cameraPositions.length) return;
 
-    if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
-      return;
-    }
+    const result = interpolateScroll({
+      currentIndex,
+      positions: cameraPositions,
+      scrollSpeed: CAMERA_SCROLL_CONFIGURATION.mobile,
+      progressRef: mobileScrollProgress,
+      camera,
+    });
 
-    const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
-    mobileScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.mobile / 2;
-
-    const currentPos = new Vector3(...cameraPositions[currentIndex]);
-    const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
-    const interpolatedPos = new Vector3().lerpVectors(
-      currentPos,
-      nextPos,
-      Math.max(0, Math.min(1, mobileScrollProgress.current / interpolationSteps))
-    );
-
-    camera.position.copy(interpolatedPos);
-
-    if (mobileScrollProgress.current >= interpolationSteps) {
-      mobileScrollProgress.current = 0;
+    if (result.completed) {
       setUsePrimaryCameraPosition(null);
-
-      const nextIndex = (currentIndex + 1) % cameraPositions.length;
-      mobileIndexRef.current = nextIndex;
-      setCurrentCameraIndex(nextIndex);
+      mobileIndexRef.current = result.nextIndex;
+      setCurrentCameraIndex(result.nextIndex);
     }
   }, [
     cameraPositions, camera, setScrollStarted, setCloseUp,
@@ -101,31 +135,20 @@ export const useCameraScrollBehavior = ({
       setCloseUpCameraIndex(NO_CLOSE_UP_INDEX);
 
       const currentIndex = desktopIndexRef.current;
+      if (currentIndex < 0 || currentIndex >= cameraPositions.length) return;
 
-      if (currentIndex < 0 || currentIndex >= cameraPositions.length) {
-        return;
-      }
+      const result = interpolateScroll({
+        currentIndex,
+        positions: cameraPositions,
+        scrollSpeed: CAMERA_SCROLL_CONFIGURATION.desktop,
+        progressRef: desktopScrollProgress,
+        camera,
+      });
 
-      const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
-      desktopScrollProgress.current += CAMERA_SCROLL_CONFIGURATION.desktop / 2;
-
-      const currentPos = new Vector3(...cameraPositions[currentIndex]);
-      const nextPos = new Vector3(...cameraPositions[(currentIndex + 1) % cameraPositions.length]);
-      const interpolatedPos = new Vector3().lerpVectors(
-        currentPos,
-        nextPos,
-        Math.max(0, Math.min(1, desktopScrollProgress.current / interpolationSteps))
-      );
-
-      camera.position.copy(interpolatedPos);
-
-      if (desktopScrollProgress.current >= interpolationSteps) {
-        desktopScrollProgress.current = 0;
+      if (result.completed) {
         setUsePrimaryCameraPosition(null);
-
-        const nextIndex = (currentIndex + 1) % cameraPositions.length;
-        desktopIndexRef.current = nextIndex;
-        setCurrentCameraIndex(nextIndex);
+        desktopIndexRef.current = result.nextIndex;
+        setCurrentCameraIndex(result.nextIndex);
       }
     };
 
