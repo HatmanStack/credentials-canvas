@@ -21,7 +21,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
       state => state.setHTMLVideoPlayerElement
     );
 
-    const iframe2Ref = useRef<HTMLIFrameElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const playerInstanceRef = useRef<YouTubePlayer | null>(null);
 
     const selectedVibeIndex = selectedThemeConfiguration
@@ -41,7 +41,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
         'script[src*="youtube.com/iframe_api"]'
       );
       if (window.YT || existingScript) {
-        if (window.YT && iframe2Ref.current) {
+        if (window.YT && iframeRef.current) {
           // Destroy existing player before creating a new one
           if (playerInstanceRef.current) {
             try {
@@ -52,13 +52,24 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
             playerInstanceRef.current = null;
             setHTMLVideoPlayerElement(null);
           }
-          const player = new window.YT.Player(iframe2Ref.current, {
+          const player = new window.YT.Player(iframeRef.current, {
             videoId: currentIframeConfig.srcID,
           });
           playerInstanceRef.current = player;
           setHTMLVideoPlayerElement(player);
         }
-        return;
+        // Cleanup for early-return path: destroy player on unmount
+        return () => {
+          if (playerInstanceRef.current) {
+            try {
+              playerInstanceRef.current.destroy?.();
+            } catch {
+              // Player may already be destroyed
+            }
+            playerInstanceRef.current = null;
+            setHTMLVideoPlayerElement(null);
+          }
+        };
       }
 
       const script = document.createElement('script');
@@ -71,8 +82,8 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
           originalCallback();
         }
 
-        if (iframe2Ref.current && window.YT) {
-          const player = new window.YT.Player(iframe2Ref.current, {
+        if (iframeRef.current && window.YT) {
+          const player = new window.YT.Player(iframeRef.current, {
             videoId: currentIframeConfig.srcID,
           });
           playerInstanceRef.current = player;
@@ -114,7 +125,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
         >
           <div className="music">
             <iframe
-              ref={iframe2Ref}
+              ref={iframeRef}
               id="player"
               src={currentIframeConfig.iframe2}
               allow="autoplay"

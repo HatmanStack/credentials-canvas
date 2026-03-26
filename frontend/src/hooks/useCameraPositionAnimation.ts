@@ -80,6 +80,8 @@ export const useCameraPositionAnimation = ({
 
   // Track animation frame ID for cleanup on unmount
   const animationFrameIdRef = useRef<number | null>(null);
+  // Track whether the arc animation has signaled to prevent per-frame clone churn
+  const hasSignaledPrimaryPosition = useRef(false);
 
   useEffect(() => {
     if (!camera) return;
@@ -100,7 +102,12 @@ export const useCameraPositionAnimation = ({
       if (!animationStartTime) animationStartTime = currentTime;
       const elapsedTime = currentTime - animationStartTime;
       const animationProgress = elapsedTime / duration;
-      setUsePrimaryCameraPosition(camera.position.clone());
+      // Signal once that the primary camera position should be used;
+      // avoid cloning every frame since the consumer only checks truthiness
+      if (!hasSignaledPrimaryPosition.current) {
+        setUsePrimaryCameraPosition(camera.position.clone());
+        hasSignaledPrimaryPosition.current = true;
+      }
 
       if (animationProgress < 1) {
         const currentAngle = startAngle + (endAngle - startAngle) * animationProgress;

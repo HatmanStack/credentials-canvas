@@ -37,14 +37,15 @@ function useSliderSpring(
 
   const bind = useDrag(
     ({ down, movement: [, my] }) => {
+      const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
+      const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
+
       if (down) {
         // Capture the fixed start position on drag begin
         if (dragStartRef.current === null) {
           dragStartRef.current = basePositionRef.current;
         }
         const movementY = -my * 0.001 + dragStartRef.current;
-        const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
-        const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
         const newY = Math.min(Math.max(movementY, minY), maxY);
         set.start({ y: newY });
         setLightIntensity({ sliderName: slider, intensity: newY });
@@ -53,8 +54,6 @@ function useSliderSpring(
         const finalY = dragStartRef.current !== null
           ? -my * 0.001 + dragStartRef.current
           : basePositionRef.current;
-        const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
-        const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
         basePositionRef.current = Math.min(Math.max(finalY, minY), maxY);
         dragStartRef.current = null;
         set.start({ y: basePositionRef.current });

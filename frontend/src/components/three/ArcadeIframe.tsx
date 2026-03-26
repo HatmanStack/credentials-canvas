@@ -25,7 +25,7 @@ export const ArcadeIframe: React.FC<ArcadeIframeProps> = React.memo(
       state => state.threeJSSceneModel
     );
 
-    const iframe1Ref = useRef<HTMLIFrameElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const iframeClassName = useMemo(
       () => currentWindowWidth < 800 ? 'arcadewrapper-small' : 'arcadewrapper',
@@ -40,8 +40,8 @@ export const ArcadeIframe: React.FC<ArcadeIframeProps> = React.memo(
       THEME_IFRAME_URL_CONFIGURATIONS[0];
 
     const handleIframeLoad = useCallback(() => {
-      if (threeJSSceneModel && iframe1Ref.current) {
-        iframe1Ref.current.classList.add('loaded');
+      if (threeJSSceneModel && iframeRef.current) {
+        iframeRef.current.classList.add('loaded');
       }
     }, [threeJSSceneModel]);
 
@@ -55,7 +55,7 @@ export const ArcadeIframe: React.FC<ArcadeIframeProps> = React.memo(
         >
           <div className="arcade">
             <iframe
-              ref={iframe1Ref}
+              ref={iframeRef}
               src={currentIframeConfig.iframe1}
               onLoad={handleIframeLoad}
               allow="muted"
