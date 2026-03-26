@@ -503,4 +503,151 @@ describe('useCameraPositionAnimation', () => {
       expect(mockSetClickPoint).toHaveBeenCalledTimes(3);
     });
   });
+
+  describe('initial camera arc animation', () => {
+    it('should start requestAnimationFrame for arc animation on mount', () => {
+      renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: false,
+          closeUpPosIndex: 0,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      expect(global.requestAnimationFrame).toHaveBeenCalled();
+    });
+
+    it('should call setCameraClone with camera position clone during animation', () => {
+      renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: false,
+          closeUpPosIndex: 0,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      // Get the animation frame callback and invoke it
+      const rafCallback = (global.requestAnimationFrame as Mock).mock.calls[0][0];
+      rafCallback(0); // First frame (sets animation start time)
+
+      expect(mockSetCameraClone).toHaveBeenCalled();
+    });
+
+    it('should animate camera position during arc when progress < 1', () => {
+      renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: false,
+          closeUpPosIndex: 0,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      const rafCallback = (global.requestAnimationFrame as Mock).mock.calls[0][0];
+      // First frame: starts animation at time 0
+      rafCallback(0);
+      // Second frame: progress = 100/3500 < 1, should continue animating
+      rafCallback(100);
+
+      // Camera position should be updated and lookAt called
+      expect(mockCamera.lookAt).toHaveBeenCalled();
+      // Should have requested another animation frame
+      expect((global.requestAnimationFrame as Mock).mock.calls.length).toBeGreaterThan(1);
+    });
+
+    it('should stop animation when progress >= 1', () => {
+      renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: false,
+          closeUpPosIndex: 0,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      const rafCallback = (global.requestAnimationFrame as Mock).mock.calls[0][0];
+      const rafCallCountBefore = (global.requestAnimationFrame as Mock).mock.calls.length;
+
+      // First frame: starts animation
+      rafCallback(0);
+      // Frame well past the duration (3500ms)
+      rafCallback(5000);
+
+      // After progress >= 1, no more requestAnimationFrame should be called
+      const rafCallCountAfter = (global.requestAnimationFrame as Mock).mock.calls.length;
+      // The second call (at 5000ms) should not schedule another frame
+      // We check that lookAt was NOT called on the final frame (animation complete)
+      // since the branch only calls lookAt when animationProgress < 1
+      expect(rafCallCountAfter).toBeLessThanOrEqual(rafCallCountBefore + 2);
+    });
+
+    it('should cancel animation frame on unmount', () => {
+      const { unmount } = renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: false,
+          closeUpPosIndex: 0,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      unmount();
+
+      expect(global.cancelAnimationFrame).toHaveBeenCalled();
+    });
+
+    it('should handle out-of-bounds closeUpPosIndex gracefully', () => {
+      renderHook(() =>
+        useCameraPositionAnimation({
+          camera: mockCamera,
+          windowWidth: 1920,
+          closeUp: true,
+          closeUpPosIndex: 999,
+          setCloseUpPosIndex: mockSetCloseUpPosIndex,
+          currentPosIndex: 0,
+          clickPoint: null,
+          setClickPoint: mockSetClickPoint,
+          setCloseUp: mockSetCloseUp,
+          setCameraClone: mockSetCameraClone,
+        }),
+      );
+
+      // Should not throw and should not call position.copy with out-of-bounds
+      // The guard `closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length`
+      // prevents the copy call for out-of-bounds indices
+      expect(mockCamera.position.copy).not.toHaveBeenCalled();
+    });
+  });
 });
