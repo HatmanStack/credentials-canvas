@@ -103,6 +103,10 @@ The 3D scene consists of:
 - Video textures on phone screens
 - Particle effects for atmosphere
 
+### Logger Utility
+
+A structured logger at `utils/logger.ts` provides leveled logging (debug, info, warn, error) that only outputs to the console in development mode (`import.meta.env.DEV`). It uses a ring buffer (max 100 entries) to prevent unbounded memory growth, and stored events can be retrieved via `getLogs()` for debugging.
+
 ## Development
 
 ### Prerequisites
