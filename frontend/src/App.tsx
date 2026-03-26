@@ -122,11 +122,16 @@ const AppContent: React.FC = () => {
   }, [selectedThemeConfiguration, setTitleTextColorHue]);
 
   useEffect(() => {
+    let debounceTimer: ReturnType<typeof setTimeout>;
     const handleResize = (): void => {
-      setCurrentWindowWidth(window.innerWidth);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        setCurrentWindowWidth(window.innerWidth);
+      }, 150);
     };
     window.addEventListener('resize', handleResize);
     return () => {
+      clearTimeout(debounceTimer);
       window.removeEventListener('resize', handleResize);
     };
   }, [setCurrentWindowWidth]);
