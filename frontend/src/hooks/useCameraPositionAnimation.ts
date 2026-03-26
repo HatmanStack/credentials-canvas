@@ -46,7 +46,8 @@ export const useCameraPositionAnimation = ({
     let newRotationTarget: Vector3;
     if (isCloseUpView) {
       const idx = closeUpCameraIndex ?? 0;
-      const safeCloseUpIndex = Math.max(0, Math.min(idx, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1));
+      const maxIndex = Math.min(CLOSE_UP_CAMERA_ROTATION_ARRAY.length, CLOSE_UP_CAMERA_POSITION_ARRAY.length) - 1;
+      const safeCloseUpIndex = Math.max(0, Math.min(idx, maxIndex));
       newRotationTarget = new Vector3(...CLOSE_UP_CAMERA_ROTATION_ARRAY[safeCloseUpIndex]);
     } else {
       const safeCameraIndex = Math.max(0, Math.min(currentCameraIndex, CAMERA_ROTATION_POSITION_ARRAY.length - 1));
@@ -70,10 +71,10 @@ export const useCameraPositionAnimation = ({
         CLOSE_UP_CAMERA_POSITION_ARRAY :
         CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN;
 
-      if (closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length) {
-        const targetPosition: CameraPositionTuple = positions[closeUpCameraIndex];
-        camera.position.copy(new Vector3(...targetPosition));
-      }
+      const maxIndex = Math.min(CLOSE_UP_CAMERA_ROTATION_ARRAY.length, positions.length) - 1;
+      const safeIndex = Math.max(0, Math.min(closeUpCameraIndex, maxIndex));
+      const targetPosition: CameraPositionTuple = positions[safeIndex];
+      camera.position.copy(new Vector3(...targetPosition));
     }
   }, [closeUpCameraIndex, screenWidth, camera]);
 

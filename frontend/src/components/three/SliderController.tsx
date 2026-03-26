@@ -25,6 +25,7 @@ function useSliderSpring(
 ): SliderSpringResult {
   // Track base position separately to avoid mutating the original array
   const basePositionRef = useRef<number>(initialY);
+  const dragStartRef = useRef<number | null>(null);
 
   const [{ y }, set] = useSpring(() => ({
     y: initialY,
@@ -36,21 +37,30 @@ function useSliderSpring(
 
   const bind = useDrag(
     ({ down, movement: [, my] }) => {
-      const movementY = -my * 0.001 + basePositionRef.current;
-      const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
-      const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
-      const newY = down
-        ? Math.min(Math.max(movementY, minY), maxY)
-        : basePositionRef.current;
-      set.start({ y: newY });
-      setIsDragging(down);
-
-      // Update base position when drag ends at a new position
       if (down) {
-        basePositionRef.current = newY;
+        // Capture the fixed start position on drag begin
+        if (dragStartRef.current === null) {
+          dragStartRef.current = basePositionRef.current;
+        }
+        const movementY = -my * 0.001 + dragStartRef.current;
+        const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
+        const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
+        const newY = Math.min(Math.max(movementY, minY), maxY);
+        set.start({ y: newY });
+        setLightIntensity({ sliderName: slider, intensity: newY });
+      } else {
+        // Commit final position on drag end
+        const finalY = dragStartRef.current !== null
+          ? -my * 0.001 + dragStartRef.current
+          : basePositionRef.current;
+        const minY = index === 7 ? 0.375 - 0.033 : 0.538 - 0.033;
+        const maxY = index === 7 ? 0.375 + 0.025 : 0.538 + 0.025;
+        basePositionRef.current = Math.min(Math.max(finalY, minY), maxY);
+        dragStartRef.current = null;
+        set.start({ y: basePositionRef.current });
+        setLightIntensity({ sliderName: slider, intensity: basePositionRef.current });
       }
-
-      setLightIntensity({ sliderName: slider, intensity: newY });
+      setIsDragging(down);
     },
     { filterTaps: true }
   );

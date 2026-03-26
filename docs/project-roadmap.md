@@ -32,11 +32,11 @@ Items identified during the March 2026 audit that were not addressed during reme
 **Source:** verification feedback finding #34
 **Effort:** LOW
 
-### Resolve Tailwind v4 config mismatch
-`package.json` has `tailwindcss: "^4.2.2"` but `tailwind.config.js` still uses the v3 config format. Tailwind v4 uses CSS-based configuration. The build currently fails (`npm run build`) due to this mismatch. Either migrate to Tailwind v4's CSS config format or pin Tailwind to v3.
+### Complete Tailwind v4 migration
+The `@config` directive and `@tailwindcss/postcss` plugin have been added to make `tailwind.config.js` load under Tailwind v4. The build now passes. However, the CSS still uses legacy `@tailwind` directives (replaced by `@import "tailwindcss"` in v4) and the `tailwind.config.js` format is v3-style. Consider fully migrating to v4's CSS-first configuration if adopting new Tailwind features, or keep the current compatibility setup.
 
 **Source:** doc-audit.md additional observations
-**Effort:** MEDIUM
+**Effort:** LOW (current state works, full migration is optional)
 
 ### Consolidate site URLs
 Three different URLs reference the deployed site: `credentials.hatstack.fun`, `production.dld9ll6ojjns2.amplifyapp.com`, and `www.cg-portfolio.site` (in `package.json:6` homepage). Decide which is canonical and update `package.json` homepage accordingly.

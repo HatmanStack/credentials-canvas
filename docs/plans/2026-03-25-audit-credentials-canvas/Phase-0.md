@@ -40,7 +40,7 @@ Lint and type-check enforcement will be added as pre-commit hooks (via Husky) in
 
 All commits use conventional commits:
 
-```
+```text
 type(scope): brief description
 
 - Detail 1
@@ -53,8 +53,8 @@ Scopes: `three`, `camera`, `stores`, `hooks`, `config`, `types`, `ci`, `docs`
 ## Testing Strategy
 
 - **Environment:** jsdom with polyfills for `matchMedia` and HTML media elements (already configured in `frontend/tests/helpers/setup.ts`)
-- **Three.js mocking:** Use existing mocks in `frontend/tests/helpers/threeMocks.ts`. All Three.js/R3F rendering is mocked; tests verify behavior through store interactions and callback invocations.
-- **New component tests** (for extracted SceneAnimations pieces): Follow the pattern in existing component tests. Mock R3F hooks (`useFrame`, `useThree`) via `vi.mock`. Test state transitions and side effects, not visual output.
+- **Three.js mocking:** Use existing mocks in `frontend/tests/helpers/threeMocks.ts` for low-level unit tests. For component tests (SceneModel, extracted SceneAnimations components, camera pipeline), write tests that exercise behavior: verify side effects, callback invocations, and camera-state changes rather than only asserting store interactions. Stub `useFrame`/`useThree` where needed but test actual component logic.
+- **New component tests** (for extracted SceneAnimations pieces): Follow the pattern in existing component tests. Mock R3F hooks (`useFrame`, `useThree`) via `vi.mock`. Test state transitions, side effects, and callback invocations.
 - **Coverage target:** 70% across branches, functions, lines, statements (already configured in `vitest.config.ts`).
 - **Test file location:** `frontend/tests/frontend/` mirroring `src/` structure. Helpers in `frontend/tests/helpers/`.
 - **Running tests:** `npm run check` from repo root (runs lint + tests in single-run mode).

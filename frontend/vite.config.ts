@@ -23,7 +23,7 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.glsl'],
   build: {
-    target: 'ES2020',
+    target: 'es2020',
     outDir: 'dist',
   },
   publicDir: 'public',

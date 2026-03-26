@@ -54,6 +54,8 @@ export const SceneAnimations: React.FC = React.memo(() => {
       PHONE_MESH_NAMES.includes(clickedMeshPosition)
     ) {
       setClickedPhoneName(clickedMeshPosition);
+    } else {
+      setClickedPhoneName(null);
     }
   }, [clickedMeshPosition]);
 

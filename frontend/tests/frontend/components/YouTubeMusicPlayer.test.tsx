@@ -109,6 +109,25 @@ describe('YouTubeMusicPlayer', () => {
     expect(document.querySelectorAll('script[src*="youtube.com/iframe_api"]').length).toBe(0);
   });
 
+  it('should initialize player via onYouTubeIframeAPIReady callback', () => {
+    render(<YouTubeMusicPlayer sceneNode={sceneNode} />);
+
+    // Script was injected (no window.YT on mount)
+    expect(document.querySelectorAll('script[src*="youtube.com/iframe_api"]').length).toBe(1);
+
+    // Simulate YouTube API becoming ready
+    const mockDestroy = vi.fn();
+    const mockPlayer = { isMuted: vi.fn(), mute: vi.fn(), unMute: vi.fn(), destroy: mockDestroy };
+    function MockPlayer() { return mockPlayer; }
+    (window as Record<string, unknown>).YT = { Player: MockPlayer };
+
+    // Invoke the callback the component registered
+    expect(window.onYouTubeIframeAPIReady).toBeTypeOf('function');
+    window.onYouTubeIframeAPIReady!();
+
+    expect(mockSetHTMLVideoPlayerElement).toHaveBeenCalledWith(mockPlayer);
+  });
+
   it('should set iframe src from theme configuration', () => {
     const { container } = render(<YouTubeMusicPlayer sceneNode={sceneNode} />);
     const iframe = container.querySelector('iframe');

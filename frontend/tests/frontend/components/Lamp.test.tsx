@@ -42,19 +42,16 @@ describe('CustomGeometryParticles (Lamp)', () => {
 
   it('should use default count of 1500 particles', () => {
     const { container } = render(<CustomGeometryParticles />);
-    // The component renders a <points> element with a bufferGeometry
     const bufferAttr = container.querySelector('bufferattribute, bufferAttribute');
-    // The count attribute should be 1500 (default count)
-    if (bufferAttr) {
-      expect(bufferAttr.getAttribute('count')).toBe('1500');
-    }
-    // Component rendered successfully with default count
-    expect(container).toBeTruthy();
+    expect(bufferAttr).not.toBeNull();
+    expect(bufferAttr!.getAttribute('count')).toBe('1500');
   });
 
   it('should accept a custom particle count', () => {
     const { container } = render(<CustomGeometryParticles count={500} />);
-    expect(container).toBeTruthy();
+    const bufferAttr = container.querySelector('bufferattribute, bufferAttribute');
+    expect(bufferAttr).not.toBeNull();
+    expect(bufferAttr!.getAttribute('count')).toBe('500');
   });
 
   it('should register a useFrame callback for animation', () => {
@@ -75,25 +72,15 @@ describe('CustomGeometryParticles (Lamp)', () => {
   });
 
   it('should create particle positions as Float32Array with correct length', () => {
-    // The component creates particlesPosition with count * 3 elements.
-    // We test this by checking the component renders with the useMemo creating the array.
     const { container } = render(<CustomGeometryParticles count={100} />);
-    // The bufferAttribute's args should contain [Float32Array(300), 3]
     const bufferAttr = container.querySelector('bufferattribute, bufferAttribute');
-    if (bufferAttr) {
-      expect(bufferAttr.getAttribute('itemsize')).toBe('3');
-    }
-    expect(container).toBeTruthy();
+    expect(bufferAttr).not.toBeNull();
+    expect(bufferAttr!.getAttribute('itemsize')).toBe('3');
   });
 
   it('should use additive blending for the shader material', () => {
-    // Render and verify no errors; the shader material props include AdditiveBlending
     const { container } = render(<CustomGeometryParticles />);
     const shaderMat = container.querySelector('shadermaterial, shaderMaterial');
-    expect(container).toBeTruthy();
-    // If jsdom renders the element, it exists
-    if (shaderMat) {
-      expect(shaderMat).toBeTruthy();
-    }
+    expect(shaderMat).not.toBeNull();
   });
 });

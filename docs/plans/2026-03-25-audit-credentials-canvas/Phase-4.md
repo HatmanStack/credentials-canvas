@@ -5,7 +5,7 @@
 Add pre-commit hooks, commitlint, and fix the `@types/three` version mismatch. These are additive guardrails that prevent regressions on the improvements made in Phases 1-3.
 
 **Success criteria:**
-- Pre-commit hooks run lint and type-check on staged files
+- Pre-commit hooks run full lint and type-check via `npm run lint`
 - Commitlint enforces conventional commit format via commit-msg hook
 - `@types/three` version aligns with `three` runtime version
 - Root vitest config setupFiles path is corrected
@@ -51,7 +51,7 @@ Add pre-commit hooks, commitlint, and fix the `@types/three` version mismatch. T
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 ci: add pre-commit hook for lint and type-check
 
 - Install Husky and configure pre-commit to run npm run lint
@@ -97,7 +97,7 @@ ci: add pre-commit hook for lint and type-check
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 ci: add commitlint for conventional commit enforcement
 
 - Enforces commit message format via commit-msg hook
@@ -133,7 +133,7 @@ ci: add commitlint for conventional commit enforcement
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 chore(deps): align @types/three with three runtime version
 
 - Update @types/three from ^0.159.0 to matching version
@@ -165,7 +165,7 @@ chore(deps): align @types/three with three runtime version
 - [x] `npm run check` passes and finds all test files when run from repo root
 
 **Commit message template:**
-```
+```text
 fix(config): correct vitest root config paths
 
 - Fix setupFiles to point to frontend/tests/helpers/setup.ts
@@ -194,7 +194,7 @@ fix(config): correct vitest root config paths
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(utils): add explicit return type to cn utility
 
 - Improves type documentation for the class name merge function

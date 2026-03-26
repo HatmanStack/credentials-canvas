@@ -644,10 +644,9 @@ describe('useCameraPositionAnimation', () => {
         }),
       );
 
-      // Should not throw and should not call position.copy with out-of-bounds
-      // The guard `closeUpCameraIndex >= 0 && closeUpCameraIndex < positions.length`
-      // prevents the copy call for out-of-bounds indices
-      expect(mockCamera.position.copy).not.toHaveBeenCalled();
+      // Should not throw; the index is clamped to the valid range
+      // so position.copy is called with the last valid position
+      expect(mockCamera.position.copy).toHaveBeenCalled();
     });
   });
 });

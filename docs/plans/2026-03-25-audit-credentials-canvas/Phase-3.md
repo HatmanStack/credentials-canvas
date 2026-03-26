@@ -41,7 +41,7 @@ Bring test coverage above the 70% threshold, remove placeholder assertions, and 
 - [x] The test passes
 
 **Commit message template:**
-```
+```text
 test(hooks): replace placeholder assertion in useCameraPositionAnimation tests
 
 - Remove expect(true).toBe(true) and add meaningful behavior test
@@ -89,7 +89,7 @@ test(hooks): replace placeholder assertion in useCameraPositionAnimation tests
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 test(three): add tests for extracted SceneAnimations components
 
 - YouTubeMusicPlayer: script injection, cleanup, store integration
@@ -129,7 +129,7 @@ test(three): add tests for extracted SceneAnimations components
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 test(three): add tests for Lamp component
 
 - Test particle geometry setup, conditional rendering, interactions
@@ -161,7 +161,7 @@ test(three): add tests for Lamp component
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 test(hooks): improve useCameraPositionAnimation branch coverage
 
 - Add tests for uncovered animation edge cases
@@ -187,7 +187,7 @@ test(hooks): improve useCameraPositionAnimation branch coverage
 - [x] No placeholder assertions exist anywhere in the test suite
 
 **Commit message template (if additional tests needed):**
-```
+```text
 test: bring coverage above 70% threshold
 
 - Add targeted tests for [specific files]

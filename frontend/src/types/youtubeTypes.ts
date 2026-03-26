@@ -11,12 +11,12 @@ export interface YouTubePlayer {
 
 declare global {
   interface Window {
-    YT: {
+    YT?: {
       Player: new (
         element: HTMLElement | null,
         config: { videoId: string }
       ) => YouTubePlayer;
     };
-    onYouTubeIframeAPIReady: () => void;
+    onYouTubeIframeAPIReady?: () => void;
   }
 }

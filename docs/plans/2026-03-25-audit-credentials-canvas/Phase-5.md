@@ -47,7 +47,7 @@ Fix all documentation drift, broken links, stale code examples, and gaps identif
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 docs: update CLAUDE.md for React 19, DRACO path, and component changes
 ```
 
@@ -73,7 +73,7 @@ docs: update CLAUDE.md for React 19, DRACO path, and component changes
 - [x] The referenced files exist at the corrected paths
 
 **Commit message template:**
-```
+```text
 docs: fix broken image links in README
 
 - Correct paths from public/ to frontend/public/
@@ -102,7 +102,7 @@ docs: fix broken image links in README
 - [x] The canonical site URL is consistent
 
 **Commit message template:**
-```
+```text
 docs: consolidate model download and site URLs
 
 - Use consistent canonical URL across all documentation
@@ -129,7 +129,7 @@ docs: consolidate model download and site URLs
 - [x] The listed test files match what actually exists
 
 **Commit message template:**
-```
+```text
 docs: add components test directory to docs/README.md structure
 ```
 
@@ -154,7 +154,7 @@ docs: add components test directory to docs/README.md structure
 - [x] No colors are listed that do not exist in the config
 
 **Commit message template:**
-```
+```text
 docs: update Tailwind color list to include all 15 custom colors
 ```
 
@@ -185,7 +185,7 @@ docs: update Tailwind color list to include all 15 custom colors
 - [x] No fields are listed that do not exist
 
 **Commit message template:**
-```
+```text
 docs: update store descriptions with missing state fields
 ```
 
@@ -210,7 +210,7 @@ docs: update store descriptions with missing state fields
 - [x] Examples match actual usage patterns in the codebase
 
 **Commit message template:**
-```
+```text
 docs: fix import paths in code examples to use @ alias
 ```
 
@@ -235,7 +235,7 @@ docs: fix import paths in code examples to use @ alias
 - [x] A pointer to the coverage command exists
 
 **Commit message template:**
-```
+```text
 docs: replace hardcoded coverage percentages with command reference
 
 - Prevents coverage numbers from drifting as code changes
@@ -265,7 +265,7 @@ docs: replace hardcoded coverage percentages with command reference
 - [x] The documentation accurately describes its behavior
 
 **Commit message template:**
-```
+```text
 docs: document logger utility and its dev-only behavior
 ```
 

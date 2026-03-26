@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useRef, useMemo, useCallback } from 'react';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useUserInterfaceStore, useThreeJSSceneStore } from '@/stores';
@@ -45,14 +45,6 @@ export const ArcadeIframe: React.FC<ArcadeIframeProps> = React.memo(
       }
     }, [threeJSSceneModel]);
 
-    useEffect(() => {
-      if (iframe1Ref.current) {
-        iframe1Ref.current.style.display = shouldShowArcadeIframe
-          ? 'block'
-          : 'none';
-      }
-    }, [shouldShowArcadeIframe]);
-
     return (
       <primitive key="zelda_screen" object={sceneNode}>
         <Html
@@ -68,6 +60,7 @@ export const ArcadeIframe: React.FC<ArcadeIframeProps> = React.memo(
               onLoad={handleIframeLoad}
               allow="muted"
               title="Arcade Content"
+              style={{ display: shouldShowArcadeIframe ? 'block' : 'none' }}
             />
           </div>
         </Html>

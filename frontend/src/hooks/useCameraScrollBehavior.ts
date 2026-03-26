@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, type RefObject } from 'react';
 import { Vector3 } from 'three';
 import type { Camera } from 'three';
 import { CAMERA_SCROLL_CONFIGURATION, NO_CLOSE_UP_INDEX } from '@/constants/cameraConfiguration';
@@ -31,7 +31,7 @@ interface ScrollInterpolationParams {
   currentIndex: number;
   positions: CameraPositionTuple[];
   scrollSpeed: number;
-  progressRef: React.RefObject<number>;
+  progressRef: RefObject<number>;
   camera: Camera;
   vectors: ScrollVectorRefs;
 }

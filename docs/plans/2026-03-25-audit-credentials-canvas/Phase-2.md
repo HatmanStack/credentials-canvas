@@ -54,7 +54,7 @@ Fix the critical error handling gaps, decompose the SceneAnimations god componen
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix: mount ErrorBoundary and remove duplicate manifest link
 
 - Wraps App with ErrorBoundary to catch WebGL rendering crashes
@@ -86,7 +86,7 @@ fix: mount ErrorBoundary and remove duplicate manifest link
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix(three): make YouTube iframe API script injection idempotent
 
 - Check for existing script tag before appending
@@ -115,7 +115,7 @@ fix(three): make YouTube iframe API script injection idempotent
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix(three): guard against opening blank tab for empty mesh URLs
 
 - Check URL is truthy before calling window.open
@@ -144,7 +144,7 @@ fix(three): guard against opening blank tab for empty mesh URLs
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(three): replace unsafe material type casts with instanceof guards
 
 - Adds runtime type checking instead of compile-time assertions
@@ -181,7 +181,7 @@ refactor(three): replace unsafe material type casts with instanceof guards
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(camera): replace Vector3 | boolean state with Vector3 | null
 
 - Eliminates confusing boolean-or-object union type
@@ -214,7 +214,7 @@ refactor(camera): replace Vector3 | boolean state with Vector3 | null
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(camera): replace NO_CLOSE_UP_INDEX sentinel with null
 
 - Eliminates implicit dependency between constant and array length
@@ -262,7 +262,7 @@ refactor(camera): replace NO_CLOSE_UP_INDEX sentinel with null
 - [x] Existing SceneAnimations tests still pass (they may need import path updates)
 
 **Commit message template:**
-```
+```text
 refactor(three): extract SceneAnimations into focused components
 
 - YouTubeMusicPlayer: YouTube API lifecycle and music controls
@@ -296,7 +296,7 @@ refactor(three): extract SceneAnimations into focused components
 - [x] Existing tests for this hook still pass
 
 **Commit message template:**
-```
+```text
 refactor(camera): extract shared scroll interpolation logic
 
 - Deduplicates near-identical code between mobile and desktop handlers
@@ -326,7 +326,7 @@ refactor(camera): extract shared scroll interpolation logic
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 perf(camera): pre-allocate Vector3 instances in scroll handler
 
 - Eliminates per-scroll-event object allocation
@@ -357,7 +357,7 @@ perf(camera): pre-allocate Vector3 instances in scroll handler
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix: stabilize LoadingScreen component identity
 
 - Define as standalone component instead of inside useMemo
@@ -386,7 +386,7 @@ fix: stabilize LoadingScreen component identity
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 perf: debounce window resize handler
 
 - Prevents excessive state updates during browser resize
@@ -416,7 +416,7 @@ perf: debounce window resize handler
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix(three): properly remove video DOM elements on cleanup
 
 - Track created video elements and remove from DOM on unmount

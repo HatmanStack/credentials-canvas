@@ -45,7 +45,7 @@ Remove all confirmed dead code, unused files, and unnecessary complexity identif
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(hooks): delete unused useLightingController hook
 
 - Hook was never imported; lighting logic lives in SceneEnvironment
@@ -78,7 +78,7 @@ refactor(hooks): delete unused useLightingController hook
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(three): delete unused InteractiveMeshElement component
 
 - Component was never rendered; click handling lives in SceneModel
@@ -111,7 +111,7 @@ refactor(three): delete unused InteractiveMeshElement component
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(types): delete unused branded types module
 
 - Types and factory functions were never consumed by any source file
@@ -140,7 +140,7 @@ refactor(types): delete unused branded types module
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 refactor(types): remove unused AssetConfiguration and BreakpointConfiguration interfaces
 ```
 
@@ -168,7 +168,7 @@ refactor(types): remove unused AssetConfiguration and BreakpointConfiguration in
 - [x] Decoder path `/draco/javascript/` in SceneModel.tsx matches remaining files
 
 **Commit message template:**
-```
+```text
 chore(three): remove unused DRACO decoder files
 
 - Keep only WASM GLTF decoder files needed at runtime
@@ -197,7 +197,7 @@ chore(three): remove unused DRACO decoder files
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix(config): deduplicate LIGHT_COLOR_WHEEL color array
 
 - Second half was a copy of the first half, biasing random selection
@@ -224,7 +224,7 @@ fix(config): deduplicate LIGHT_COLOR_WHEEL color array
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 fix(three): remove dead responsive ternary in iframePosition
 
 - Both branches returned identical values; simplified to a constant
@@ -258,7 +258,7 @@ fix(three): remove dead responsive ternary in iframePosition
 - [x] `npm run check` passes
 
 **Commit message template:**
-```
+```text
 chore: add knip configuration for dead code detection
 
 - Configures entry points and project structure

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useUserInterfaceStore, useThreeJSSceneStore } from '@/stores';
@@ -31,13 +31,9 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
       THEME_IFRAME_URL_CONFIGURATIONS[selectedVibeIndex] ||
       THEME_IFRAME_URL_CONFIGURATIONS[0];
 
-    useEffect(() => {
-      if (iframe2Ref.current) {
-        iframe2Ref.current.style.display = shouldShowMusicIframe
-          ? 'block'
-          : 'none';
-      }
-    }, [shouldShowMusicIframe]);
+    const iframeStyle = useMemo(() => ({
+      display: shouldShowMusicIframe ? 'block' as const : 'none' as const,
+    }), [shouldShowMusicIframe]);
 
     useEffect(() => {
       // Skip injection if YouTube API is already loaded or script tag exists
@@ -46,6 +42,16 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
       );
       if (window.YT || existingScript) {
         if (window.YT && iframe2Ref.current) {
+          // Destroy existing player before creating a new one
+          if (playerInstanceRef.current) {
+            try {
+              playerInstanceRef.current.destroy?.();
+            } catch {
+              // Player may already be destroyed
+            }
+            playerInstanceRef.current = null;
+            setHTMLVideoPlayerElement(null);
+          }
           const player = new window.YT.Player(iframe2Ref.current, {
             videoId: currentIframeConfig.srcID,
           });
@@ -113,6 +119,7 @@ export const YouTubeMusicPlayer: React.FC<YouTubeMusicPlayerProps> = React.memo(
               src={currentIframeConfig.iframe2}
               allow="autoplay"
               title="Music Player"
+              style={iframeStyle}
             />
           </div>
         </Html>
