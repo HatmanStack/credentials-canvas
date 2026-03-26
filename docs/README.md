@@ -195,7 +195,7 @@ frontend/tests/
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useSceneInteractionStore } from 'stores/sceneInteractionStore';
+import { useSceneInteractionStore } from '@/stores';
 
 describe('sceneInteractionStore', () => {
   beforeEach(() => {
@@ -228,7 +228,7 @@ The project uses Tailwind CSS for utility-first styling.
 Use the `cn()` utility for class composition:
 
 ```tsx
-import { cn } from 'utils/classNameUtils';
+import { cn } from '@/utils/classNameUtils';
 
 <button className={cn(
   'w-12 h-12 rounded-full',
