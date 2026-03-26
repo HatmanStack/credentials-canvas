@@ -22,7 +22,7 @@ export interface UseCameraPositionAnimationParameters {
   clickPoint: string | null;
   setClickPoint: (point: string | null) => void;
   setCloseUp: (isCloseUp: boolean) => void;
-  setCameraClone: (position: Vector3 | boolean) => void;
+  setCameraClone: (position: Vector3 | null) => void;
 }
 
 export interface UseCameraPositionAnimationReturn {

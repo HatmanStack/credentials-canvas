@@ -13,7 +13,7 @@ export interface UseCameraScrollBehaviorParameters {
   setScrollStarted: (hasStarted: boolean) => void;
   setCloseUp: (isCloseUp: boolean) => void;
   setCloseUpPosIndex: (index: number) => void;
-  setCameraClone: (position: Vector3 | boolean) => void;
+  setCameraClone: (position: Vector3 | null) => void;
   mobileScroll: number | null;
 }
 
@@ -73,7 +73,7 @@ export const useCameraScrollBehavior = ({
 
     if (mobileScrollProgress.current >= interpolationSteps) {
       mobileScrollProgress.current = 0;
-      setUsePrimaryCameraPosition(false);
+      setUsePrimaryCameraPosition(null);
 
       const nextIndex = (currentIndex + 1) % cameraPositions.length;
       mobileIndexRef.current = nextIndex;
@@ -121,7 +121,7 @@ export const useCameraScrollBehavior = ({
 
       if (desktopScrollProgress.current >= interpolationSteps) {
         desktopScrollProgress.current = 0;
-        setUsePrimaryCameraPosition(false);
+        setUsePrimaryCameraPosition(null);
 
         const nextIndex = (currentIndex + 1) % cameraPositions.length;
         desktopIndexRef.current = nextIndex;
