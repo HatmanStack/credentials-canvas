@@ -21,12 +21,19 @@ export interface UseCameraScrollBehaviorReturn {
   handleMobileScroll: () => void;
 }
 
+interface ScrollVectorRefs {
+  currentPos: Vector3;
+  nextPos: Vector3;
+  interpolatedPos: Vector3;
+}
+
 interface ScrollInterpolationParams {
   currentIndex: number;
   positions: CameraPositionTuple[];
   scrollSpeed: number;
   progressRef: React.RefObject<number>;
   camera: Camera;
+  vectors: ScrollVectorRefs;
 }
 
 interface ScrollInterpolationResult {
@@ -40,21 +47,22 @@ function interpolateScroll({
   scrollSpeed,
   progressRef,
   camera,
+  vectors,
 }: ScrollInterpolationParams): ScrollInterpolationResult {
   const interpolationSteps = currentIndex >= 1 && currentIndex <= 3 ? 3 : 2;
   progressRef.current += scrollSpeed / 2;
 
-  const currentPos = new Vector3(...positions[currentIndex]);
-  const nextPos = new Vector3(
+  vectors.currentPos.set(...positions[currentIndex]);
+  vectors.nextPos.set(
     ...positions[(currentIndex + 1) % positions.length]
   );
-  const interpolatedPos = new Vector3().lerpVectors(
-    currentPos,
-    nextPos,
+  vectors.interpolatedPos.lerpVectors(
+    vectors.currentPos,
+    vectors.nextPos,
     Math.max(0, Math.min(1, progressRef.current / interpolationSteps))
   );
 
-  camera.position.copy(interpolatedPos);
+  camera.position.copy(vectors.interpolatedPos);
 
   const nextIndex = (currentIndex + 1) % positions.length;
 
@@ -83,6 +91,13 @@ export const useCameraScrollBehavior = ({
   const desktopScrollProgress = useRef<number>(0);
   const mobileScrollProgress = useRef<number>(0);
 
+  // Pre-allocated Vector3 instances to avoid per-scroll-event allocations
+  const scrollVectors = useRef<ScrollVectorRefs>({
+    currentPos: new Vector3(),
+    nextPos: new Vector3(),
+    interpolatedPos: new Vector3(),
+  });
+
   useEffect(() => {
     mobileIndexRef.current = currentCameraIndex;
     desktopIndexRef.current = currentCameraIndex;
@@ -106,6 +121,7 @@ export const useCameraScrollBehavior = ({
       scrollSpeed: CAMERA_SCROLL_CONFIGURATION.mobile,
       progressRef: mobileScrollProgress,
       camera,
+      vectors: scrollVectors.current,
     });
 
     if (result.completed) {
@@ -143,6 +159,7 @@ export const useCameraScrollBehavior = ({
         scrollSpeed: CAMERA_SCROLL_CONFIGURATION.desktop,
         progressRef: desktopScrollProgress,
         camera,
+        vectors: scrollVectors.current,
       });
 
       if (result.completed) {
