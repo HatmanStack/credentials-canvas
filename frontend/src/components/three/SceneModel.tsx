@@ -24,15 +24,14 @@ function useGLTFLoaderWithDRACO(path: string) {
     return () => {
       if (gltf) {
         gltf.scenes?.forEach(scene => scene.traverse(object => {
-          const mesh = object as THREE.Mesh;
-          if (mesh.geometry) mesh.geometry.dispose();
-          if (mesh.material) {
-            const material = mesh.material as THREE.MeshStandardMaterial;
-            if (material.map) material.map.dispose();
-            if (material.normalMap) material.normalMap.dispose();
-            if (material.roughnessMap) material.roughnessMap.dispose();
-            if (material.metalnessMap) material.metalnessMap.dispose();
-            material.dispose();
+          if (!(object instanceof THREE.Mesh)) return;
+          if (object.geometry) object.geometry.dispose();
+          if (object.material instanceof THREE.MeshStandardMaterial) {
+            if (object.material.map) object.material.map.dispose();
+            if (object.material.normalMap) object.material.normalMap.dispose();
+            if (object.material.roughnessMap) object.material.roughnessMap.dispose();
+            if (object.material.metalnessMap) object.material.metalnessMap.dispose();
+            object.material.dispose();
           }
         }));
       }
@@ -61,14 +60,14 @@ export const SceneModel: React.FC = React.memo(() => {
   useEffect(() => {
     if (gltf) {
       gltf.scene.traverse(node => {
-        const mesh = node as THREE.Mesh;
+        if (!(node instanceof THREE.Mesh)) return;
 
         // Videos are eagerly loaded since all 6 phone screens are visible from
         // the initial camera position; lazy-loading would cause visible pop-in
         for (let i = 0; i < PHONE_VIDEO_CONFIGURATIONS.length; i++) {
           const config = PHONE_VIDEO_CONFIGURATIONS[i];
 
-          if (mesh.isMesh && mesh.name === config.name) {
+          if (node.name === config.name) {
             const video = document.createElement('video');
             video.src = config.video;
             video.loop = true;
@@ -89,24 +88,24 @@ export const SceneModel: React.FC = React.memo(() => {
             videoTexture.wrapS = THREE.RepeatWrapping;
             videoTexture.repeat.x = -1;
 
-            const material = mesh.material as THREE.MeshStandardMaterial;
-            material.map = videoTexture;
-            material.needsUpdate = true;
+            if (node.material instanceof THREE.MeshStandardMaterial) {
+              node.material.map = videoTexture;
+              node.material.needsUpdate = true;
+            }
 
             videoRefs.current[config.name] = video;
             videoTextureRefs.current[config.name] = videoTexture;
           }
 
-          if (mesh.name === 'Base') {
-            const circle = mesh.children.find(
+          if (node.name === 'Base') {
+            const circle = node.children.find(
               child => child.name === 'Circle_1'
-            ) as THREE.Mesh;
+            );
 
-            if (circle) {
-              const material = circle.material as THREE.MeshStandardMaterial;
-              if (material && material.name === 'Glass1.002') {
-                material.transparent = true;
-              }
+            if (circle instanceof THREE.Mesh
+              && circle.material instanceof THREE.MeshStandardMaterial
+              && circle.material.name === 'Glass1.002') {
+              circle.material.transparent = true;
             }
           }
         }
