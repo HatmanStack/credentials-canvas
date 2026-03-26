@@ -184,11 +184,7 @@ frontend/tests/
 
 ### Test Coverage
 
-| Category | Target | Status |
-|----------|--------|--------|
-| Stores | >90% | ✅ 100% |
-| Utils | 100% | ✅ 100% |
-| Hooks | >80% | ✅ 82% |
+Run `npm run check` to see current coverage. Thresholds are configured at 70% for branches, functions, lines, and statements in `vitest.config.ts`.
 
 ### Writing Tests
 
