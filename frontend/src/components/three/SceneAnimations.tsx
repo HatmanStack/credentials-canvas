@@ -97,10 +97,7 @@ export const SceneAnimations: React.FC = React.memo(() => {
   // Mutable copy of slider positions for drag updates
   const sliderPositions = useRef<CameraPositionTuple[]>([...SLIDER_POSITION_ARRAY]);
 
-  const iframePosition = useMemo(
-    (): [number, number, number] => currentWindowWidth < 800 ? [-4.055, -2.7, -1.6] : [-4.055, -2.7, -1.6],
-    [currentWindowWidth]
-  );
+  const iframePosition: [number, number, number] = [-4.055, -2.7, -1.6];
 
   const iframeClassName = useMemo(
     () => currentWindowWidth < 800 ? 'arcadewrapper-small' : 'arcadewrapper',
