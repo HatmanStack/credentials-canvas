@@ -78,19 +78,21 @@ credentials-canvas/
 The app uses three Zustand stores:
 
 1. **SceneInteractionStore** - User interactions with 3D scene
-   - Mesh/light clicks
-   - Camera position and scroll state
-   - View modes (close-up, dragging)
+   - Mesh/light clicks (`clickedMeshPosition`, `clickedLightName`, `totalClickCount`)
+   - Camera position and scroll state (`currentCameraPositionIndex`, `cameraInterpolationProgress`, `hasUserStartedScrolling`)
+   - View modes (`isCloseUpViewActive`, `isUserCurrentlyDragging`)
+   - Mobile navigation (`mobileScrollTriggerCount`)
 
 2. **UserInterfaceStore** - UI state
-   - Theme selection
-   - Audio mute state
-   - Window dimensions
-   - Light intensity controls
+   - Theme selection (`selectedThemeConfiguration`, `titleTextColorHue`)
+   - Audio mute state (`isAudioCurrentlyMuted`)
+   - Window dimensions (`currentWindowWidth`)
+   - Light intensity controls (`currentLightIntensityConfiguration`)
+   - Iframe visibility (`shouldShowArcadeIframe`, `shouldShowMusicIframe`)
 
 3. **ThreeJSSceneStore** - Three.js object references
-   - GLTF scene model
-   - Video player element
+   - GLTF scene model (`threeJSSceneModel`)
+   - Video player element (`htmlVideoPlayerElement`)
 
 ### Three.js Scene Structure
 
