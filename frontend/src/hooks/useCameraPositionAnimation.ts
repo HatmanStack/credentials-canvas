@@ -7,7 +7,6 @@ import {
   CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN,
   CLOSE_UP_CAMERA_ROTATION_ARRAY,
   MESH_NAME_TO_CAMERA_POSITION_INDEX_MAP,
-  NO_CLOSE_UP_INDEX
 } from '@/constants/cameraConfiguration';
 import { ANIMATION_DURATIONS } from '@/constants/animationConfiguration';
 import type { CameraPositionTuple } from '@/types';
@@ -16,8 +15,8 @@ export interface UseCameraPositionAnimationParameters {
   camera: Camera;
   windowWidth: number;
   closeUp: boolean;
-  closeUpPosIndex: number;
-  setCloseUpPosIndex: (index: number) => void;
+  closeUpPosIndex: number | null;
+  setCloseUpPosIndex: (index: number | null) => void;
   currentPosIndex: number;
   clickPoint: string | null;
   setClickPoint: (point: string | null) => void;
@@ -46,7 +45,8 @@ export const useCameraPositionAnimation = ({
   useEffect(() => {
     let newRotationTarget: Vector3;
     if (isCloseUpView) {
-      const safeCloseUpIndex = Math.max(0, Math.min(closeUpCameraIndex, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1));
+      const idx = closeUpCameraIndex ?? 0;
+      const safeCloseUpIndex = Math.max(0, Math.min(idx, CLOSE_UP_CAMERA_ROTATION_ARRAY.length - 1));
       newRotationTarget = new Vector3(...CLOSE_UP_CAMERA_ROTATION_ARRAY[safeCloseUpIndex]);
     } else {
       const safeCameraIndex = Math.max(0, Math.min(currentCameraIndex, CAMERA_ROTATION_POSITION_ARRAY.length - 1));
@@ -65,7 +65,7 @@ export const useCameraPositionAnimation = ({
   }, [clickPoint, setCloseUp, setCloseUpCameraIndex, setClickPoint]);
 
   useEffect(() => {
-    if (closeUpCameraIndex !== NO_CLOSE_UP_INDEX) {
+    if (closeUpCameraIndex !== null) {
       const positions = screenWidth > 800 ?
         CLOSE_UP_CAMERA_POSITION_ARRAY :
         CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN;

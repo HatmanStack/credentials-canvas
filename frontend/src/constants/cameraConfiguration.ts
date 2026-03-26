@@ -32,7 +32,7 @@ export const CLOSE_UP_CAMERA_POSITION_ARRAY_SMALL_SCREEN: CameraPositionTuple[] 
   [0.6, 0.3, 4.2],
 ];
 
-export const NO_CLOSE_UP_INDEX = 9;
+export const NO_CLOSE_UP_INDEX = null;
 
 export const CLOSE_UP_CAMERA_ROTATION_ARRAY: CameraPositionTuple[] = [
   [-0.2, 0.3, 3.4],

@@ -12,7 +12,7 @@ export interface UseCameraScrollBehaviorParameters {
   domElement: HTMLElement | null;
   setScrollStarted: (hasStarted: boolean) => void;
   setCloseUp: (isCloseUp: boolean) => void;
-  setCloseUpPosIndex: (index: number) => void;
+  setCloseUpPosIndex: (index: number | null) => void;
   setCameraClone: (position: Vector3 | null) => void;
   mobileScroll: number | null;
 }

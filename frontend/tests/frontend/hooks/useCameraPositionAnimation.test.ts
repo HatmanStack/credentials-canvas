@@ -31,7 +31,7 @@ vi.mock('constants/cameraConfiguration', () => ({
     'mesh2': 1,
     'mesh3': 2,
   },
-  NO_CLOSE_UP_INDEX: 9,
+  NO_CLOSE_UP_INDEX: null,
 }));
 
 beforeAll(() => {
@@ -359,7 +359,7 @@ describe('useCameraPositionAnimation', () => {
       expect((mockCamera.position.copy as Mock).mock.calls.length).toBeGreaterThan(desktopCalls);
     });
 
-    it('should not update position when closeUpPosIndex is 9', () => {
+    it('should not update position when closeUpPosIndex is null', () => {
       vi.clearAllMocks();
 
       renderHook(() =>
@@ -367,7 +367,7 @@ describe('useCameraPositionAnimation', () => {
           camera: mockCamera,
           windowWidth: 1920,
           closeUp: true,
-          closeUpPosIndex: 9,
+          closeUpPosIndex: null,
           setCloseUpPosIndex: mockSetCloseUpPosIndex,
           currentPosIndex: 0,
           clickPoint: null,
