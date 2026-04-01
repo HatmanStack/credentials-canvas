@@ -2,13 +2,26 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.claude/**'
   pull_request:
-    branches: [main, develop]
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.claude/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   frontend-lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: frontend
@@ -24,6 +37,7 @@ jobs:
 
   frontend-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
@@ -39,6 +53,7 @@ jobs:
 
   status-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [frontend-lint, frontend-tests]
     if: always()
     steps:
