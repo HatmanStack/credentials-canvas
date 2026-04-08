@@ -20,6 +20,10 @@ export const SPRING_PHYSICS = {
   TEXT_FRICTION: 5,
 } as const;
 
+/** Uniform scale applied to phone-text meshes during close-up zoom. Raise
+ *  to make the zoomed-in description text larger. Resting scale is 1. */
+export const CLOSE_UP_TEXT_SCALE = 100;
+
 export const INTERPOLATION_STEPS = {
   /** Default camera interpolation steps for smooth transitions */
   DEFAULT: 2,

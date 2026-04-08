@@ -12,6 +12,7 @@ import {
   TEXT_ELEMENT_POSITION_ARRAY,
   TEXT_ELEMENT_ROTATION_ARRAY,
   SPRING_PHYSICS,
+  CLOSE_UP_TEXT_SCALE,
 } from '@/constants/animationConfiguration';
 
 export const SceneAnimations: React.FC = React.memo(() => {
@@ -38,7 +39,9 @@ export const SceneAnimations: React.FC = React.memo(() => {
       const isMatch =
         PHONE_MESH_NAMES.indexOf(clickedPhoneName || '') === index;
       return {
-        scale: isMatch && isCloseUpViewActive ? [100, 100, 100] : [1, 1, 1],
+        scale: isMatch && isCloseUpViewActive
+          ? [CLOSE_UP_TEXT_SCALE, CLOSE_UP_TEXT_SCALE, CLOSE_UP_TEXT_SCALE]
+          : [1, 1, 1],
         config: {
           tension: SPRING_PHYSICS.TEXT_TENSION,
           friction: SPRING_PHYSICS.TEXT_FRICTION,
@@ -47,17 +50,36 @@ export const SceneAnimations: React.FC = React.memo(() => {
     })
   );
 
-  // Track clicked phone for text animation
+  // Track clicked phone for text animation.
+  //
+  // Only *record* a new phone name when clickedMeshPosition names a phone;
+  // do NOT clear clickedPhoneName when it goes back to null. The camera
+  // position hook (useCameraPositionAnimation) intentionally resets
+  // clickedMeshPosition to null after consuming the click — that's its
+  // way of signaling "I handled it", not a deselect. Clearing here on
+  // null created a race where the spring target flipped
+  // 1 → CLOSE_UP_TEXT_SCALE → 1 across three consecutive renders, which
+  // the user saw as the text briefly growing and then shrinking back.
+  //
+  // The actual deselection happens below, keyed off isCloseUpViewActive
+  // going false (scroll, etc.), which is the real "leaving close-up" event.
   useEffect(() => {
     if (
       clickedMeshPosition &&
       PHONE_MESH_NAMES.includes(clickedMeshPosition)
     ) {
       setClickedPhoneName(clickedMeshPosition);
-    } else {
-      setClickedPhoneName(null);
     }
   }, [clickedMeshPosition]);
+
+  // Reset the highlighted phone when the user leaves close-up view so the
+  // spring animates back to resting scale and is primed to re-fire on the
+  // next click.
+  useEffect(() => {
+    if (!isCloseUpViewActive) {
+      setClickedPhoneName(null);
+    }
+  }, [isCloseUpViewActive]);
 
   useEffect(() => {
     if (threeJSSceneModel) {

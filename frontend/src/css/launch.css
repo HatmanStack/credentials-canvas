@@ -2,11 +2,16 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap");
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
+/* Custom properties only — do NOT re-add a universal
+ * `*, *::before, *::after { margin: 0; padding: 0 }` reset here. Tailwind v4
+ * places its utilities (m-*, p-*, etc.) inside a cascade layer, but
+ * launch.css is unlayered — and unlayered rules ALWAYS beat layered rules
+ * regardless of selector specificity. A universal reset here therefore
+ * silently wipes out every Tailwind margin/padding utility on the splash
+ * screen, collapsing the theme-column gaps to zero. Tailwind's preflight
+ * already zeroes the legacy margins this reset used to cover.
+ */
+:root {
   --fill-color: #9b9dad;
   --hover-color: #b68672;
 }
@@ -63,6 +68,7 @@
 .title-stroke {
   font-size: 7rem;
 }
+
 
 .reset {
   width: max-content;
