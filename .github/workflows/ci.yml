@@ -52,6 +52,7 @@ jobs:
       - run: npm run test -- --run --coverage
 
   status-check:
+    name: CI
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [frontend-lint, frontend-tests]
